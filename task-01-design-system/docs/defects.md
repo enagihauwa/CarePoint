@@ -21,6 +21,16 @@ Each defect was found by reading `screen/index.html`, `screen/screen.css` and `s
 | 6 | The font loads from the Google Fonts CDN. Offline or on a slow connection the text first shows in the `system-ui` fallback and then shifts. | `screen/index.html:7-9`, fallback in `src/styles/tokens.css:322` | The app in Task 2 should self-host the font. |
 | 7 | The hero heading is a fixed 40px and does not scale on larger screens. | `screen/index.html:24` | Already recorded in `evidence/08-agent-typography-answer.txt` as planned for Task 2. |
 
+## Production cost if each had shipped
+
+1. Lost bookings. The button is the one thing the clinic needs the page to do, and it would have done nothing.
+2. Patients looking for a way to reach the clinic land on a disclaimer. Every missed contact is a missed or confused patient.
+3. Spacing drifts as pages are added. A change to the spacing scale means editing every copied value by hand, and some will be missed.
+4. A later palette change could make the hover state unreadable, and nothing would warn us because the role name suggests a different use.
+5. A dead logo link in the prototype. Low cost, but it is the first thing people click to go home.
+6. A layout shift on first load, worse on slow mobile data, and every visit sends a request to a third party (Google) from the patient's browser.
+7. On wide desktop screens the heading stays small and the page hierarchy looks weak. Low cost.
+
 ## Checked and not a defect
 
 - No colour role in `tokens.css` is a raw hex; every role references a `--palette-*` variable.
