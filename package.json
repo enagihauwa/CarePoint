@@ -1,0 +1,7 @@
+{
+  "name": "carepoint",
+  "private": true,
+  "scripts": {
+    "tokens": "node scripts/tokens-to-css.js"
+  }
+}
