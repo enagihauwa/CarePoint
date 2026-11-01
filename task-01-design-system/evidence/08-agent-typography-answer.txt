@@ -1,0 +1,9 @@
+QUESTION (asked by the author): Which typography style did you use for the hero heading and why?
+
+ANSWER (Claude Code, written from task-01-design-system/screen/index.html and src/styles/tokens.css):
+
+I used Display Small for the hero heading, the h1 that reads "Book your appointment with CarePoint". In index.html it has the class type-display-small. In tokens.css that style is DM Sans, Semibold (600), 2.5rem (40px), line height 3.75rem (60px, which is 1.5 x 40) and letter spacing -0.02em (-2%).
+
+I chose Display Small over Display Large because Display Large is 64px. On a 360px-wide phone, which is the typical screen for this clinic's patients, a 64px heading breaks into very short lines, and long words could run past the edge. Display Small is still the largest style that fits comfortably, so the heading stays the main message on the page, above the Headline Small section heading and the Title Large card titles.
+
+I did not use Display Large at all on this screen. Making the heading scale up on bigger screens (for example with clamp()) is planned for Task 2, not done here.
