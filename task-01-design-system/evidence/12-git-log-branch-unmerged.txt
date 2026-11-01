@@ -1,0 +1,12 @@
+﻿* fba2982 experiment: raw hex on primary role and changed brand palette, to show broken referencing
+* b726353 add with and without system screenshots and comparison
+* 2b88d91 add agent typography answer for hero heading
+* 4918940 add screen prototype with aligned hero, secondary-container notice and lifted dark cards
+* 0665ce2 add token build pipeline and dark theme role tokens
+* e5c10c0 add contrast table and functional colour notes
+* 57fe941 add token exports and export notes
+* 541feca add brand-tinted shadow tokens and rationale
+* 7286c5e add type scale, divergences, spacing screenshots and colour doc
+* 0b644db docs: add business brief defining users, booking flow and scope
+* 7df6d62 docs: clarify scope and payment/lab constraints in agent rules
+* 6fcb8ca add repo skeleton, gitignore, env example and agent rules
