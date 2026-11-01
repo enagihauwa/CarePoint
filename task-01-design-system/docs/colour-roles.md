@@ -86,4 +86,12 @@ Outline Variant on Surface is 1.21:1, below the 3:1 needed for UI components. Ou
 ### Notes
 
 - Surface Container Low and Surface Container share a tone (Neutral 95), and so do Surface Container High and Highest (Neutral 90), so their rows show the same ratio.
-- Dark-mode pairs are not in this table. The dark mapping lives in the repo (not in Figma, because the free plan allows one mode per collection), so its contrast will be checked when that mapping is written.
+- Dark-mode pairs are checked separately below.
+
+## Contrast check (dark mode)
+
+The dark mapping lives in `tokens/dark-roles.json` in the repo, not in Figma, because the free Figma plan allows one mode per variable collection. Each role points at a different tone of the same palette (for example Primary 40 in light, Primary 80 in dark). I checked 34 pairs with the same WCAG formula, using the hexes from `evidence/06-tokens-complete-primitives.json`.
+
+- **33 of 34 pairs pass.** Every on-colour pair is 6.8:1 or higher on its colour or container, and On Surface on Surface is 13.86:1.
+- The tightest passing pairs are On Surface Variant on Surface Container High and Highest (4.99:1) and On Surface Variant on Surface Variant (5.41:1).
+- **Outline Variant on Surface fails at 1.97:1**, the same decorative-only pair that fails in light mode. It stays limited to dividers, never controls or text.
