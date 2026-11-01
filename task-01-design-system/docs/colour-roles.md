@@ -1,6 +1,6 @@
 # Colour system: CarePoint Clinic
 
-Status: in progress. Sections marked TODO are not finished.
+Status: complete for Task 1. Light and dark contrast results are in the tables below.
 
 ## Brand colour and where it came from
 
@@ -14,7 +14,7 @@ Before pinning, the generated Primary tonal palette appeared more muted and slig
 
 Evidence: `evidence/01-palette-before-pin.png` (generated tone 40 is `#535A92`), `evidence/02-palette-after-pin.png` (tone 40 is `#1D38E2`).
 
-TODO: replace the last sentence with my own reason (contrast with white), and say what happened to the neighbouring tones.
+The real reason I pin at tone 40 is contrast. Primary 40 is the tone the Primary role uses in light mode, with white (On Primary) on top, and `#1D38E2` gives about 7.7:1 against white, well above the 4.5:1 minimum. Pinning moved the neighbouring tones with it: Primary 30 became `#162AAA` and Primary 20 became `#0E1C71` (darker), and Primary 50 became `#4359E7` and Primary 60 became `#687AEC` (lighter), all in the same blue hue instead of the greyish generated ones.
 
 ## Tones
 

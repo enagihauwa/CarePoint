@@ -29,4 +29,4 @@ Hard requirements:
 
 ### Attempts
 
-TODO (mine): record anything that failed or that I changed after running `npm run tokens`, in order, with what I changed in the prompt.
+`npm run tokens` ran successfully, with no failures to record. My own run printed `tokens: wrote src\styles\tokens.css (57 roles, 15 type styles, 3 shadows)`. I made no changes to the prompt after running it. The changes I made are the ones listed above, and I made them before the run. Later edits to `tokens.css` came from changes to the design (the warning colour and the dark card tones), not from fixing script failures.
