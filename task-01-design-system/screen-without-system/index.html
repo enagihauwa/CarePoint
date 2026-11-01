@@ -1,0 +1,61 @@
+<!doctype html>
+<!--
+  CONTRAST EXAMPLE ONLY. This is the same home screen built the ordinary way, with
+  hardcoded colours, sizes, shadows and fonts and no design tokens. It exists to be
+  screenshotted as evidence/09-screen-without-system.png. Never link it from the app.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CarePoint Clinic (without the design system)</title>
+  <style>
+    body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: #f5f5f5; color: #333; }
+    .header { display: flex; justify-content: space-between; align-items: center; padding: 14px 22px; background: #ffffff; border-bottom: 1px solid #dddddd; }
+    .logo { font-size: 21px; font-weight: bold; color: #1a73e8; text-decoration: none; }
+    .nav a { margin-left: 18px; font-size: 15px; color: #666666; text-decoration: none; }
+    .hero { max-width: 560px; margin: 0 auto; padding: 44px 20px; }
+    .hero h1 { font-size: 42px; line-height: 1.15; margin: 0 0 14px; color: #222222; }
+    .hero p { font-size: 17px; line-height: 1.4; color: #777777; margin: 0 0 22px; }
+    .btn { display: inline-block; background: #2f6fed; color: #fff; padding: 12px 20px; border-radius: 6px; font-size: 16px; text-decoration: none; box-shadow: 2px 2px 4px #888888; }
+    .section { max-width: 940px; margin: 0 auto; padding: 20px; }
+    .section h2 { font-size: 22px; margin: 0 0 18px; color: #333; }
+    .cards { display: flex; gap: 14px; flex-wrap: wrap; }
+    .card { flex: 1; min-width: 220px; background: #fff; padding: 16px; border: 1px solid #cccccc; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+    .card h3 { font-size: 19px; margin: 0 0 8px; color: #444; }
+    .card p { font-size: 13px; line-height: 1.5; margin: 0; color: #888; }
+    .notice { max-width: 520px; margin: 36px auto; padding: 14px 18px; background: #ffe9b3; color: #5c4400; border-radius: 4px; }
+    .notice h2 { font-size: 15px; margin: 0 0 6px; }
+    .notice p { font-size: 12px; margin: 0; }
+    .footer { padding: 16px; background: #e0e0e0; text-align: center; font-size: 12px; color: #999999; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <a class="logo" href="/">CarePoint Clinic</a>
+    <div class="nav"><a href="#">Services</a><a href="#">Contact</a></div>
+  </div>
+
+  <div class="hero">
+    <h1>Book your appointment with CarePoint</h1>
+    <p>See which doctors are available and choose a time that suits you. No payment is needed to book.</p>
+    <a class="btn" href="#">Book an appointment</a>
+  </div>
+
+  <div class="section">
+    <h2>What patients ask us most</h2>
+    <div class="cards">
+      <div class="card"><h3>Is a doctor available today?</h3><p>Check today's doctors and open time slots, then book in a few steps.</p></div>
+      <div class="card"><h3>How much does it cost?</h3><p>See the price of each consultation and laboratory test before you decide.</p></div>
+      <div class="card"><h3>Is my lab result ready?</h3><p>Check whether your result is still being processed or ready to collect.</p></div>
+    </div>
+  </div>
+
+  <div class="notice">
+    <h2>CarePoint Clinic is a fictional clinic</h2>
+    <p>This screen is a design prototype. The doctors, times and results shown in the finished app are sample data.</p>
+  </div>
+
+  <div class="footer">CarePoint Clinic, Lagos, Nigeria (fictional)</div>
+</body>
+</html>
