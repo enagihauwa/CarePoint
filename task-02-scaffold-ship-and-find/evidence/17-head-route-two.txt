@@ -1,0 +1,8 @@
+# Run by Claude Code on the user's machine, 2026-11-03, against a production build on port 3055.
+# $ curl -s http://localhost:3055/book  (the <head> tags, one per line). This is a text capture, not a DevTools screenshot.
+
+<meta charSet="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Book an appointment | CarePoint Clinic</title>
+<link rel="icon" href="/favicon.ico?favicon.0g2so-5zrhq7e.ico" sizes="51x51" type="image/x-icon"/>
+<link rel="icon" href="/icon.png?icon.2t8dgkb2q_r7w.png" sizes="51x51" type="image/png"/>
