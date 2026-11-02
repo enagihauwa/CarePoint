@@ -1,0 +1,40 @@
+CarePoint Clinic
+Services
+About
+Book an appointment
+Choose a doctor and a time that suits you. No payment is needed to book.
+
+We can't load the list of doctors right now, so booking is unavailable. Please try again later.
+
+
+1/
+1
+
+Next.js 16.4.3 (stale)
+Turbopack
+Console Error
+Server
+
+
+
+Could not load doctors: "\nInvalid `{imported module ./src/lib/db.ts}[\"prisma\"].doctor.findMany()` invocation in\nC:\\Users\\USER\\Desktop\\CarePoint\\.next\\dev\\server\\chunks\\ssr\\[root-of-the-server]__12em4iydxbv0o._.js:55:152\n\n  52 const dynamic = \"force-dynamic\";\n  53 async function loadDoctors() {\n  54     try {\n→ 55         return await {imported module ./src/lib/db.ts}[\"prisma\"].doctor.findMany(\nUser was denied access on the database `(not available)`"
+src\app\book\page.tsx (21:13) @ loadDoctors
+
+
+  19 |     });
+  20 |   } catch (error) {
+> 21 |     console.error("Could not load doctors:", error instanceof Error ? error.message : error);
+     |             ^
+  22 |     return null;
+  23 |   }
+  24 | }
+Call Stack
+12
+
+Show 9 ignore-listed frame(s)
+loadDoctors
+src\app\book\page.tsx (21:13)
+BookPage
+src\app\book\page.tsx (27:19)
+BookPage
+<anonymous>

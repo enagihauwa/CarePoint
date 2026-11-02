@@ -1,13 +1,10 @@
+import Link from "next/link";
+import SiteHeader from "@/components/SiteHeader";
+
 export default function HomePage() {
   return (
     <>
-      <header className="site-header">
-        <a className="logo type-title-large" href="#">CarePoint Clinic</a>
-        <nav className="nav" aria-label="Main">
-          <a className="nav-link type-label-large" href="#services">Services</a>
-          <a className="nav-link type-label-large" href="#about">About</a>
-        </nav>
-      </header>
+      <SiteHeader />
 
       <main>
         <section className="hero">
@@ -15,7 +12,7 @@ export default function HomePage() {
           <p className="hero-text type-body-large">
             See which doctors are available and choose a time that suits you. No payment is needed to book.
           </p>
-          <a className="button type-label-large" href="#services">Book an appointment</a>
+          <Link className="button type-label-large" href="/book">Book an appointment</Link>
         </section>
 
         <section className="questions" id="services" aria-labelledby="questions-title">

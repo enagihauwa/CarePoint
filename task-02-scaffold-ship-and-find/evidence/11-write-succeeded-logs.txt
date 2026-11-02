@@ -1,0 +1,118 @@
+
+> dev
+> next dev
+
+▲ Next.js 16.4.3 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://10.245.248.231:3000
+- Environments: .env
+✓ Ready in 944ms
+✓ Running next.config.ts took 56ms
+
+ GET /book 200 in 756ms (next.js: 252ms, application-code: 504ms)
+ GET /book?name=&phone=&date=&time= 200 in 108ms (next.js: 3ms, application-code: 105ms)
+⚠ Blocked cross-origin request to Next.js dev resource /_next/hmr from "10.245.248.231".
+Cross-origin access to Next.js dev resources is blocked by default for safety.
+
+To allow this host in development, add it to "allowedDevOrigins" in next.config.js and restart the dev server:
+
+// next.config.js
+module.exports = {
+  allowedDevOrigins: ['10.245.248.231'],
+}
+
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+ GET / 200 in 210ms (next.js: 30ms, application-code: 179ms)
+ GET /book 200 in 227ms (next.js: 7ms, application-code: 220ms)
+ GET /book 200 in 180ms (next.js: 7ms, application-code: 174ms)
+ GET /book 200 in 131ms (next.js: 6ms, application-code: 124ms)
+ GET /book?name=&phone=&date=&time= 200 in 142ms (next.js: 4ms, application-code: 138ms)
+ GET /book 200 in 104ms (next.js: 5ms, application-code: 99ms)
+✓ Compiled in 49ms
+ GET /book?name=&phone=&date=&time= 200 in 112ms (next.js: 5ms, application-code: 106ms)
+ GET /book 200 in 79ms (next.js: 5ms, application-code: 74ms)
+ GET /book?name=&phone=&date=&time= 200 in 101ms (next.js: 5ms, application-code: 96ms)
+ GET /book 200 in 55ms (next.js: 4ms, application-code: 51ms)
+ GET /book?name=&phone=&date=&time= 200 in 98ms (next.js: 4ms, application-code: 94ms)
+ GET /book 200 in 60ms (next.js: 4ms, application-code: 56ms)
+ GET /book 200 in 205ms (next.js: 6ms, application-code: 199ms)
+ GET /book?name=&phone=&date=&time= 200 in 103ms (next.js: 6ms, application-code: 98ms)
+ GET /book 200 in 180ms (next.js: 5ms, application-code: 175ms)
+POST /api/bookings 201 151ms
+ POST /api/bookings 201 in 693ms (next.js: 377ms, application-code: 317ms)
+ GET /book?name=&phone=&date=&time= 200 in 137ms (next.js: 6ms, application-code: 131ms)
+ GET /book 200 in 102ms (next.js: 3ms, application-code: 99ms)
+ GET /book?name=&phone=&date=&time= 200 in 108ms (next.js: 4ms, application-code: 104ms)
+ GET /book 200 in 167ms (next.js: 5ms, application-code: 162ms)
+ GET /book 200 in 175ms (next.js: 6ms, application-code: 169ms)
+ GET /book?name=&phone=&date=&time= 200 in 112ms (next.js: 6ms, application-code: 107ms)
+POST /api/bookings 201 73ms
+ POST /api/bookings 201 in 100ms (next.js: 4ms, application-code: 96ms)
+ GET /book 200 in 203ms (next.js: 5ms, application-code: 198ms)
+ GET /book?name=&phone=&date=&time= 200 in 54ms (next.js: 1.9ms, application-code: 52ms)
+ GET /book 200 in 134ms (next.js: 6ms, application-code: 128ms)
+ GET /book?name=&phone=&date=&time= 200 in 66ms (next.js: 7ms, application-code: 59ms)
+ GET /book 200 in 211ms (next.js: 5ms, application-code: 206ms)
+ GET /book?name=&phone=&date=&time= 200 in 125ms (next.js: 5ms, application-code: 120ms)
+ GET /book?name=&phone=&date=&time= 200 in 128ms (next.js: 5ms, application-code: 123ms)
+ GET /book 200 in 240ms (next.js: 7ms, application-code: 233ms)
+ GET /book?name=&phone=&date=&time= 200 in 88ms (next.js: 2ms, application-code: 86ms)
+ GET /book 200 in 113ms (next.js: 4ms, application-code: 110ms)
+ GET /book 200 in 195ms (next.js: 6ms, application-code: 189ms)
+ GET /book?name=&phone=&date=&time= 200 in 147ms (next.js: 7ms, application-code: 140ms)
+ GET /book 200 in 187ms (next.js: 5ms, application-code: 181ms)
+POST /api/bookings 201 76ms
+ POST /api/bookings 201 in 107ms (next.js: 6ms, application-code: 101ms)
+ GET /book 200 in 134ms (next.js: 4ms, application-code: 130ms)
+ GET /book?name=&phone=&date=&time= 200 in 58ms (next.js: 4ms, application-code: 53ms)
+ GET /book 200 in 103ms (next.js: 4ms, application-code: 99ms)
+ GET /book?name=&phone=&date=&time= 200 in 116ms (next.js: 4ms, application-code: 112ms)
+ GET /book 200 in 94ms (next.js: 4ms, application-code: 90ms)
+ GET /book 200 in 113ms (next.js: 4ms, application-code: 109ms)
+ GET /book?name=&phone=&date=&time= 200 in 64ms (next.js: 3ms, application-code: 61ms)
+ GET /book 200 in 130ms (next.js: 4ms, application-code: 126ms)
+ GET /book?name=&phone=&date=&time= 200 in 62ms (next.js: 4ms, application-code: 58ms)
+ GET /book 200 in 104ms (next.js: 3ms, application-code: 101ms)
+ GET /book?name=&phone=&date=&time= 200 in 82ms (next.js: 4ms, application-code: 78ms)
+ GET /book 200 in 137ms (next.js: 4ms, application-code: 133ms)
+ GET /book?name=&phone=&date=&time= 200 in 86ms (next.js: 5ms, application-code: 81ms)
+ GET /book 200 in 96ms (next.js: 2ms, application-code: 93ms)
+ GET /book?name=&phone=&date=&time= 200 in 84ms (next.js: 4ms, application-code: 80ms)
+ GET /book?name=&phone=&date=&time= 200 in 104ms (next.js: 3ms, application-code: 100ms)
+ GET /book 200 in 84ms (next.js: 5ms, application-code: 78ms)
+ GET /book 200 in 179ms (next.js: 5ms, application-code: 175ms)
+ GET /book 200 in 232ms (next.js: 5ms, application-code: 227ms)
+POST /api/bookings 400 5ms
+ POST /api/bookings 400 in 33ms (next.js: 5ms, application-code: 28ms)
+ GET /book?name=&phone=&date=&time= 200 in 122ms (next.js: 6ms, application-code: 116ms)
+POST /api/bookings 201 74ms
+ POST /api/bookings 201 in 104ms (next.js: 6ms, application-code: 98ms)
+ GET /book 200 in 180ms (next.js: 5ms, application-code: 175ms)
+ GET /book?name=&phone=&date=&time= 200 in 65ms (next.js: 4ms, application-code: 60ms)
+ GET /book?name=&phone=&date=&time= 200 in 95ms (next.js: 2ms, application-code: 93ms)
+ GET /book 200 in 76ms (next.js: 4ms, application-code: 72ms)
+ GET /book?name=&phone=&date=&time= 200 in 180ms (next.js: 4ms, application-code: 176ms)
+ GET /book 200 in 117ms (next.js: 5ms, application-code: 113ms)
+ GET /book?name=&phone=&date=&time= 200 in 100ms (next.js: 2ms, application-code: 98ms)
+ GET /book 200 in 100ms (next.js: 4ms, application-code: 96ms)
+ GET /book?name=&phone=&date=&time= 200 in 78ms (next.js: 3ms, application-code: 75ms)
+ GET /book 200 in 99ms (next.js: 5ms, application-code: 94ms)
+ GET /book?name=&phone=&date=&time= 200 in 61ms (next.js: 4ms, application-code: 57ms)
+ GET /book 200 in 117ms (next.js: 4ms, application-code: 113ms)
+ GET /book?name=&phone=&date=&time= 200 in 69ms (next.js: 3ms, application-code: 65ms)
+ GET /book?name=&phone=&date=&time= 200 in 116ms (next.js: 6ms, application-code: 110ms)
+ GET /book 200 in 98ms (next.js: 4ms, application-code: 94ms)
+ GET /book?name=&phone=&date=&time= 200 in 101ms (next.js: 4ms, application-code: 97ms)
+ GET /book 200 in 106ms (next.js: 4ms, application-code: 102ms)
+ GET /book 200 in 180ms (next.js: 5ms, application-code: 175ms)
+ GET /book?name=&phone=&date=&time= 200 in 128ms (next.js: 7ms, application-code: 121ms)
+ GET /book 200 in 225ms (next.js: 6ms, application-code: 219ms)
+ GET /book?name=&phone=&date=&time= 200 in 99ms (next.js: 4ms, application-code: 95ms)
+ GET /book 200 in 132ms (next.js: 4ms, application-code: 128ms)
+ GET /book?name=&phone=&date=&time= 200 in 90ms (next.js: 3ms, application-code: 88ms)
+ GET /book 200 in 142ms (next.js: 5ms, application-code: 137ms)
+ GET /book 200 in 115ms (next.js: 3ms, application-code: 111ms)
+ GET /book?name=&phone=&date=&time= 200 in 62ms (next.js: 4ms, application-code: 58ms)
+ GET /book 200 in 208ms (next.js: 5ms, application-code: 203ms)
+ GET /book 200 in 286ms (next.js: 8ms, application-code: 278ms)
+ GET /book?name=&phone=&date=&time= 200 in 117ms (next.js: 4ms, application-code: 113ms)
