@@ -1,0 +1,37 @@
+# Full dev-server log of the background server started by Claude Code at the user's request on 2026-11-02.
+# Includes the clean restart, the GET /book 200, the 404 requests after the file was renamed to pages.tsx, and the 200s after the fix.
+# Copied unchanged from 08-port-conflict-resolved.txt before that file was restored to its committed version.
+
+
+> dev
+> next dev
+
+▲ Next.js 16.4.3 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.8.100:3000
+✓ Ready in 1454ms
+✓ Running next.config.ts took 76ms
+
+✓ Generated AGENTS.md for AI agents. Set `agentRules: false` in next.config to disable.
+ GET /book 200 in 862ms (next.js: 494ms, application-code: 368ms)
+ GET /book 404 in 772ms (next.js: 554ms, application-code: 218ms)
+ GET /book 404 in 191ms (next.js: 57ms, application-code: 134ms)
+ GET /book 404 in 82ms (next.js: 20ms, application-code: 63ms)
+ GET /book 404 in 74ms (next.js: 24ms, application-code: 50ms)
+ GET / 200 in 149ms (next.js: 38ms, application-code: 111ms)
+ GET / 200 in 389ms (next.js: 38ms, application-code: 351ms)
+ GET /book 404 in 216ms (next.js: 110ms, application-code: 106ms)
+ GET /book 404 in 184ms (next.js: 39ms, application-code: 145ms)
+ GET / 200 in 138ms (next.js: 9ms, application-code: 128ms)
+ GET /book 404 in 180ms (next.js: 62ms, application-code: 117ms)
+ GET /book 404 in 287ms (next.js: 147ms, application-code: 140ms)
+ GET / 200 in 52ms (next.js: 6ms, application-code: 46ms)
+ GET / 200 in 687ms (next.js: 81ms, application-code: 606ms)
+ GET /book 404 in 783ms (next.js: 447ms, application-code: 337ms)
+ GET /book 404 in 259ms (next.js: 80ms, application-code: 179ms)
+ GET /book 200 in 164ms (next.js: 63ms, application-code: 101ms)
+ GET /book 200 in 77ms (next.js: 3ms, application-code: 74ms)
+ GET /book 200 in 264ms (next.js: 11ms, application-code: 254ms)
+ GET /book 200 in 308ms (next.js: 10ms, application-code: 298ms)
+ GET /book 200 in 142ms (next.js: 10ms, application-code: 132ms)
+[?25h
