@@ -1,0 +1,62 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-02.
+# DATABASE_URL was renamed to DATABASE_URL_BROKEN in .env before this server started.
+# Then: one curl POST /api/bookings (client output at the end of this file) and one curl GET /book. The other GET /book lines came from a browser tab that was open on the page.
+
+
+> dev
+> next dev
+
+▲ Next.js 16.4.3 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://10.245.248.231:3000
+- Environments: .env
+✓ Ready in 1147ms
+✓ Running next.config.ts took 51ms
+
+Could not load doctors: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["prisma"].doctor.findMany()` invocation in
+C:\Users\USER\Desktop\CarePoint\.next\dev\server\chunks\ssr\[root-of-the-server]__12em4iydxbv0o._.js:55:152
+
+  52 const dynamic = "force-dynamic";
+  53 async function loadDoctors() {
+  54     try {
+→ 55         return await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["prisma"].doctor.findMany(
+User was denied access on the database `(not available)`
+ GET /book 200 in 1220ms (next.js: 444ms, application-code: 775ms)
+Could not load doctors: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["prisma"].doctor.findMany()` invocation in
+C:\Users\USER\Desktop\CarePoint\.next\dev\server\chunks\ssr\[root-of-the-server]__12em4iydxbv0o._.js:55:152
+
+  52 const dynamic = "force-dynamic";
+  53 async function loadDoctors() {
+  54     try {
+→ 55         return await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["prisma"].doctor.findMany(
+User was denied access on the database `(not available)`
+Booking write failed: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].doctor.findUnique()` invocation in
+C:\Users\USER\Desktop\CarePoint\.next\dev\server\chunks\[root-of-the-server]__1mppv42et2_i6._.js:61:162
+
+  58     });
+  59 }
+  60 try {
+→ 61     const doctor = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].doctor.findUnique(
+Server has closed the connection.
+POST /api/bookings 500 101ms
+ POST /api/bookings 500 in 395ms (next.js: 234ms, application-code: 162ms)
+ GET /book 200 in 466ms (next.js: 4ms, application-code: 462ms)
+Could not load doctors: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["prisma"].doctor.findMany()` invocation in
+C:\Users\USER\Desktop\CarePoint\.next\dev\server\chunks\ssr\[root-of-the-server]__12em4iydxbv0o._.js:55:152
+
+  52 const dynamic = "force-dynamic";
+  53 async function loadDoctors() {
+  54     try {
+→ 55         return await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["prisma"].doctor.findMany(
+User was denied access on the database `(not available)`
+ GET /book 200 in 116ms (next.js: 3ms, application-code: 113ms)
+[?25h
+
+# curl output (client side) for the POST above:
+$ curl -s -w "\nstatus=%{http_code}\n" -X POST http://localhost:3000/api/bookings -H "Content-Type: application/json" -d '{"name":"Test Patient Three","phone":"08000000003","doctorId":1,"date":"2026-11-05","time":"10:00"}'
+{"error":"We could not save your booking. Nothing was booked. Please try again."}
+status=500
