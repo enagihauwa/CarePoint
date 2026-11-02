@@ -1,0 +1,21 @@
+I've read AGENT-RULES.md, docs/business-brief.md, src/styles/tokens.css and the Task 1 docs. I haven't written any code.
+
+## Understanding
+
+CarePoint is a fictional Lagos clinic. Patients are aged 18 to 60 on low-cost Android phones with weak data, plus one front-desk admin role. The one thing that must work is booking an appointment. Payment is separate: it's recorded as pending or paid afterwards, with no gateway. Doctors are static seed data, and results exist only as a status.
+
+The stack is Next.js with TypeScript, Postgres with Prisma, Zod, Argon2id, Nodemailer, pg-boss and node-cron.
+
+`tokens.css` is generated. It has private `--palette-*` variables, `--color-*` roles with light and dark blocks, 15 DM Sans `.type-*` classes, and three shadows tinted with the brand blue (`#1D38E2`).
+
+This step is project setup plus a minimal home screen using only roles, type classes and shadows. Task 1's open defects (spacing and radius not tokenised, CDN font, hero heading not scaling) were deferred to this task.
+
+## Needs your answer before I start
+
+1. **Project location.** `src/styles/` is already at the repo root, so I'd scaffold Next.js at the root with `src/app`. Is that right, or do you want it under `task-02-…/`?
+2. **`tokens.css` shows as modified.** I found no content change, only line endings (LF to CRLF). Is it fine to leave it as is?
+3. **Font.** Should I use `next/font` for DM Sans (self-hosted, which suits weak data) instead of the Google CDN?
+4. **Spacing and radius.** The tokens have none. Should the home screen reuse the page-local values from `screen/screen.css`, or should I stop and ask you to add tokens?
+5. **Home screen content.** Should I base it on `screen/index.html`?
+
+I checked the `.gitignore`, and `.env` is ignored correctly despite its BOM.
