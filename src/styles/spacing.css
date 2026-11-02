@@ -1,0 +1,11 @@
+/* TEMPORARY EXCEPTION for Task 1 defect 3 (see task-01-design-system/docs/defects.md).
+   Spacing and radius are not design tokens yet, so these five values are declared
+   here and nowhere else. Nothing else in src/ may hardcode spacing, radius,
+   colour, size or shadow values. Replace this file when they become real tokens. */
+:root {
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2.5rem;
+  --radius: 1.25rem;
+}
