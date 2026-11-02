@@ -10,3 +10,4 @@
 
 ○ Compiling / ...
  GET / 200 in 979ms (next.js: 586ms, application-code: 393ms)
+[?25h
