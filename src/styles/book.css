@@ -1,6 +1,7 @@
-/* Booking page layout only. Colours are role variables, text styles are .type-* classes,
-   and spacing and radius come from spacing.css. Widths are multiples of --space-4, as in
-   home.css, and borders and outlines use keyword widths. The .button style is in home.css. */
+/* Booking page layout only. Colours are role variables, shadows are shadow variables,
+   text styles are .type-* classes, and spacing and radius come from spacing.css.
+   Widths are multiples of --space-4, as in home.css, and borders and outlines use
+   keyword widths. The base .button style is in home.css. */
 
 .book {
   padding: var(--space-4) var(--space-3);
@@ -10,23 +11,55 @@
 .book-title { margin: 0 0 var(--space-1); color: var(--color-on-surface); }
 .book-intro { margin: 0 0 var(--space-3); color: var(--color-on-surface-variant); }
 
+.booking-card {
+  padding: var(--space-3);
+  border-radius: var(--radius);
+  background: var(--color-surface-container-lowest);
+  box-shadow: var(--shadow-soft);
+}
+
 .booking-form { display: grid; gap: var(--space-3); }
 
+.field-group { display: grid; gap: var(--space-2); margin: 0; padding: 0; border: none; }
+.group-title { margin: 0 0 var(--space-1); padding: 0; color: var(--color-primary); }
+
 .field { display: grid; gap: var(--space-1); }
+.field-row {
+  display: grid;
+  gap: var(--space-2);
+  grid-template-columns: repeat(auto-fit, minmax(calc(var(--space-4) * 5), 1fr));
+}
 .field-label { color: var(--color-on-surface); }
+.field-hint { margin: 0; color: var(--color-on-surface-variant); }
+.field-error { margin: 0; color: var(--color-error); }
+
 .field-input {
   width: 100%;
   padding: var(--space-1) var(--space-2);
   border: thin solid var(--color-outline);
-  border-radius: var(--radius);
-  background: var(--color-surface-container-lowest);
+  border-radius: var(--radius-input);
+  background: var(--color-surface);
   color: var(--color-on-surface);
 }
-.field-input:focus-visible { outline: medium solid var(--color-primary); outline-offset: var(--space-1); }
+.field-input:hover { border-color: var(--color-on-surface-variant); }
+.field-input:focus-visible { outline: medium solid var(--color-primary); outline-offset: 0; border-color: var(--color-primary); }
+.field-input[aria-invalid="true"] { border-color: var(--color-error); }
 
-.booking-form .button { justify-self: start; border: none; }
-.booking-form .button:disabled { cursor: progress; }
+.submit-button { width: 100%; border: none; text-align: center; }
+/* A button that cannot book must not look like one that can. */
+.submit-button:disabled,
+.submit-button:disabled:hover {
+  background: var(--color-surface-container-highest);
+  color: var(--color-on-surface-variant);
+  box-shadow: none;
+  cursor: not-allowed;
+}
 
-.message { margin: 0; padding: var(--space-2) var(--space-3); border-radius: var(--radius); }
-.message-success { background: var(--color-success-container); color: var(--color-on-success-container); }
+.message { margin: 0; padding: var(--space-2) var(--space-3); border-radius: var(--radius-input); }
 .message-error { background: var(--color-error-container); color: var(--color-on-error-container); }
+
+.confirmation { display: grid; gap: var(--space-2); border-top: thick solid var(--color-success); }
+.confirmation-title { margin: 0; color: var(--color-on-surface); }
+.confirmation-details { display: grid; gap: var(--space-1); margin: 0; }
+.confirmation-details dt { color: var(--color-on-surface-variant); }
+.confirmation-details dd { margin: 0 0 var(--space-1); color: var(--color-on-surface); }

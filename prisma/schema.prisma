@@ -8,13 +8,21 @@ datasource db {
   provider = "postgresql"
 }
 
-// One booking request from the /book form. Doctors are static seed data, so
-// doctor is plain text for now. Validation rules beyond "filled in" come in Task 3.
+// Doctors are static seed data (prisma/seed.ts). No doctor login and no admin editing.
+model Doctor {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  specialty String
+  bookings  Booking[]
+}
+
+// One booking request from the /book form. Validation rules beyond "filled in" come in Task 3.
 model Booking {
   id        Int      @id @default(autoincrement())
   name      String
   phone     String
-  doctor    String
+  doctor    Doctor   @relation(fields: [doctorId], references: [id])
+  doctorId  Int
   date      DateTime @db.Date
   time      String
   createdAt DateTime @default(now())

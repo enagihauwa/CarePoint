@@ -8,7 +8,7 @@ const filled = z.string().trim().min(1, "This field is required.");
 const BookingInput = z.object({
   name: filled,
   phone: filled,
-  doctor: filled,
+  doctorId: z.coerce.number("Choose a doctor.").int("Choose a doctor.").positive("Choose a doctor."),
   date: z.iso.date("Enter a valid date."),
   time: filled,
 });
@@ -39,10 +39,23 @@ export async function POST(request: Request) {
   }
 
   try {
+    const doctor = await prisma.doctor.findUnique({ where: { id: parsed.data.doctorId } });
+    if (!doctor) {
+      return respond(request, started, 400, {
+        error: "Some fields are missing or invalid.",
+        fields: { doctorId: ["Choose a doctor from the list."] },
+      });
+    }
     const booking = await prisma.booking.create({
       data: { ...parsed.data, date: new Date(parsed.data.date) },
     });
-    return respond(request, started, 201, { id: booking.id, createdAt: booking.createdAt });
+    return respond(request, started, 201, {
+      id: booking.id,
+      createdAt: booking.createdAt,
+      doctor: `${doctor.name}, ${doctor.specialty}`,
+      date: parsed.data.date,
+      time: booking.time,
+    });
   } catch (error) {
     // Never report success if the write failed. The detail goes to the server log only.
     console.error("Booking write failed:", error instanceof Error ? error.message : error);

@@ -1,0 +1,45 @@
+# FALSE SUCCESS: the form was submitted from http://10.245.248.231:3000/book, where Next.js blocked its
+# development scripts. The form's JavaScript never ran, so the browser sent each submit as a GET to /book.
+# The page appeared to reload with no message, the server answered 200, and NO booking was saved
+# (the Booking table had 0 rows afterwards). There is no POST /api/bookings line below.
+# Names and phone numbers in the GET lines are masked as [masked] before committing. Nothing else is changed.
+
+
+> dev
+> next dev
+
+▲ Next.js 16.4.3 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://10.245.248.231:3000
+- Environments: .env
+✓ Ready in 915ms
+✓ Running next.config.ts took 61ms
+
+ GET /book 200 in 746ms (next.js: 310ms, application-code: 436ms)
+ GET / 200 in 186ms (next.js: 36ms, application-code: 150ms)
+⚠ Blocked cross-origin request to Next.js dev resource /_next/hmr from "10.245.248.231".
+Cross-origin access to Next.js dev resources is blocked by default for safety.
+
+To allow this host in development, add it to "allowedDevOrigins" in next.config.js and restart the dev server:
+
+// next.config.js
+module.exports = {
+  allowedDevOrigins: ['10.245.248.231'],
+}
+
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+ GET /book 200 in 142ms (next.js: 14ms, application-code: 128ms)
+ GET /book?name=[masked]&phone=[masked]&doctorId=3&date=2026-11-03&time=21%3A38 200 in 182ms (next.js: 7ms, application-code: 175ms)
+ GET /book?name=[masked]&phone=[masked]&doctorId=2&date=2026-11-03&time=23%3A36 200 in 160ms (next.js: 7ms, application-code: 153ms)
+ GET /book?name=[masked]&phone=[masked]&date=&time= 200 in 168ms (next.js: 5ms, application-code: 163ms)
+ GET /book?name=[masked]&phone=[masked]&date=&time= 200 in 200ms (next.js: 7ms, application-code: 193ms)
+ GET /book?name=[masked]&phone=[masked]&date=&time= 200 in 100ms (next.js: 5ms, application-code: 95ms)
+ GET /book?name=[masked]&phone=[masked]&date=&time= 200 in 122ms (next.js: 5ms, application-code: 117ms)
+ GET /book?name=[masked]&phone=[masked]&date=&time= 200 in 115ms (next.js: 5ms, application-code: 110ms)
+ GET /book?name=[masked]&phone=[masked]&date=&time= 200 in 101ms (next.js: 4ms, application-code: 96ms)
+ GET /book?name=[masked]&phone=[masked]&date=&time= 200 in 114ms (next.js: 3ms, application-code: 111ms)
+ GET /book?name=[masked]&phone=[masked]&date=&time= 200 in 95ms (next.js: 4ms, application-code: 91ms)
+ GET /book?name=[masked]&phone=[masked]&date=&time= 200 in 118ms (next.js: 8ms, application-code: 110ms)
+✓ Compiled in 142ms
+✓ Compiled in 87ms
+✓ Compiled in 41ms
