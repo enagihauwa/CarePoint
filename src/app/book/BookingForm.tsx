@@ -18,17 +18,21 @@ export default function BookingForm({ doctors }: { doctors: DoctorOption[] }) {
   const [ready, setReady] = useState(false);
   useEffect(() => setReady(true), []);
   const fieldErrors = result.kind === "failed" ? result.fields : {};
+  // The server validates date and time separately. The patient sees one field, so show whichever failed.
+  const whenError = fieldErrors.date?.length ? "date" : fieldErrors.time?.length ? "time" : null;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setResult({ kind: "saving" });
-    const data = Object.fromEntries(new FormData(event.currentTarget));
+    const { datetime, ...rest } = Object.fromEntries(new FormData(event.currentTarget)) as Record<string, string>;
+    // One "Date and time" field for the patient. The API and the database keep them separate.
+    const [date = "", time = ""] = (datetime ?? "").split("T");
 
     try {
       const response = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...rest, date, time }),
       });
       const body = await response.json().catch(() => ({}));
 
@@ -114,19 +118,11 @@ export default function BookingForm({ doctors }: { doctors: DoctorOption[] }) {
           {error("doctorId")}
         </div>
 
-        <div className="field-row">
-          <div className="field">
-            <label className="field-label type-label-large" htmlFor="date">Date</label>
-            <input className="field-input type-body-large" id="date" name="date" type="date"
-              required aria-invalid={!!fieldErrors.date} aria-describedby={describedBy("date")} />
-            {error("date")}
-          </div>
-          <div className="field">
-            <label className="field-label type-label-large" htmlFor="time">Time</label>
-            <input className="field-input type-body-large" id="time" name="time" type="time"
-              required aria-invalid={!!fieldErrors.time} aria-describedby={describedBy("time")} />
-            {error("time")}
-          </div>
+        <div className="field">
+          <label className="field-label type-label-large" htmlFor="datetime">Date and time</label>
+          <input className="field-input type-body-large" id="datetime" name="datetime" type="datetime-local"
+            required aria-invalid={!!whenError} aria-describedby={whenError ? `${whenError}-error` : undefined} />
+          {whenError && error(whenError)}
         </div>
       </fieldset>
 
