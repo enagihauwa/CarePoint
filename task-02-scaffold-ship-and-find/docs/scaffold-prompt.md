@@ -29,3 +29,15 @@ Do not run any migrations. Build project setup and the minimal home screen only.
 ## What changed and why
 
 My first prompt was the guide's skeleton used as it was. I did not adapt it for CarePoint first, and I did not ask an agent to tighten it. Because it named no stack, folder, font or spacing rules, the agent stopped and asked me five questions instead of guessing, which is what step 1 of the prompt told it to do. The CarePoint-specific instructions came in my approval message: where the app lives, leaving the generated `tokens.css` alone, self-hosting DM Sans under its real family name, a single marked file for the spacing values that are not tokens yet, basing the home screen on my Task 1 screen, and no migrations. I wrote that approval with help from Claude in my guidance session. If I wrote the first prompt again, I would put those decisions in it from the start, so the agent would not have to ask.
+
+## The plan and its assumptions
+
+The plan in `evidence/01-agent-plan.txt` listed no assumptions, and I don't believe it had none. It did turn some assumptions into questions (where the app lives, the line endings, the font, the spacing values and which screen to copy), which is good. But its final report and the code show at least five more that it made without asking:
+
+- It chose Next.js 16, React 19 and TypeScript 7 on its own.
+- It rewrote widths as multiples of `--space-4`, so 64rem became 60rem and the `20ch` heading became 30rem. It only mentioned this after building.
+- It self-hosted only the Latin subset of DM Sans, so accented characters fall back to `system-ui`.
+- It assumed the rest of the stack (Prisma, Zod and the others) did not belong in the scaffold. That was right, but it was still an assumption.
+- It assumed "the Task 1 docs" meant the `task-01-design-system/docs/` folder.
+
+What I checked: its summary against `AGENT-RULES.md` and the business brief (users, the one thing that must work, the payment limits and the stack were all accurate), its claim that `tokens.css` only differed in line endings (`git diff` showed no content change), its claim that `.env` is ignored (`git check-ignore` confirmed it), and, after the build, a raw-value search over `src/`, which found only the five allowed lines in `spacing.css`.
