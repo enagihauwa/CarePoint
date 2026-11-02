@@ -1,5 +1,25 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import SiteHeader from "@/components/SiteHeader";
+
+const TAGLINE = "Book your visit now. Pay when you're ready.";
+const DESCRIPTION =
+  "CarePoint Clinic in Lagos: choose a doctor, pick a time and book online. No payment is needed to book.";
+
+// SEO and Open Graph tags live on this marketing page only. The booking page has none.
+export const metadata: Metadata = {
+  title: { absolute: `CarePoint Clinic: ${TAGLINE}` },
+  description: DESCRIPTION,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: "CarePoint Clinic",
+    locale: "en_NG",
+    url: "/",
+    title: `CarePoint Clinic: ${TAGLINE}`,
+    description: DESCRIPTION,
+  },
+};
 
 export default function HomePage() {
   return (
@@ -8,6 +28,7 @@ export default function HomePage() {
 
       <main>
         <section className="hero">
+          <p className="hero-tagline type-label-large">{TAGLINE}</p>
           <h1 className="hero-title type-display-small">Book your appointment with CarePoint</h1>
           <p className="hero-text type-body-large">
             See which doctors are available and choose a time that suits you. No payment is needed to book.
@@ -33,12 +54,6 @@ export default function HomePage() {
           </ul>
         </section>
 
-        <section className="notice" id="about" aria-labelledby="notice-title">
-          <h2 className="notice-title type-title-medium" id="notice-title">CarePoint Clinic is a fictional clinic</h2>
-          <p className="notice-text type-body-small">
-            This screen is a design prototype. The doctors, times and results shown in the finished app are sample data.
-          </p>
-        </section>
       </main>
 
       <footer className="site-footer">
