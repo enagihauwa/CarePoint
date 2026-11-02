@@ -25,7 +25,8 @@ a { color: inherit; text-decoration: none; }
   border-bottom: thin solid var(--color-outline-variant);
 }
 
-.logo { color: var(--color-primary); }
+.logo { color: var(--color-primary); cursor: pointer; }
+.logo:hover { text-decoration: underline; }
 
 .nav { display: flex; gap: var(--space-2); }
 
@@ -42,7 +43,15 @@ a { color: inherit; text-decoration: none; }
   max-width: calc(var(--space-4) * 24);
   margin: 0 auto;
 }
-.hero-title { margin: 0 0 var(--space-2); color: var(--color-on-surface); max-width: calc(var(--space-4) * 12); }
+.hero-tagline { margin: 0 0 var(--space-1); color: var(--color-primary); }
+.hero-title {
+  margin: 0 0 var(--space-2);
+  color: var(--color-on-surface);
+  max-width: var(--heading-measure);
+  /* Shrinks on narrow phones, grows with the screen, never larger than the Display Small style. */
+  font-size: clamp(var(--type-headline-small-size), var(--fluid-heading), var(--type-display-small-size));
+  line-height: var(--line-height-ratio);
+}
 .hero-text { margin: 0 0 var(--space-3); color: var(--color-on-surface-variant); max-width: calc(var(--space-4) * 16); }
 
 .button {
@@ -78,17 +87,6 @@ a { color: inherit; text-decoration: none; }
 }
 .card-title { margin: 0 0 var(--space-1); color: var(--color-on-surface); }
 .card-text { margin: 0; color: var(--color-on-surface-variant); }
-
-.notice {
-  margin: var(--space-4) auto;
-  padding: var(--space-3);
-  max-width: calc(var(--space-4) * 16);
-  border-radius: var(--radius);
-  background: var(--color-secondary-container);
-  color: var(--color-on-secondary-container);
-}
-.notice-title { margin: 0 0 var(--space-1); }
-.notice-text { margin: 0; }
 
 .site-footer {
   padding: var(--space-3);

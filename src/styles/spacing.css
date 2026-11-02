@@ -10,4 +10,10 @@
   --radius: 1.25rem;
   /* Form controls: a smaller corner, so inputs read as fields and not as pills. Derived, not a new value. */
   --radius-input: calc(var(--space-2) / 2);
+
+  /* Information design (Task 2, step 10). No design token can express these, so they are
+     declared here and nowhere else. */
+  --heading-measure: 20ch;   /* widest the hero heading may be, in characters */
+  --fluid-heading: 6vw;      /* hero heading grows with screen width, between the two type sizes */
+  --line-height-ratio: 1.5;  /* line height = font size x 1.5, the rule in task-01-design-system/docs/type-scale.md */
 }
