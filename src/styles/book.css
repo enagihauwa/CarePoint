@@ -1,0 +1,32 @@
+/* Booking page layout only. Colours are role variables, text styles are .type-* classes,
+   and spacing and radius come from spacing.css. Widths are multiples of --space-4, as in
+   home.css, and borders and outlines use keyword widths. The .button style is in home.css. */
+
+.book {
+  padding: var(--space-4) var(--space-3);
+  max-width: calc(var(--space-4) * 16);
+  margin: 0 auto;
+}
+.book-title { margin: 0 0 var(--space-1); color: var(--color-on-surface); }
+.book-intro { margin: 0 0 var(--space-3); color: var(--color-on-surface-variant); }
+
+.booking-form { display: grid; gap: var(--space-3); }
+
+.field { display: grid; gap: var(--space-1); }
+.field-label { color: var(--color-on-surface); }
+.field-input {
+  width: 100%;
+  padding: var(--space-1) var(--space-2);
+  border: thin solid var(--color-outline);
+  border-radius: var(--radius);
+  background: var(--color-surface-container-lowest);
+  color: var(--color-on-surface);
+}
+.field-input:focus-visible { outline: medium solid var(--color-primary); outline-offset: var(--space-1); }
+
+.booking-form .button { justify-self: start; border: none; }
+.booking-form .button:disabled { cursor: progress; }
+
+.message { margin: 0; padding: var(--space-2) var(--space-3); border-radius: var(--radius); }
+.message-success { background: var(--color-success-container); color: var(--color-on-success-container); }
+.message-error { background: var(--color-error-container); color: var(--color-on-error-container); }

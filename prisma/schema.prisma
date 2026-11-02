@@ -1,0 +1,21 @@
+// The database connection URL lives in prisma.config.ts (read from DATABASE_URL in .env).
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// One booking request from the /book form. Doctors are static seed data, so
+// doctor is plain text for now. Validation rules beyond "filled in" come in Task 3.
+model Booking {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String
+  doctor    String
+  date      DateTime @db.Date
+  time      String
+  createdAt DateTime @default(now())
+}
