@@ -1,0 +1,12 @@
+You ran it from the wrong folder. `npm run dev` reads `package.json` from the directory you're in. `C:\Users\USER\Desktop` has no `package.json`, so npm fails with ENOENT. The project's `package.json` is in `C:\Users\USER\Desktop\CarePoint`.
+
+**Smallest fix:** change into the project folder and run it again.
+
+```
+cd C:\Users\USER\Desktop\CarePoint
+npm run dev
+```
+
+This is the "nested folder" failure from Task 2 step 5, which asks you to run `npm run dev` from the wrong place and save the error as `evidence/05-nested-folder-error.txt`. Your accident may already be that evidence, but only if you saved the terminal output as it appeared. If you did, keep it and paste it into the file. If not, you can reproduce it on purpose later.
+
+I haven't changed any files.
