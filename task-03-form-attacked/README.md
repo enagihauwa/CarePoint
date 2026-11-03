@@ -40,6 +40,7 @@ is not all mine.
 | [`docs/number-vs-text-input.md`](docs/number-vs-text-input.md) | What `type="number"` did to `08031234567`, and why the phone field is text. |
 | [`docs/spa-rationale.md`](docs/spa-rationale.md) | Why sign up, log in and reset share one route, what that costs, and when separate pages are better. |
 | [`docs/enumeration.md`](docs/enumeration.md) | What the form shapes give away, including email enumeration and sequential ids. |
+| [`docs/password-and-button.md`](docs/password-and-button.md) | The 8 to 64 password rule, a Show button instead of a confirm field, and why a hidden submit button was rejected for a disabled one with an explanation. |
 | [`docs/client-side-is-not-security.md`](docs/client-side-is-not-security.md) | The two attacks, which rules the server enforced (none), and what moves to Task 4. |
 | [`docs/accessibility-audit.md`](docs/accessibility-audit.md) | The five checks per field, the real problems found, the fixes, and my before/after Narrator notes. |
 | [`docs/terms-note.md`](docs/terms-note.md) | Why no terms wording was written, and what must happen before the form is used with real patients. |
@@ -56,6 +57,7 @@ work.
 | `04` | Dev-server log: switching forms makes no request. |
 | `05`–`08a` | Empty and length errors, real-time email checking on sign up, and submit-only checking on log in. |
 | `09a`–`10` | `type="number"` losing the leading zero and changing the number on an arrow key, then the `tel` input working. |
+| `13a`–`13c`, `14` | The rejected hidden-until-valid button (and the log showing its deleted experiment branch), then the kept disabled-until-valid button with its explanation. |
 | `15`, `15b` | The 19 form attacks before and after fixing what the sign-up form sends. |
 | `16` | Raw `curl` requests to `POST /api/register`, all accepted. |
 | `19` | The validation rules checked against valid and invalid values. |
@@ -81,6 +83,9 @@ running production build. They were run by Claude on my machine, not by me.
 - The `Patient` table and `POST /api/register`. A real submission saves a row.
 - The phone field is text and keeps `+` and leading zeros.
 - The terms checkbox is required and its placeholder page is linked.
+- The sign-up button stays in the tab order (`aria-disabled`) and explains why
+  when pressed too early. A hidden-button version was tried on its own branch,
+  rejected and deleted.
 - The booking form fixes: errors in live regions with icons, focus moved to the
   first problem, `aria-disabled` while saving, focus moved to the confirmation,
   and the terms link opening in a new tab.
@@ -104,3 +109,5 @@ running production build. They were run by Claude on my machine, not by me.
   hint reduces the confusion but does not solve it (A6 in the audit).
 - My Narrator notes **after** the accessibility fixes are empty (`[ME]`
   sections). The automated "after" run is not a substitute for listening.
+- Not written yet: the rollback note (a regretted commit to undo by its id), this
+  task's defects list and its interview answers.
