@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import SiteHeader from "@/components/SiteHeader";
 import { prisma } from "@/lib/db";
 import "../../styles/book.css";
+import "../../styles/auth.css";
 import BookingForm, { type DoctorOption } from "./BookingForm";
 
 export const metadata: Metadata = {

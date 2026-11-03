@@ -127,7 +127,10 @@ export function TermsCheckbox({ checked, onChange, onBlur, error }: TermsCheckbo
           aria-describedby="terms-error"
         />
         <label className="type-body-large" htmlFor="terms">
-          I agree to the CarePoint <a className="auth-switch" href="/terms">terms and privacy notice</a>
+          I agree to the CarePoint{" "}
+          <a className="auth-switch" href="/terms" target="_blank" rel="noopener noreferrer">
+            terms and privacy notice (opens in a new tab)
+          </a>
         </label>
       </div>
       <ErrorSlot id="terms" message={error} />
