@@ -18,11 +18,10 @@ Email apps often ignore `var(--color-primary)` and external stylesheets. So `scr
 
 Two limits: the email is light theme only (no dark-mode roles), and DM Sans only shows for readers who have it installed, so most will see the Arial fallback.
 
-## What I would change in the copy (DRAFT, I rewrite this)
+## What I would change in the copy (drafted by Claude, still to be reworded by me)
 
-- The subject says "verification code" but does not say what it is for. Something like "Your CarePoint code to confirm your email" would be clearer in an inbox list.
-- The email should say what happens if the patient did not ask for it. It does, but the line is small and last. 
-- The expiry "10 minutes" is a placeholder until I choose it in step 10.
-- "Hello Sample Patient" uses the full name. A first name may read friendlier, but my form collects one name field, so I cannot split it reliably.
-- There is no clinic phone number or address for a patient who is worried it is fake. I have not added invented contact details.
-- The code itself is not in the plain-text part with any formatting issue, but I have not checked how a screen reader reads "0 4 8 2 1 3" with the wide letter spacing. That is untested.
+1. **The subject line.** "Your CarePoint Clinic verification code" does not say what the code is for. "Your CarePoint code to confirm your email" tells a patient why it arrived before they open it.
+2. **The "did not ask for this" line.** It is small and last. A worried patient should see it sooner, and it could say who to contact. I have no clinic phone number in the project, so I would add the real one rather than invent one.
+3. **The expiry.** "10 minutes" is a placeholder. I will set the real figure in step 10 and update the email to match.
+
+Not checked: how a screen reader reads the code with its wide letter spacing.
