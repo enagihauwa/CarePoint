@@ -1,0 +1,37 @@
+# Run by Claude Code, 2026-11-03: the validation rules in src/lib/validation/auth.ts against legitimate and attack inputs.
+
+PASS  name 'a' (one char)  ->  Your name should be between 2 and 100 characters.
+PASS  name '  ' (spaces)  ->  Please enter your full name.
+PASS  name 'Ngozi Okonkwo-Eze'  ->  accepted
+PASS  name "O'Brien"  ->  accepted
+PASS  name 100 chars  ->  accepted
+PASS  name 101 chars  ->  Your name should be between 2 and 100 characters.
+PASS  name ' Bo ' (trims to 2)  ->  accepted
+PASS  phone 08031234567  ->  accepted
+PASS  phone 0803 123 4567  ->  accepted
+PASS  phone 0803-123-4567  ->  accepted
+PASS  phone +2348031234567  ->  accepted
+PASS  phone +447911123456 (UK)  ->  accepted
+PASS  phone 0803 (fragment)  ->  Enter a Nigerian number like 08031234567, or an international number starting with +.
+PASS  phone abc  ->  Enter a Nigerian number like 08031234567, or an international number starting with +.
+PASS  phone 8031234567 (no leading 0)  ->  Enter a Nigerian number like 08031234567, or an international number starting with +.
+PASS  phone +1234567 (7 digits)  ->  Enter a Nigerian number like 08031234567, or an international number starting with +.
+PASS  phone +1234567890123456 (16 digits)  ->  Enter a Nigerian number like 08031234567, or an international number starting with +.
+PASS  email a@b  ->  Enter an email address like name@example.com.
+PASS  email john@  ->  Enter an email address like name@example.com.
+PASS  email john.example.com  ->  Enter an email address like name@example.com.
+PASS  email patient+care@example.com  ->  accepted
+PASS  email name@example.co.ng  ->  accepted
+PASS  email trailing space 'a@b.com '  ->  accepted
+PASS  email a@@b.com  ->  Enter an email address like name@example.com.
+PASS  email a@b..com  ->  Enter an email address like name@example.com.
+PASS  password '   ' (spaces)  ->  Your password can't be only spaces.
+PASS  password 8 spaces  ->  Your password can't be only spaces.
+PASS  password '1234567' (7)  ->  Your password needs at least 8 characters.
+PASS  password '12345678' (8)  ->  accepted
+PASS  password 'correct horse battery' (spaces inside)  ->  accepted
+PASS  password ' abcdefg ' (outer spaces kept, 9 chars)  ->  accepted
+PASS  password 64 chars  ->  accepted
+PASS  password 65 chars  ->  Your password can be at most 64 characters.
+PASS  login password empty  ->  Please enter your password.
+PASS  login password 'x' (short is fine at login)  ->  accepted
