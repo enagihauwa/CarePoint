@@ -1,0 +1,58 @@
+/* Account forms (sign up, log in, reset). They reuse the card, field and button styles from
+   book.css and home.css. Colours are role variables, text styles are .type-* classes, and
+   spacing and radius come from spacing.css. Sizes are multiples of the spacing variables. */
+
+/* An error is an icon plus text, never colour alone. */
+.auth-error-slot { display: grid; }
+.auth-error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-1);
+  margin: 0;
+  color: var(--color-error);
+}
+.auth-icon { flex: none; width: var(--space-3); height: var(--space-3); }
+.message.auth-error { align-items: center; }
+
+.password-row { display: flex; gap: var(--space-1); }
+.password-row .field-input { flex: 1; }
+.toggle {
+  padding: var(--space-1) var(--space-2);
+  border: thin solid var(--color-outline);
+  border-radius: var(--radius-input);
+  background: var(--color-surface-container-lowest);
+  color: var(--color-primary);
+  cursor: pointer;
+}
+.toggle:hover { background: var(--color-surface-container-high); }
+.toggle:focus-visible { outline: medium solid var(--color-primary); outline-offset: var(--space-1); }
+
+.checkbox-row { display: flex; align-items: flex-start; gap: var(--space-2); }
+.checkbox-row input {
+  flex: none;
+  width: var(--space-3);
+  height: var(--space-3);
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--color-primary);
+}
+.checkbox-row input:focus-visible { outline: medium solid var(--color-primary); outline-offset: var(--space-1); }
+.checkbox-row label { color: var(--color-on-surface); }
+
+.auth-switch { color: var(--color-primary); text-decoration: underline; cursor: pointer; }
+.auth-switch:hover { color: var(--color-on-primary-container); }
+.auth-switch:focus-visible { outline: medium solid var(--color-primary); outline-offset: var(--space-1); }
+.auth-switch-row { margin: 0; color: var(--color-on-surface-variant); }
+
+.message-info { background: var(--color-secondary-container); color: var(--color-on-secondary-container); }
+
+/* The button stays in the tab order but looks unavailable until the form is ready. */
+.submit-button[aria-disabled="true"],
+.submit-button[aria-disabled="true"]:hover {
+  background: var(--color-surface-container-highest);
+  color: var(--color-on-surface-variant);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.book-title:focus { outline: none; }

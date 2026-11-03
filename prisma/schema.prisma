@@ -16,6 +16,17 @@ model Doctor {
   bookings  Booking[]
 }
 
+// A patient who registered (Task 3). The password is not stored yet: hashing comes in Task 4.
+// Nothing here is unique or checked, because the server does not validate anything yet.
+model Patient {
+  id              Int       @id @default(autoincrement())
+  name            String
+  email           String
+  phone           String
+  termsAcceptedAt DateTime?
+  createdAt       DateTime  @default(now())
+}
+
 // One booking request from the /book form. Validation rules beyond "filled in" come in Task 3.
 model Booking {
   id        Int      @id @default(autoincrement())

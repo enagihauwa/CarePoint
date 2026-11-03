@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
+import { respond } from "@/lib/respond";
 
 // Task 2 only checks that every field is filled in. The real rules (phone format,
 // allowed dates, opening hours) are chosen and derived in Task 3.
@@ -12,13 +12,6 @@ const BookingInput = z.object({
   date: z.iso.date("Enter a valid date."),
   time: filled,
 });
-
-// One log line per request: method, path, status and time taken.
-function respond(request: Request, started: number, status: number, body: unknown) {
-  const ms = Math.round(performance.now() - started);
-  console.log(`${request.method} ${new URL(request.url).pathname} ${status} ${ms}ms`);
-  return NextResponse.json(body, { status });
-}
 
 export async function POST(request: Request) {
   const started = performance.now();
