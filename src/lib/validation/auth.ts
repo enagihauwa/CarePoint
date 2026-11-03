@@ -8,7 +8,7 @@ export const LIMITS = {
   phoneInternationalMinDigits: 8,
   phoneInternationalMaxDigits: 15,
   passwordMin: 8,
-  passwordMax: 6,
+  passwordMax: 64,
 } as const;
 
 export const MESSAGES = {
