@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-// A throwaway demo for task-03-form-attacked (step 4). It shows what the SAME typing does
+// A throwaway demo for task-03-client-validation (step 4). It shows what the SAME typing does
 // in a type="number" input and in a type="tel" input. It is not part of the product.
 
 function Readout({ raw, asNumber }: { raw: string; asNumber: string }) {

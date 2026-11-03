@@ -1,4 +1,4 @@
-// The registration and login rules from task-03-form-attacked/docs/validation-rules.md.
+// The registration and login rules from task-03-client-validation/docs/validation-rules.md.
 // Each check returns the error message to show, or null when the value is fine.
 // These run in the browser only. The server does not enforce any of them yet (Task 4).
 

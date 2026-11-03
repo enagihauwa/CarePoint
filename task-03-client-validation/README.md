@@ -1,4 +1,9 @@
-# Task 3: the form, attacked
+# Task 3: client validation (the form, attacked)
+
+This folder was called `task-03-form-attacked` until 3 November 2026. It was
+renamed to match the assignment's wording. A few notes and evidence files, such
+as the commands in `docs/rollback.md`, were written before the rename and still
+show the old folder name. They record what was run at the time.
 
 Task 3 adds the patient account forms to CarePoint: sign up, log in and reset
 password. It builds the form rules in the browser, then shows why those rules

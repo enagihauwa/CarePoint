@@ -5,7 +5,7 @@ import "../../styles/book.css";
 export const metadata: Metadata = { title: "Terms and privacy notice" };
 
 // PLACEHOLDER. No legal wording is written here on purpose: the terms must come from an
-// adapted template or a lawyer-checked document (task-03-form-attacked/docs/terms-note.md).
+// adapted template or a lawyer-checked document (task-03-client-validation/docs/terms-note.md).
 // Replace this page before any real patient uses the form.
 export default function TermsPage() {
   return (
