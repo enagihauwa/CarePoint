@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent, type MouseEvent } from "react";
-import { validateEmail, validateName, validatePassword, validatePhone, validateTerms } from "@/lib/validation/auth";
+import {
+  normalizePhone, validateEmail, validateName, validatePassword, validatePhone, validateTerms,
+} from "@/lib/validation/auth";
 import { CautionIcon, Field, PasswordField, TermsCheckbox } from "./fields";
 import ModeLink from "./ModeLink";
 
@@ -78,16 +80,22 @@ export default function SignupForm({ focusHeading = false }: { focusHeading?: bo
     event.preventDefault();
     if (invalid) return;
     setResult({ kind: "saving" });
+    // Send what was validated: the checks ran on the trimmed name and email and on the phone number
+    // without spaces and hyphens, so those are the values that must be stored.
+    const name = values.name.trim();
+    const email = values.email.trim();
+    const phone = normalizePhone(values.phone);
+
     try {
       // The password is not sent: it is stored only once Task 4 adds hashing.
       const response = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: values.name, email: values.email, phone: values.phone, termsAccepted: terms }),
+        body: JSON.stringify({ name, email, phone, termsAccepted: terms }),
       });
       const body = await response.json().catch(() => ({}));
       // Only a 201 counts as saved. Anything else is shown as the error it is.
-      if (response.status === 201) setResult({ kind: "saved", name: values.name.trim() });
+      if (response.status === 201) setResult({ kind: "saved", name });
       else setResult({ kind: "failed", message: body.error ?? `The server answered with status ${response.status}.` });
     } catch {
       setResult({ kind: "failed", message: "Could not reach the server. Check your connection and try again." });
