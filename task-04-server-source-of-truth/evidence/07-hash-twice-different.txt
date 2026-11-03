@@ -1,0 +1,10 @@
+hash1: $argon2id$v=19$m=65536,t=3,p=4$yeMTXvf1NUqZi0IdOHzh2A$2muYE9m1zwb8yiAxVXS8dybANwqc9koq4SQXzayYBdY
+hash2: $argon2id$v=19$m=65536,t=3,p=4$FQtXUEeuKuStrLx/ycxm1g$QjWasqQ2KXojay2TchhUtlmtmB2YV+bJ3aksKt9sib8
+same password, same hash? false
+each hash still verifies: true true
+{
+  argonMs: 85.1406,
+  shaMs: 0.051180100000000006,
+  argonGuessesPerSec: 11.745277811056065,
+  shaGuessesPerSec: 19538.844199210238
+}
