@@ -16,8 +16,8 @@ Updated 3 November 2026. Only Tasks 1 and 2 have been built.
 - The five doctors are seed data in `prisma/seed.ts`.
 - Each page has its own title. The home page has the SEO and Open Graph tags. Both pages have a favicon.
 
-**Checked on a clean database, but not yet by another person**
-- The getting-started steps below. I ran the migration and the seed against an empty database and both worked. A friend still has to follow the whole README from a fresh clone (`docs/readme-test.md`, not written yet).
+**Followed from a fresh clone, but not yet by another person**
+- On 3 November Claude Code cloned the repo, followed the getting-started steps on an empty database and sent a test booking (`task-02-scaffold-ship-and-find/evidence/22-fresh-clone-run.txt`). That run found two bugs, both now fixed: `prisma generate` was listed before `.env` existed, and an empty `SITE_URL` crashed every page. It was not a person, so a friend still has to follow the whole README (`docs/readme-test.md`, not written yet).
 
 **Not built**
 - Patient accounts, login and passwords, the admin dashboard, payment records, the lab-result status, email confirmations and the job queue. These are Tasks 3 to 5 and their folders are empty.
@@ -43,7 +43,6 @@ You need Node.js with npm (I used 24.16.0, from https://nodejs.org), Git and a r
 git clone https://github.com/enagihauwa/CarePoint.git
 cd CarePoint
 npm install
-npx prisma generate
 ```
 
 Create an empty database called `carepoint`. With the command line (it asks for your PostgreSQL password; in pgAdmin you can also right-click Databases and choose Create):
@@ -60,15 +59,16 @@ DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/carepoint"
 
 Replace `USER` and `PASSWORD` with your own PostgreSQL user name and password (the user is often `postgres`). Keep `carepoint` at the end, because that is the database you just created.
 
-Then create the tables and the five doctors, and start the app:
+Now run these, **in this order**. `prisma generate` needs `DATABASE_URL` to exist, so it has to come after you create `.env`:
 
 ```bash
+npx prisma generate
 npx prisma migrate deploy
 npx prisma db seed
 npm run dev
 ```
 
-`migrate deploy` builds the tables in your empty database from the migration files in `prisma/migrations/`. `db seed` fills in the five doctors, so the booking form has doctors to choose from.
+`generate` builds the code the app uses to talk to the database. `migrate deploy` builds the tables in your empty database from the migration files in `prisma/migrations/`. `db seed` fills in the five doctors, so the booking form has doctors to choose from.
 
 Open **`http://localhost:3000/book`**. Use `localhost`, not the "Network" address that `npm run dev` prints. On the network address the development server blocks the form's script, and a booking silently does nothing (`task-02-scaffold-ship-and-find/docs/false-success.md`).
 

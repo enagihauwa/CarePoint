@@ -1,0 +1,212 @@
+# FRESH CLONE RUN of the README, 2026-11-03. Run by Claude Code on the user's machine. This is a real run, but it was NOT done by another person, so it is not docs/readme-test.md.
+# Deviations: cloned from the local repo (the latest commits were not pushed yet); used a throwaway database carepoint_fresh_clone because 'carepoint' already exists here; ran the dev server on port 3066.
+# The first 'npx prisma generate' failed (README order), and GET /book returned 500 (SITE_URL empty after copying .env.example). Both are explained below and fixed in the repo.
+
+
+$ node -v
+v24.16.0
+[exit 0]
+
+$ npm -v
+11.13.0
+[exit 0]
+
+$ psql --version
+psql (PostgreSQL) 18.4
+[exit 0]
+
+$ git --version
+git version 2.54.0.windows.1
+[exit 0]
+
+$ git clone /c/Users/USER/Desktop/CarePoint CarePoint
+Cloning into 'CarePoint'...
+done.
+[exit 0]
+a660243 add task 2 defects with files, lines and production cost
+   D   A   T
+
+$ npm install
+
+added 181 packages, and audited 182 packages in 47s
+
+23 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+[exit 0]
+
+$ npx prisma generate
+Failed to load config file "C:\Users\USER\AppData\Local\Temp\claude\c--Users-USER-Desktop-CarePoint\89ec5ed9-2e9c-4a32-bda1-4f4577164a01\scratchpad\fresh\CarePoint" as a TypeScript/JavaScript module. Error: PrismaConfigEnvError: Cannot resolve environment variable: DATABASE_URL.
+[exit 1]
+
+##### Deviation: the README order failed above. Continuing with .env created BEFORE prisma generate.
+
+$ psql -U postgres -c CREATE DATABASE carepoint_fresh_clone;
+CREATE DATABASE
+[exit 0]
+$ cp .env.example .env   (then set DATABASE_URL by editing the file)
+env var NAMES in the copied file (values hidden):
+DATABASE_URL=...
+SITE_URL=...
+SMTP_HOST=...
+SMTP_PORT=...
+SMTP_USER=...
+SMTP_PASS=...
+
+$ npx prisma generate
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma\schema.prisma.
+
+✔ Generated Prisma Client (7.10.1) to .\src\generated\prisma in 62ms
+
+[exit 0]
+
+$ npx prisma migrate deploy
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma\schema.prisma.
+Datasource "db": PostgreSQL database "carepoint_fresh_clone", schema "public" at "localhost:5432"
+
+2 migrations found in prisma/migrations
+
+Applying migration `20261102191526_add_booking`
+Applying migration `20261102203152_add_doctors`
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 7.10.1 -> 8.0.0-rc.29                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20261102191526_add_booking/
+    └─ migration.sql
+  └─ 20261102203152_add_doctors/
+    └─ migration.sql
+
+All migrations have been successfully applied.
+[exit 0]
+
+$ npx prisma db seed
+Loaded Prisma config from prisma.config.ts.
+
+Running seed command `tsx prisma/seed.ts` ...
+Seeded 5 doctors.
+
+The seed command has been executed.
+[exit 0]
+
+$ npm run dev -- -p 3066   (port 3066 because port 3000 may be in use on this machine)
+
+> dev
+> next dev -p 3066
+
+▲ Next.js 16.4.3 (Turbopack)
+- Local:         http://localhost:3066
+- Network:       http://10.245.248.231:3066
+- Environments: .env
+✓ Ready in 1707ms
+✓ Running next.config.ts took 206ms
+
+  Turbopack has seen frequent file updates and is waiting for the filesystem to settle (0.5s elapsed so far; last modified: "\\\\?\\C:\\Users\\USER\\AppData\\Local\\Temp\\claude\\c--Users-USER-Desktop-CarePoint\\89ec5ed9-2e9c-4a32-bda1-4f4577164a01\\scratchpad\\fresh\\CarePoint\\node_modules\\next\\dist\\esm\\client\\components\\http-access-fallback").
+  Turbopack has seen frequent file updates and is waiting for the filesystem to settle (1.5s elapsed so far; last modified: "\\\\?\\C:\\Users\\USER\\AppData\\Local\\Temp\\claude\\c--Users-USER-Desktop-CarePoint\\89ec5ed9-2e9c-4a32-bda1-4f4577164a01\\scratchpad\\fresh\\CarePoint\\node_modules\\@prisma\\client\\runtime").
+⨯ TypeError: Invalid URL
+    at module evaluation (src\app\layout.tsx:13:17)
+    at module evaluation (C:\Users\USER\AppData\Local\Temp\claude\c--Users-USER-Desktop-CarePoint\89ec5ed9-2e9c-4a32-bda1-4f4577164a01\scratchpad\fresh\CarePoint\.next\dev\server\chunks\ssr\_01g9zq-vqu-02._.js:51:47)
+  11 |
+  12 | export const metadata: Metadata = {
+> 13 |   metadataBase: new URL(siteUrl),
+     |                 ^
+  14 |   title: { default: "CarePoint Clinic", template: "%s | CarePoint Clinic" },
+  15 | };
+  16 | {
+  code: 'ERR_INVALID_URL',
+  input: ''
+}
+⨯ TypeError: Invalid URL
+    at module evaluation (src\app\layout.tsx:13:17)
+    at module evaluation (C:\Users\USER\AppData\Local\Temp\claude\c--Users-USER-Desktop-CarePoint\89ec5ed9-2e9c-4a32-bda1-4f4577164a01\scratchpad\fresh\CarePoint\.next\dev\server\chunks\ssr\_01g9zq-vqu-02._.js:51:47)
+  11 |
+  12 | export const metadata: Metadata = {
+> 13 |   metadataBase: new URL(siteUrl),
+     |                 ^
+  14 |   title: { default: "CarePoint Clinic", template: "%s | CarePoint Clinic" },
+  15 | };
+  16 | {
+  code: 'ERR_INVALID_URL',
+  input: '',
+  page: '/book'
+}
+ GET /book 500 in 2.9s (next.js: 2.6s, application-code: 385ms)
+⨯ TypeError: Invalid URL
+    at module evaluation (src\app\layout.tsx:13:17)
+    at mstatus=500
+tion (C:\Users\USER\AppData\Local\Temp\claude\c--Users-USER-Desktop-CarePoint\89ec5ed9-2e9c-4a32-bda1-4f4577164a01\scratchpad\fresh\CarePoint\.next\dev\server\chunks\ssr\_01g9zq-vqu-02._.js:51:47)
+  11 |
+  12 | export const metadata: Metadata = {
+> 13 |   metadataBase: new URL(siteUrl),
+     |                 ^
+  14 |   title: { default: "CarePoint Clinic", template: "%s | CarePoint Clinic" },
+  15 | };
+  16 | {
+  code: 'ERR_INVALID_URL',
+  input: '',
+  page: '/book'
+}
+⨯ TypeError: Invalid URL
+    at module evaluation (src\app\layout.tsx:13:17)
+    at module evaluation (C:\Users\USER\AppData\Local\Temp\claude\c--Users-USER-Desktop-CarePoint\89ec5ed9-2e9c-4a32-bda1-4f4577164a01\scratchpad\fresh\CarePoint\.next\dev\server\chunks\ssr\_01g9zq-vqu-02._.js:51:47)
+  11 |
+  12 | export const metadata: Metadata = {
+> 13 |   metadataBase: new URL(siteUrl),
+     |                 ^
+  14 |   title: { default: "CarePoint Clinic", template: "%s | CarePoint Clinic" },
+  15 | };
+  16 | {
+  code: 'ERR_INVALID_URL',
+  input: '',
+  page: '/book'
+}
+ GET /book 500 in 79ms (next.js: 61ms, application-code: 18ms)
+POST /api/bookings 201 382ms
+ POST /api/bookings 201 in 824ms (next.js: 247ms, application-code: 576ms)
+✓ Compiled in 16ms
+ GET /book 200 in 698ms (next.js: 6ms, application-code: 692ms)
+ GET / 200 in 149ms (next.js: 31ms, application-code: 118ms)
+[?25h
+:"2026-11-03T00:42:31.134Z","doctor":"Dr. Adaeze Okafor, General Practice","date":"2026-11-06","time":"11:30"}
+status=201
+
+$ psql ... select id, name, "doctorId", date, time, "createdAt" from "Booking"   (in carepoint_fresh_clone)
+ id |       name        | doctorId |    date    | time  |        createdAt        
+----+-------------------+----------+------------+-------+-------------------------
+  1 | Test Patient Four |        1 | 2026-11-06 | 11:30 | 2026-11-03 00:42:31.134
+(1 row)
+
+
+##### Found: GET /book returned 500 (SITE_URL empty after copying .env.example). Fixed in the main repo (layout.tsx). Pulling the fix into the fresh clone and re-testing.
+$ git pull
+From C:/Users/USER/Desktop/CarePoint
+   a660243..a40c950  main       -> origin/main
+Updating a660243..a40c950
+Fast-forward
+ src/app/layout.tsx | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+$ curl -s http://localhost:3066/book  (after the fix)
+status=200
+Full name: 1
+Phone number: 1
+Date and time: 1
+Dr. Adaeze Okafor: 1
+Dr. Funmilayo Ogunleye: 1
+Book appointment: 1
+$ curl -s http://localhost:3066/   (home page)
+status=200

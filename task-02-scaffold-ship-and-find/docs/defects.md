@@ -9,6 +9,13 @@ Drafted by Claude at my request. Every item was checked against the files on 3 N
 | F1 | **False success.** On the network address the form's script was blocked, so the form sent a plain `GET` to `/book`, the page reloaded with no message, and nothing was saved. | `src/app/book/BookingForm.tsx` (no `method`, button always enabled) | The form now has `method="post"` (line 86), and the button stays disabled until the script has loaded (`useEffect` at line 19, `disabled={!ready ...}` at line 141). Success shows only after a `201`. Evidence: `docs/false-success.md`, `evidence/11a`. | Patients believe they have booked and turn up with no booking. Names and phone numbers also land in URLs and logs. |
 | F2 | **A BOM at the start of `.env.example`.** Copying the file to `.env` (the README's step) made the first variable's name `\uFEFFDATABASE_URL`, so `DATABASE_URL` was not read. I tested this: with a BOM the real name is unset. | `.env.example:1` | The three BOM bytes were removed. | Every new developer or deployer gets a connection error that looks unrelated to the file. |
 
+Two more were found by a fresh clone of the repo (`evidence/22-fresh-clone-run.txt`), run by Claude Code and not by a person:
+
+| # | Defect | Where it was | What fixed it | Production cost if it had shipped |
+|---|---|---|---|---|
+| F3 | **The README order failed.** It said to run `npx prisma generate` before creating `.env`, but `prisma.config.ts` needs `DATABASE_URL` even for `generate`. Real output: `Cannot resolve environment variable: DATABASE_URL.` | `README.md` getting started; `prisma.config.ts` (`env("DATABASE_URL")`) | `.env` is now created first, and the README says why. | Every new developer fails at the third command. |
+| F4 | **An empty `SITE_URL` crashed every page.** `.env.example` has `SITE_URL=`, so a copied `.env` sets it to an empty string, and `process.env.SITE_URL ?? "..."` keeps empty strings. `new URL("")` then threw `Invalid URL`, and `GET /book` returned 500. | `src/app/layout.tsx:10` | Changed `??` to `\|\|`, with a comment. | A site that returns 500 on every page the first time someone copies `.env.example`. It never showed on my machine because my `.env` has no `SITE_URL` line. |
+
 ## Open
 
 | # | Defect | Where | Production cost |
