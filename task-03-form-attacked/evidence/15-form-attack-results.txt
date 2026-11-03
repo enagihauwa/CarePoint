@@ -1,0 +1,41 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-03. Headless Chrome typing into the real sign-up form (/auth?mode=signup), against a production build and a THROWAWAY database (dropped afterwards). Script: evidence/15-form-attack-script.js.
+# Every row below is one attempt with otherwise valid values. BLOCKED = the form's own rules stopped it. SENT = the form let it through and the server answered.
+# Not run by the user. The guide says this step is meant to be done by the user.
+
+RESULT   | WHAT WAS TYPED INTO THE FORM            | WHAT HAPPENED
+---------|-----------------------------------------|--------------------------------------------
+BLOCKED  | name: one letter                        | Your name should be between 2 and 100 characters.
+BLOCKED  | name: only spaces                       | Please enter your full name.
+SENT 201 | name: exactly 100 characters            | the form let it through; server answered 201
+BLOCKED  | name: 101 characters                    | Your name should be between 2 and 100 characters.
+SENT 201 | name: padded with spaces                | the form let it through; server answered 201
+SENT 201 | name: script tag                        | the form let it through; server answered 201
+SENT 201 | name: digits only                       | the form let it through; server answered 201
+BLOCKED  | email: a@b (no dot)                     | Enter an email address like name@example.com.
+SENT 201 | email: trailing space                   | the form let it through; server answered 201
+SENT 201 | email: valid, first time                | the form let it through; server answered 201
+SENT 201 | email: SAME address again               | the form let it through; server answered 201
+BLOCKED  | phone: letters                          | Enter a Nigerian number like 08031234567, or an international number starting with +.
+SENT 201 | phone: with spaces and hyphens          | the form let it through; server answered 201
+SENT 201 | phone: +0000000000 (nonsense international) | the form let it through; server answered 201
+BLOCKED  | password: 8 spaces                      | Your password can't be only spaces.
+BLOCKED  | password: 7 characters                  | Your password needs at least 8 characters.
+SENT 201 | password: exactly 64 characters         | the form let it through; server answered 201
+BLOCKED  | password: 65 characters                 | Your password can be at most 64 characters.
+BLOCKED  | terms: not ticked                       | Please accept the terms before creating your account.
+
+# What the database held afterwards (square brackets show any spaces):
+ id |               name               | name_len |         email          |      phone      | terms 
+----+----------------------------------+----------+------------------------+-----------------+-------
+  1 | [nnnnnnnnnnnnnnnnnnnnnnnnnnnnnn] |      100 | [attack@example.com]   | [08000000001]   | t
+  2 | [  Padded Name  ]                |       15 | [attack@example.com]   | [08000000001]   | t
+  3 | [<script>alert(1)</script>]      |       25 | [attack@example.com]   | [08000000001]   | t
+  4 | [12345]                          |        5 | [attack@example.com]   | [08000000001]   | t
+  5 | [Attack Test]                    |       11 | [trailing@example.com] | [08000000001]   | t
+  6 | [Attack Test]                    |       11 | [dup@example.com]      | [08000000001]   | t
+  7 | [Attack Test]                    |       11 | [dup@example.com]      | [08000000001]   | t
+  8 | [Attack Test]                    |       11 | [attack@example.com]   | [0803 123-4567] | t
+  9 | [Attack Test]                    |       11 | [attack@example.com]   | [+0000000000]   | t
+ 10 | [Attack Test]                    |       11 | [attack@example.com]   | [08000000001]   | t
+(10 rows)
+

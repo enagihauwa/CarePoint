@@ -1,0 +1,43 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-03. Raw requests straight to POST /api/register, with no form and no browser, against a production build and a THROWAWAY database (dropped afterwards).
+# The guide's example is adapted to CarePoint's fields (it has no 'phone'; CarePoint's sign-up does).
+# Not run by the user. The guide says this step is meant to be done by the user.
+
+$ curl -i -X POST http://localhost:3077/api/register -H "Content-Type: application/json" -d '{"name":"a","email":"a@b","phone":"abc","password":"   "}'
+HTTP/1.1 201 Created
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+content-type: application/json
+Date: Tue, 03 Nov 2026 11:27:01 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+{"id":11,"createdAt":"2026-11-03T11:27:01.039Z"}
+$ curl -i -X POST http://localhost:3077/api/register -H "Content-Type: application/json" -d '{}'
+HTTP/1.1 201 Created
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+content-type: application/json
+Date: Tue, 03 Nov 2026 11:27:01 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+{"id":12,"createdAt":"2026-11-03T11:27:01.463Z"}
+$ curl -i -X POST http://localhost:3077/api/register -H "Content-Type: application/json" --data @big.json   (a 200,000-character name)
+HTTP/1.1 201 Created
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+content-type: application/json
+Date: Tue, 03 Nov 2026 11:27:02 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+{"id":13,"createdAt":"2026-11-03T11:27:02.764Z"}
+# What the database held afterwards for these three requests (rows 11 to 13):
+ id |      name      | name_len |     email      |  phone   
+----+----------------+----------+----------------+----------
+ 10 | [Attack Test]  |       11 | [attack@examp] | [080000]
+ 11 | [a]            |        1 | [a@b]          | [abc]
+ 12 | []             |        0 | []             | []
+ 13 | [xxxxxxxxxxxx] |   200000 | [big@example.] | [0]
+(4 rows)
+
