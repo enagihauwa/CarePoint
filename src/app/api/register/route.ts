@@ -1,14 +1,18 @@
 import { prisma } from "@/lib/db";
 import { readBoundedJson } from "@/lib/http";
+import { guardAddress } from "@/lib/rateLimit";
 import { respond } from "@/lib/respond";
 import { fieldMessages, RegisterSchema, SERVER_LIMITS } from "@/lib/validation/schemas";
 
-// Task 4: this endpoint now validates everything on the server, in this order: size, JSON,
-// then the schema, and only then anything else. The password is checked but NOT stored yet
-// (hashing and the users table come later) and is never logged: respond() logs only the
-// method, path, status and time.
+// Order inside this endpoint: rate limit by address, read the body with a size limit, parse the
+// JSON, run the schema, and only then anything else. The password is checked but NOT stored yet
+// (hashing and the users table come later) and is never logged: respond() logs only the method,
+// path, status and time.
 export async function POST(request: Request) {
   const started = performance.now();
+
+  const limited = guardAddress(request, started, "register");
+  if (limited) return limited;
 
   const body = await readBoundedJson(request, SERVER_LIMITS.bodyBytes);
   if (!body.ok) return respond(request, started, body.status, { error: body.error });
