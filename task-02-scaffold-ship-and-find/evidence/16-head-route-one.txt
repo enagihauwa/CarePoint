@@ -1,0 +1,19 @@
+# Run by Claude Code on the user's machine, 2026-11-03, against a production build on port 3055.
+# $ curl -s http://localhost:3055/  (the <head> tags, one per line). This is a text capture, not a DevTools screenshot.
+
+<meta charSet="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>CarePoint Clinic: Book your visit now. Pay when you&#x27;re ready.</title>
+<meta name="description" content="CarePoint Clinic in Lagos: choose a doctor, pick a time and book online. No payment is needed to book."/>
+<link rel="canonical" href="http://localhost:3000"/>
+<meta property="og:title" content="CarePoint Clinic: Book your visit now. Pay when you&#x27;re ready."/>
+<meta property="og:description" content="CarePoint Clinic in Lagos: choose a doctor, pick a time and book online. No payment is needed to book."/>
+<meta property="og:url" content="http://localhost:3000"/>
+<meta property="og:site_name" content="CarePoint Clinic"/>
+<meta property="og:locale" content="en_NG"/>
+<meta property="og:type" content="website"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="CarePoint Clinic: Book your visit now. Pay when you&#x27;re ready."/>
+<meta name="twitter:description" content="CarePoint Clinic in Lagos: choose a doctor, pick a time and book online. No payment is needed to book."/>
+<link rel="icon" href="/favicon.ico?favicon.0g2so-5zrhq7e.ico" sizes="51x51" type="image/x-icon"/>
+<link rel="icon" href="/icon.png?icon.2t8dgkb2q_r7w.png" sizes="51x51" type="image/png"/>

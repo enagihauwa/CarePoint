@@ -24,11 +24,6 @@
 .group-title { margin: 0 0 var(--space-1); padding: 0; color: var(--color-primary); }
 
 .field { display: grid; gap: var(--space-1); }
-.field-row {
-  display: grid;
-  gap: var(--space-2);
-  grid-template-columns: repeat(auto-fit, minmax(calc(var(--space-4) * 5), 1fr));
-}
 .field-label { color: var(--color-on-surface); }
 .field-hint { margin: 0; color: var(--color-on-surface-variant); }
 .field-error { margin: 0; color: var(--color-error); }
@@ -41,6 +36,7 @@
   background: var(--color-surface);
   color: var(--color-on-surface);
 }
+select.field-input, input[type="datetime-local"].field-input { cursor: pointer; }
 .field-input:hover { border-color: var(--color-on-surface-variant); }
 .field-input:focus-visible { outline: medium solid var(--color-primary); outline-offset: 0; border-color: var(--color-primary); }
 .field-input[aria-invalid="true"] { border-color: var(--color-error); }

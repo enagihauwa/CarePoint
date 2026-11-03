@@ -5,7 +5,7 @@ import "../../styles/book.css";
 import BookingForm, { type DoctorOption } from "./BookingForm";
 
 export const metadata: Metadata = {
-  title: "Book an appointment | CarePoint Clinic",
+  title: "Book an appointment",
 };
 
 // Read the doctors on every request, not once at build time.

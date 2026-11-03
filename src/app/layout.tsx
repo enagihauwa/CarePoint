@@ -5,8 +5,13 @@ import "../styles/fonts.css";
 import "../styles/spacing.css";
 import "../styles/home.css";
 
+// Base address for the canonical and Open Graph URLs. Set SITE_URL in .env once the site
+// has a real address. Until then it falls back to the local dev server.
+const siteUrl = process.env.SITE_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
-  title: "CarePoint Clinic",
+  metadataBase: new URL(siteUrl),
+  title: { default: "CarePoint Clinic", template: "%s | CarePoint Clinic" },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
