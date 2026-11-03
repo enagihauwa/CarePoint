@@ -11,6 +11,7 @@ The browser checks for the patient's convenience. The **server** decides, becaus
 - **One set of rules, used twice.** The form and the server call the same functions in `src/lib/validation/auth.ts`, so they cannot drift apart. The server wraps them in Zod schemas in `src/lib/validation/schemas.ts` (register, login and reset).
 - **Order inside `POST /api/register`:** read the body with a size limit, parse the JSON, run the schema, and only then use the **parsed** values. The raw request is never used after that (`src/app/api/register/route.ts`).
 - **Size limit:** 4 KB. It comes from the field limits: name 100 + email 254 + phone 40 + password 64 = 458 characters, at most 4 bytes each in UTF-8 = 1,832 bytes, plus about 100 bytes of JSON, rounded up to 4 KB. A bigger body is refused with `413` before any rule runs.
+- **How the limit is checked, and its weakness.** It is checked against the **real size in bytes** of the body, not only the `Content-Length` header (which a client can leave out or get wrong). But `src/lib/http.ts` first reads the **whole** body into memory (`await request.text()`) and measures it afterwards. So a very large body sent without a `Content-Length` is still read in full before it is refused. A stricter version would read the body in pieces and stop as soon as it passes 4 KB. That is not built yet.
 - **`termsAccepted` must be exactly `true`.** The text `"true"` and `false` are both refused, so the record of agreement can be trusted.
 
 ## Normalisation
@@ -34,7 +35,7 @@ The form now sends the password so the server can check it. The server does **no
 
 ## What happened to the Task 3 attack
 
-The same three raw requests that got `201` in Task 3 now get `400`, `400` and `413` (`12-direct-request-before-and-after.txt`). The form attack gives the same result as in Task 3, 10 sent and 9 blocked, because the server applies the same rules as the form (`12c`), and the browser checks still pass (43 of 43).
+The same three raw requests that got `201` in Task 3 now get `400`, `400` and `413` (`12-direct-request-before-and-after.txt`). The form attack is the **same 19 attempts** as in Task 3 (`task-03-client-validation/evidence/15`), with the same totals: 10 of the 19 were let through by the form and 9 were blocked by it (`12c`). It is not a smaller set, and the numbers do not differ from Task 3, because the server applies the same rules as the form. The browser checks still pass (43 of 43).
 
 ## Timing
 

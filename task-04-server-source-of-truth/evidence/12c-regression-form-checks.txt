@@ -48,7 +48,7 @@ PASS  no JavaScript errors on the page
 
 result: 43 passed, 0 failed
 
-##### The 19 form attacks (script: task-03-client-validation/evidence/15-form-attack-script.js). Same result as in Task 3: 10 sent, 9 blocked, because the server now applies the same rules as the form.
+##### The SAME 19 form attacks as in Task 3 (script: task-03-client-validation/evidence/15-form-attack-script.js). Same totals as Task 3: of the 19, 10 were let through by the form and 9 were blocked by it, because the server now applies the same rules as the form.
 RESULT   | WHAT WAS TYPED INTO THE FORM            | WHAT HAPPENED
 ---------|-----------------------------------------|--------------------------------------------
 BLOCKED  | name: one letter                        | Your name should be between 2 and 100 characters.
