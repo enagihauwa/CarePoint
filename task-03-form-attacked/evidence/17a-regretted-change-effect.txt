@@ -1,0 +1,7 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-03. The effect of the regretted change (passwordMax changed from 64 to 6) BEFORE it is rolled back.
+# Every password is refused, and the message still says 64.
+
+passwordMin = 8, passwordMax = 6
+"12345678"                -> Your password can be at most 64 characters.
+"correct horse battery"   -> Your password can be at most 64 characters.
+"short"                   -> Your password needs at least 8 characters.
