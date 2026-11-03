@@ -1,0 +1,14 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-03, headless Chrome, production build against a THROWAWAY database (dropped afterwards).
+# The booking form after the fixes: empty submit, then a real booking. Script: evidence/22-booking-form-after-script.js. NOT a screen-reader test.
+
+PASS  empty submit: focus moves to the first problem (name)  [name]
+PASS  name error text is in a live region
+PASS  error has a caution icon
+PASS  name aria-describedby includes its error slot
+PASS  general alert is still announced
+PASS  date and time hint is attached to the field
+PASS  real booking returned 201  [status 201]
+PASS  focus moves to the confirmation heading  [confirmation-title]
+PASS  confirmation shows a booking number and the doctor
+
+result: 9 passed, 0 failed

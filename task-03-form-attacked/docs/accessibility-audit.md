@@ -44,17 +44,18 @@ This sign-up result comes from the code and from 43 automated browser checks (`e
 | A5 | After a successful booking, the form is replaced by the confirmation, but focus is not moved to it. | `BookingForm.tsx:58-74` | A keyboard or screen-reader user is left on nothing and may not know the booking was made. |
 | B1 | The terms link opens in the same tab, so following it loses everything typed in the form. | `src/components/auth/fields.tsx:130` | Anyone who wants to read the terms before agreeing, which is the point of the link. |
 
-## Planned fixes (not applied yet)
+## Fixes applied
 
-I have not changed anything, so the "before" listening below is honest.
+The fixes were made **after** my "before" listening, in commit `fix the accessibility problems found in the audit`. Automated "after" evidence: `evidence/22-claude-accessibility-checks-after.txt` (0 problems, the same checks that found 7 before) and `evidence/22-claude-booking-form-after.txt` (a real booking returned 201 and focus moved to the confirmation). These are Claude's automated checks, not a screen-reader test.
 
-- **A0:** show the "not finished loading" message only after the browser has had time to start the script, and not as an alert.
-- **A1, A3:** put each error in a live region with a caution icon, and move focus to the first problem after a failed submit.
-- **A2:** give booking errors the same caution icon and text as the sign-up form.
-- **A4:** use `aria-disabled` and not `disabled`, keep the button in the tab order, and keep focus on it while saving.
-- **A5:** move focus to the confirmation heading after a successful booking.
-- **B1:** open the terms link in a new tab, and say so in the link text.
-- **A6:** the real fix is to let the patient choose a time from a list of available slots, which belongs to the later work on availability. For now the native control stays, with a hint under the label that says what to enter, and the problem is kept on the defects list.
+What was done for each problem:
+
+- **A0:** the "not finished loading" message is plain text now, not an alert. The button is still really `disabled` until the script has loaded, so a form whose script never loaded cannot submit by itself (the Task 2 false-success fix).
+- **A1, A2, A3:** each error sits in a live region with a caution icon plus text, the same pieces as the sign-up form, and focus moves to the first problem after a failed submit.
+- **A4:** once the script has loaded, the button uses `aria-disabled` while saving and not `disabled`, so it stays in the tab order and focus stays on it.
+- **A5:** focus moves to the confirmation heading after a successful booking.
+- **B1:** the terms link opens in a new tab, and its text says so ("terms and privacy notice (opens in a new tab)").
+- **A6 (reduced, not solved):** a hint under the Date and time label now says it has five parts and how to change them. The real fix is to let the patient choose from a list of available slots, which belongs to later work on availability. It stays on the defects list.
 
 ## Screen reader, BEFORE the fixes
 
