@@ -33,7 +33,8 @@ Three values have no design token, so they are declared once in `src/styles/spac
 
 | File | What it is |
 |---|---|
-| `evidence/16-head-route-one.txt`, `17-head-route-two.txt` | The real `<head>` tags of `/` and `/book`, read with `curl` by Claude. **These are text captures, not DevTools screenshots.** The guide asks for DevTools Elements screenshots, so I still need to take those two myself. |
+| `evidence/16-head-route-one.png`, `17-head-route-two.png` | My own DevTools Elements screenshots of the `<head>` of `/` and `/book`, taken in my browser. The home page head has the title, description, canonical link and Open Graph tags. The `/book` head has only a title and the icons, which shows the SEO tags are on the marketing page only. |
+| `evidence/16-head-route-one.txt`, `17-head-route-two.txt` | The same two heads as text, read with `curl` by Claude against a production build. A supplement to the screenshots. |
 | `evidence/18-heading-without-limit.png` | The home page with the width limit temporarily removed, rendered by Claude in headless Chrome at 1280 px. **It does not show bad wrapping.** I also tried 600 px and 800 px. The heading is short, so it fits on one line at 1280 px (about 36 characters) and breaks the same way as before at 600 px. The limit protects longer headings, but this one does not show the problem. |
 | `evidence/19-heading-with-ch-limit.png` | The page as it is now, at 800 px, rendered in headless Chrome |
 | `evidence/20-responsive-three-widths.png` | The page at 360, 768 and 1280 px side by side, rendered in headless Chrome. The heading shrinks on the phone and the cards go from one column to two to three. |
