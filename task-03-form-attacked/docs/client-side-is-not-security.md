@@ -19,6 +19,10 @@ Two more worth noting:
 - A name of `<script>alert(1)</script>` was saved as plain text. The page shows it safely, because React escapes it, but it sits in the database. Any later place that prints names without escaping (an admin page or an email) could run it.
 - A trailing space on an email did not get saved, because the browser's email input strips it before the form sees it.
 
+### Fixed afterwards
+
+The first two findings (the padded name and the phone number stored as typed) were bugs in my own form, so I fixed them straight away. The form now sends the trimmed name and email and the phone number without spaces and hyphens. I reran the same attacks (`evidence/15b-form-attack-after-fix.txt`): the padded name is stored as `[Padded Name]` (11 characters) and `0803 123-4567` is stored as `08031234567`. The other findings (duplicate email, `+0000000000`, the markup in a name) are not fixed yet and are on the Task 4 list below. The original results stay in `evidence/15-form-attack-results.txt` as the "before".
+
 ## Attack 2: around the form
 
 I sent this straight to the endpoint with `curl`, with no form and no browser (the guide's example, adapted to CarePoint's fields):
