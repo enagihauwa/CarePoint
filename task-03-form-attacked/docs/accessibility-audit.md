@@ -64,12 +64,12 @@ Screen reader used: Windows Narrator, in Chrome. Page: `/book`, unfixed. Listene
 |---|---|
 | Page load | "Carepoint", "Book an appointment", "Choose a doctor and a time that suits you. No payment is needed to book". The "has not finished loading" alert (A0) was **not** read in this run. |
 | Group | "Your detail group" |
-| Full name | "full name", "Edit required aspopa" [unclear: what "aspopa" was] |
-| Phone number | "we'll call this number to confirm your visit required" [not noted: whether "Phone number" was said before the hint] |
+| Full name | "full name", "Edit required". (My first listen had an extra word after "required" that I could not make out. It did not come back the second time.) |
+| Phone number | "Phone number", "Edit required", then "we'll call this number to confirm your visit required" |
 | Group | "Appointment group" |
-| Doctor | "Doctor", "Choose a doctor", "Combo box collapse required aspopa" [same unclear word] |
+| Doctor | "Doctor", "Choose a doctor", "Combo box collapse required" |
 | Date and time | Five separate controls: "Data Date and Time, Spin bottom zero, minimum 1 maximum 31"; "month date and time, Spin bottom zero, minimum 1 maximum 12"; "year date and time, Spin bottom zero, minimum 0 maximum 275760"; "hours date and time, Spin bottom zero, minimum 0 maximum 23"; "minutes date and time, Spin bottom zero, minimum 0 maximum 59" |
-| Book appointment button | [not noted yet] |
+| Book appointment button | "Book appointment button" |
 | After pressing it with empty fields | [not noted yet] |
 
 ## Screen reader, AFTER the fixes **[ME]**
