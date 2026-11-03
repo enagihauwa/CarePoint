@@ -1,4 +1,5 @@
 // The database connection URL lives in prisma.config.ts (read from DATABASE_URL in .env).
+// Translated from task-04-server-source-of-truth/docs/schema.md (my paper design, evidence/01).
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -8,33 +9,150 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  patient
+  admin
+}
+
+enum PaymentStatus {
+  pending
+  paid
+}
+
+enum PaymentMethod {
+  cash
+  transfer
+  pos
+}
+
+enum ServiceKind {
+  consultation
+  lab_test
+}
+
+// One person who can log in: a patient, or a front-desk member of staff (created by a seed script).
+model User {
+  id              Int       @id @default(autoincrement())
+  email           String    @unique
+  passwordHash    String
+  name            String
+  role            Role      @default(patient)
+  emailVerifiedAt DateTime?
+  createdAt       DateTime  @default(now())
+
+  patient               Patient?
+  sessions              Session[]
+  emailVerifications    EmailVerification[]
+  paymentsRecorded      Payment[]
+  paymentEventsRecorded PaymentEvent[]
+}
+
+// The profile of a patient user. Staff have none.
+model Patient {
+  id              Int      @id @default(autoincrement())
+  user            User     @relation(fields: [userId], references: [id])
+  userId          Int      @unique
+  phone           String
+  termsAcceptedAt DateTime
+  createdAt       DateTime @default(now())
+
+  bookings Booking[]
+}
+
+// Only a hash of the session token is stored.
+model Session {
+  id        Int       @id @default(autoincrement())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int
+  tokenHash String    @unique
+  createdAt DateTime  @default(now())
+  expiresAt DateTime
+  revokedAt DateTime?
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
 // Doctors are static seed data (prisma/seed.ts). No doctor login and no admin editing.
 model Doctor {
   id        Int       @id @default(autoincrement())
   name      String    @unique
   specialty String
+  createdAt DateTime  @default(now())
   bookings  Booking[]
 }
 
-// A patient who registered (Task 3). The password is not stored yet: hashing comes in Task 4.
-// Nothing here is unique or checked, because the server does not validate anything yet.
-model Patient {
-  id              Int       @id @default(autoincrement())
-  name            String
-  email           String
-  phone           String
-  termsAcceptedAt DateTime?
-  createdAt       DateTime  @default(now())
-}
-
-// One booking request from the /book form. Validation rules beyond "filled in" come in Task 3.
 model Booking {
   id        Int      @id @default(autoincrement())
-  name      String
-  phone     String
+  patient   Patient  @relation(fields: [patientId], references: [id])
+  patientId Int
   doctor    Doctor   @relation(fields: [doctorId], references: [id])
   doctorId  Int
   date      DateTime @db.Date
   time      String
   createdAt DateTime @default(now())
+
+  payments Payment[]
+
+  @@unique([doctorId, date, time])
+  @@index([patientId])
+}
+
+// Recorded by front-desk staff. No payment gateway: a payment is pending or paid. Money is whole kobo.
+model Payment {
+  id           Int            @id @default(autoincrement())
+  reference    String         @unique
+  booking      Booking        @relation(fields: [bookingId], references: [id])
+  bookingId    Int
+  amountKobo   Int
+  status       PaymentStatus  @default(pending)
+  method       PaymentMethod?
+  paidAt       DateTime?
+  recordedBy   User           @relation(fields: [recordedById], references: [id])
+  recordedById Int
+  createdAt    DateTime       @default(now())
+
+  events PaymentEvent[]
+
+  @@index([bookingId])
+}
+
+// Append-only history of a payment: rows are added, never changed or deleted.
+model PaymentEvent {
+  id           Int            @id @default(autoincrement())
+  payment      Payment        @relation(fields: [paymentId], references: [id])
+  paymentId    Int
+  oldStatus    PaymentStatus?
+  newStatus    PaymentStatus
+  amountKobo   Int
+  method       PaymentMethod?
+  recordedBy   User           @relation(fields: [recordedById], references: [id])
+  recordedById Int
+  note         String?
+  createdAt    DateTime       @default(now())
+
+  @@index([paymentId, createdAt])
+}
+
+// The price list. Not a retrieval table (see docs/schema.md).
+model Service {
+  id        Int         @id @default(autoincrement())
+  name      String      @unique
+  kind      ServiceKind
+  priceKobo Int
+  active    Boolean     @default(true)
+  createdAt DateTime    @default(now())
+}
+
+model EmailVerification {
+  id        Int       @id @default(autoincrement())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int
+  codeHash  String
+  expiresAt DateTime
+  attempts  Int       @default(0)
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, expiresAt])
 }
