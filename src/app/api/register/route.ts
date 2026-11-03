@@ -1,31 +1,32 @@
 import { prisma } from "@/lib/db";
+import { readBoundedJson } from "@/lib/http";
 import { respond } from "@/lib/respond";
+import { fieldMessages, RegisterSchema, SERVER_LIMITS } from "@/lib/validation/schemas";
 
-// Task 3 deliberately has NO server-side validation. The browser form enforces the rules,
-// and this endpoint saves whatever it is sent, so that docs/client-side-is-not-security.md
-// can show what a direct request gets through. Task 4 makes the server the source of truth.
-// The password is never read or stored here: hashing comes in Task 4.
-const text = (value: unknown) => (typeof value === "string" ? value : "");
-
+// Task 4: this endpoint now validates everything on the server, in this order: size, JSON,
+// then the schema, and only then anything else. The password is checked but NOT stored yet
+// (hashing and the users table come later) and is never logged: respond() logs only the
+// method, path, status and time.
 export async function POST(request: Request) {
   const started = performance.now();
 
-  let body: Record<string, unknown> = {};
-  try {
-    const json: unknown = await request.json();
-    if (json && typeof json === "object") body = json as Record<string, unknown>;
-  } catch {
-    // Not JSON: fall through and save empty values, like any other unchecked request.
+  const body = await readBoundedJson(request, SERVER_LIMITS.bodyBytes);
+  if (!body.ok) return respond(request, started, body.status, { error: body.error });
+
+  const parsed = RegisterSchema.safeParse(body.data);
+  if (!parsed.success) {
+    return respond(request, started, 400, {
+      error: "Some details need fixing.",
+      fields: fieldMessages(parsed.error),
+    });
   }
+
+  // From here on only the parsed, normalised values are used, never the raw request.
+  const { name, email, phone } = parsed.data;
 
   try {
     const patient = await prisma.patient.create({
-      data: {
-        name: text(body.name),
-        email: text(body.email),
-        phone: text(body.phone),
-        termsAcceptedAt: body.termsAccepted === true ? new Date() : null,
-      },
+      data: { name, email, phone, termsAcceptedAt: new Date() },
     });
     return respond(request, started, 201, { id: patient.id, createdAt: patient.createdAt });
   } catch (error) {

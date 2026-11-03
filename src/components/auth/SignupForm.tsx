@@ -25,6 +25,9 @@ export default function SignupForm({ focusHeading = false }: { focusHeading?: bo
   const [passwordStarted, setPasswordStarted] = useState(false);
   const [attempted, setAttempted] = useState(false);
   const [result, setResult] = useState<Result>({ kind: "idle" });
+  // Messages the SERVER sent back for a field. The server is the one that decides, so if it
+  // disagrees with the form, its message is shown too.
+  const [serverErrors, setServerErrors] = useState<Partial<Record<FieldName, string>>>({});
   const headingRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
@@ -44,15 +47,16 @@ export default function SignupForm({ focusHeading = false }: { focusHeading?: bo
   // checked in real time, as soon as something has been typed.
   const show = (field: FieldName) => attempted || touched[field];
   const shown: Record<FieldName, string | null> = {
-    name: show("name") ? errors.name : null,
-    email: show("email") || values.email !== "" ? errors.email : null,
-    phone: show("phone") ? errors.phone : null,
-    password: show("password") ? errors.password : null,
-    terms: show("terms") ? errors.terms : null,
+    name: (show("name") ? errors.name : null) ?? serverErrors.name ?? null,
+    email: (show("email") || values.email !== "" ? errors.email : null) ?? serverErrors.email ?? null,
+    phone: (show("phone") ? errors.phone : null) ?? serverErrors.phone ?? null,
+    password: (show("password") ? errors.password : null) ?? serverErrors.password ?? null,
+    terms: (show("terms") ? errors.terms : null) ?? serverErrors.terms ?? null,
   };
   const touch = (field: FieldName) => setTouched((current) => ({ ...current, [field]: true }));
   const setValue = (field: keyof typeof values) => (value: string) => {
     setValues((current) => ({ ...current, [field]: value }));
+    setServerErrors((current) => ({ ...current, [field]: undefined }));
     if (field === "password") setPasswordStarted(true);
   };
 
@@ -87,16 +91,31 @@ export default function SignupForm({ focusHeading = false }: { focusHeading?: bo
     const phone = normalizePhone(values.phone);
 
     try {
-      // The password is not sent: it is stored only once Task 4 adds hashing.
+      // The password is sent so the server can check it itself. The server does not store it yet
+      // (hashing and the users table come later) and never logs it.
       const response = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, phone, termsAccepted: terms }),
+        body: JSON.stringify({ name, email, phone, password: values.password, termsAccepted: terms }),
       });
       const body = await response.json().catch(() => ({}));
       // Only a 201 counts as saved. Anything else is shown as the error it is.
-      if (response.status === 201) setResult({ kind: "saved", name });
-      else setResult({ kind: "failed", message: body.error ?? `The server answered with status ${response.status}.` });
+      if (response.status === 201) {
+        setResult({ kind: "saved", name });
+      } else {
+        // The server names the fields it did not accept (termsAccepted is the "terms" box).
+        const fields: Record<string, string[]> = body.fields ?? {};
+        const mapped: Partial<Record<FieldName, string>> = {};
+        for (const [key, messages] of Object.entries(fields)) {
+          const field = (key === "termsAccepted" ? "terms" : key) as FieldName;
+          if (ORDER.includes(field) && messages[0]) mapped[field] = messages[0];
+        }
+        setServerErrors(mapped);
+        setAttempted(true);
+        const first = ORDER.find((field) => mapped[field]);
+        if (first) setTimeout(() => document.getElementById(first)?.focus(), 0);
+        setResult({ kind: "failed", message: body.error ?? `The server answered with status ${response.status}.` });
+      }
     } catch {
       setResult({ kind: "failed", message: "Could not reach the server. Check your connection and try again." });
     }
