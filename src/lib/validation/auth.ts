@@ -23,6 +23,8 @@ export const MESSAGES = {
   passwordShort: "Your password needs at least 8 characters.",
   passwordLong: "Your password can be at most 64 characters.",
   passwordSpaces: "Your password can't be only spaces.",
+  // Only the server checks this (src/lib/breachCheck.ts), when a password is first chosen.
+  passwordBreached: "This password has appeared in a known data breach. Please choose a different one.",
   termsEmpty: "Please accept the terms before creating your account.",
 } as const;
 

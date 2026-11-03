@@ -1,7 +1,9 @@
+import { checkBreached } from "@/lib/breachCheck";
 import { prisma } from "@/lib/db";
 import { readBoundedJson } from "@/lib/http";
 import { guardAddress } from "@/lib/rateLimit";
 import { respond } from "@/lib/respond";
+import { MESSAGES } from "@/lib/validation/auth";
 import { fieldMessages, RegisterSchema, SERVER_LIMITS } from "@/lib/validation/schemas";
 
 // Order inside this endpoint: rate limit by address, read the body with a size limit, parse the
@@ -23,6 +25,22 @@ export async function POST(request: Request) {
       error: "Some details need fixing.",
       fields: fieldMessages(parsed.error),
     });
+  }
+
+  // A password that is valid but has appeared in a known breach is refused. This runs only for an
+  // otherwise valid request, after the rate limit, so it does not make a free relay out of us.
+  // FAIL OPEN: if the breach service cannot be reached, registration goes ahead without the check
+  // and the log says so. A third party's outage should not stop a patient registering. This is
+  // the opposite of the rate limiter, which fails closed because the limiter IS the protection.
+  const breach = await checkBreached(parsed.data.password);
+  if (breach.status === "breached") {
+    return respond(request, started, 400, {
+      error: "Some details need fixing.",
+      fields: { password: [MESSAGES.passwordBreached] },
+    });
+  }
+  if (breach.status === "unavailable") {
+    console.warn("Breach check unavailable: registration allowed without it.");
   }
 
   // From here on only the parsed, normalised values are used, never the raw request.
