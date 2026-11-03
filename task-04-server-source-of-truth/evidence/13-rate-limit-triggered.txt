@@ -1,0 +1,86 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-03. Production build, throwaway database (dropped afterwards). The server is restarted before each part, because the counters live in memory.
+# Script: evidence/13-rate-limit-script.sh. Limits: login 5 per email and 20 per address per 15 min; reset 3 per email and 10 per address per hour; register 10 per address per hour.
+
+##### A. Login: 21 requests from ONE address, a different email each time (the address limit is 20 per 15 minutes)
+$ curl -X POST http://localhost:3077/api/login -d '{"email":"userN@example.com","password":"x"}'   (N = 1 to 21)
+  request  1 -> 501
+  request  2 -> 501
+  request  3 -> 501
+  request  4 -> 501
+  request  5 -> 501
+  request  6 -> 501
+  request  7 -> 501
+  request  8 -> 501
+  request  9 -> 501
+  request 10 -> 501
+  request 11 -> 501
+  request 12 -> 501
+  request 13 -> 501
+  request 14 -> 501
+  request 15 -> 501
+  request 16 -> 501
+  request 17 -> 501
+  request 18 -> 501
+  request 19 -> 501
+  request 20 -> 501
+  request 21 ->
+  HTTP/1.1 429 Too Many Requests
+  retry-after: 898
+  {"error":"Too many attempts. Please try again later."}
+
+##### B. Login: 6 requests for the SAME email from one address (the email limit is 5 per 15 minutes)
+  request 1 -> 501
+  request 2 -> 501
+  request 3 -> 501
+  request 4 -> 501
+  request 5 -> 501
+  request 6 ->
+  HTTP/1.1 429 Too Many Requests
+  retry-after: 900
+  {"error":"Too many attempts. Please try again later."}
+  the same email in a different case, request 7 ->
+  HTTP/1.1 429 Too Many Requests
+  retry-after: 900
+  {"error":"Too many attempts. Please try again later."}
+
+##### C. Register: 11 requests from one address (the limit is 10 per hour). Bad bodies, so nothing is saved.
+  request  1 -> 400
+  request  2 -> 400
+  request  3 -> 400
+  request  4 -> 400
+  request  5 -> 400
+  request  6 -> 400
+  request  7 -> 400
+  request  8 -> 400
+  request  9 -> 400
+  request 10 -> 400
+  request 11 ->
+  HTTP/1.1 429 Too Many Requests
+  retry-after: 3599
+  {"error":"Too many attempts. Please try again later."}
+  a perfectly VALID registration right after, still refused:
+  HTTP/1.1 429 Too Many Requests
+  retry-after: 3599
+  {"error":"Too many attempts. Please try again later."}
+  patients saved in the database: 0
+
+##### D. Reset: 4 requests for the same email (the limit is 3 per hour)
+  request 1 -> 501
+  request 2 -> 501
+  request 3 -> 501
+  request 4 ->
+  HTTP/1.1 429 Too Many Requests
+  retry-after: 3600
+  {"error":"Too many attempts. Please try again later."}
+  reset: 11 DIFFERENT emails from one address (the address limit is 10 per hour), request 11 ->
+  HTTP/1.1 429 Too Many Requests
+  retry-after: 3599
+  {"error":"Too many attempts. Please try again later."}
+
+##### E. The body size limit stops a huge body without Content-Length (sent in chunks) and one that declares a huge size
+  300 KB sent chunked (no Content-Length):
+  HTTP/1.1 413 Payload Too Large
+  {"error":"The request is too large."}
+  declares 300 KB:
+  HTTP/1.1 413 Payload Too Large
+  {"error":"The request is too large."}
