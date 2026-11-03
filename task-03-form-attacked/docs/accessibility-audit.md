@@ -37,7 +37,7 @@ This sign-up result comes from the code and from 43 automated browser checks (`e
 |---|---|---|---|
 | A0 | **Risk, not confirmed.** The page's first HTML already contains an alert, "The booking form has not finished loading...". Narrator did not read it in my run, so it may only matter for a slow connection or another screen reader. | `src/app/book/BookingForm.tsx:133-138` | A screen-reader user could hear a scary error on a healthy page. |
 | A6 | **Found by Narrator, not by the automated checks.** The Date and time field is read as five separate spin buttons (day, month, year, hours, minutes), and the year allows up to 275760. | `BookingForm.tsx:122-125` (`type="datetime-local"`) | A blind patient has to set five separate numbers to choose a time, which is slow and confusing. |
-| A1 | Field errors are not in a live region, so a screen reader is not told when they appear. | `BookingForm.tsx:77-80` | A blind patient submits, hears nothing, and does not know anything went wrong. |
+| A1 | Field errors are not in a live region, so a screen reader is not told when they appear. **Confirmed with Narrator:** only the general alert ("some fields are missing or invalid") was read, and none of the field messages. | `BookingForm.tsx:77-80` | A blind patient knows something is wrong but not which field or why. |
 | A2 | An error is plain red text with no icon, and hint text is grey text of the same size, so the two differ only by colour. | `BookingForm.tsx:79`, `src/styles/book.css:29` | A colour-blind patient may not tell an error from a hint. |
 | A3 | After a failed submit, focus is not moved to the first problem. In the automated run it was on the page body. | `BookingForm.tsx:24-56` | A keyboard or screen-reader user must hunt for the error from the top of the page. |
 | A4 | The submit button uses the `disabled` attribute while saving (and before the script loads), so it leaves the tab order and focus is dropped. | `BookingForm.tsx:140-141` | A keyboard user loses their place every time they press the button. |
@@ -70,7 +70,7 @@ Screen reader used: Windows Narrator, in Chrome. Page: `/book`, unfixed. Listene
 | Doctor | "Doctor", "Choose a doctor", "Combo box collapse required" |
 | Date and time | Five separate controls: "Data Date and Time, Spin bottom zero, minimum 1 maximum 31"; "month date and time, Spin bottom zero, minimum 1 maximum 12"; "year date and time, Spin bottom zero, minimum 0 maximum 275760"; "hours date and time, Spin bottom zero, minimum 0 maximum 23"; "minutes date and time, Spin bottom zero, minimum 0 maximum 59" |
 | Book appointment button | "Book appointment button" |
-| After pressing it with empty fields | [not noted yet] |
+| After pressing it with empty fields | "book appointment", then "some fields are missing or invalid". No individual field error was read, and I did not note where the cursor went. |
 
 ## Screen reader, AFTER the fixes **[ME]**
 
