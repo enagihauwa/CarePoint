@@ -9,6 +9,26 @@ form and Task 2's booking form.
 Drafted by Claude at my request from the files in this folder, so the wording
 is not all mine.
 
+## Where the code is
+
+This folder holds the notes and the evidence. **The code is in the app itself,
+outside this folder**, because the forms are part of the working site:
+
+| What | Where |
+|---|---|
+| The validation rules, as code | [`src/lib/validation/auth.ts`](../src/lib/validation/auth.ts) |
+| The sign-up form (blur errors, real-time email check, `aria-disabled` button) | [`src/components/auth/SignupForm.tsx`](../src/components/auth/SignupForm.tsx) |
+| The log-in form (email format checked only on submit) | [`src/components/auth/LoginForm.tsx`](../src/components/auth/LoginForm.tsx) |
+| The reset form | [`src/components/auth/ResetForm.tsx`](../src/components/auth/ResetForm.tsx) |
+| Fields, error slots and the terms checkbox | [`src/components/auth/fields.tsx`](../src/components/auth/fields.tsx) |
+| The one `/auth` route and its mode switching | [`src/app/auth/page.tsx`](../src/app/auth/page.tsx) and [`src/components/auth/AuthSwitcher.tsx`](../src/components/auth/AuthSwitcher.tsx) |
+| The registration endpoint (no server validation, on purpose) | [`src/app/api/register/route.ts`](../src/app/api/register/route.ts) |
+| The `Patient` table | [`prisma/schema.prisma`](../prisma/schema.prisma) |
+
+The rules themselves, with what breaks without each one, are in
+[`docs/validation-rules.md`](docs/validation-rules.md). The screenshots of the
+rules working are `evidence/05` to `08a`.
+
 ## What this task contains
 
 - **Account forms.** One route, `/auth`, shows sign up (`?mode=signup`), log in
