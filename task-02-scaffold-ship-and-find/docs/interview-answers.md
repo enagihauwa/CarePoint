@@ -39,3 +39,23 @@ I first ran the database-down test myself. The booking page displayed a message 
 ### 10. Why I used different models
 
 I used Claude Sonnet 5.5 for the initial scaffold, Claude Opus 5.5 for the booking form, API, Prisma models and doctor seed, and Sonnet 5.5 again for Step 10, the information design work. During scaffolding, Sonnet asked five questions before writing code, as my prompt required. During the form implementation, Opus read the context files, asked me four decisions and caught one of its own hardcoded values. However, its first version of the form had a false-success problem that needed fixing. During information design, Sonnet caught and corrected its own duplicated page title. I also briefly switched between Sonnet and Opus while testing, but no work was done between those switches, so the changes had no effect on the code. I later had the session records checked to confirm which model handled each task.
+
+### 11. Have you ever committed a secret to a repository? If one leaked, what would you do?
+
+I have not identified any evidence of a secret being committed to my CarePoint repository. My `.gitignore` excludes `.env`, and the actual database password is not stored in that file. The `.env.example` file provides the configuration template without exposing the real password. I also checked that `.env` was not printed in the evidence. If a real secret were accidentally pushed to GitHub, I would treat it as exposed, immediately revoke or rotate it, and replace it with a new secure value. I would then check the Git history and remove the exposed secret from the repository history where necessary. I would not assume that deleting the file or making another commit had made the leaked credential safe.
+
+### 12. A fresh clone of your repository failed in two places. What happened, and why had you not seen them before?
+
+The fresh-clone test found two problems. First, the README instructed users to run `npx prisma generate` before creating `.env`, but Prisma needed `DATABASE_URL` from that file even for generation. Second, the copied `.env.example` contained an empty `SITE_URL`, which caused `new URL("")` to throw an `Invalid URL` error and made `/book` return HTTP 500. Claude Code ran this fresh-clone test on my machine at my request; it was not performed by another person. I had not seen these problems because my existing environment was already set up, and my `.env` did not contain a `SITE_URL` line. The README order and the fallback in `layout.tsx` were corrected.
+
+### 13. What was the BOM problem in `.env.example`, and how did you confirm it?
+
+Claude tested it and showed me that, with the BOM present, the real `DATABASE_URL` variable was unset. The first variable was named `﻿DATABASE_URL`, with an invisible character in front, instead of `DATABASE_URL`. This meant the application could not read the expected database connection variable. I confirmed the issue and the three BOM bytes were removed from `.env.example`. This taught me that a file can look perfectly normal but still contain invisible characters that affect how configuration values are read.
+
+### 14. Why are your booking numbers 3 and 4 instead of 1 and 2?
+
+The booking records initially had IDs 3 and 4 because the first two test records had been created and later deleted. PostgreSQL does not automatically reset its auto-increment sequence when records are deleted, so the next records continued from ID 3. After row 3 is deleted, only the dummy record `[name removed]` remains. The IDs do not mean that records 1 and 2 are still in the database; they simply show that those numbers were previously used. This is normal database sequence behaviour.
+
+### 15. Explain your working-tree drawing. Where is the point you cannot undo quietly, and why?
+
+My drawing shows how code moves through four places: my working folder, my local Git repository, GitHub and production. Changes in my working folder are private, and I can edit or discard them. When I commit, they are saved in my local Git history. The point marked "Can't undo quietly after this" is `git push`. Before pushing, I can amend or reset my local commits without other people seeing them. Once pushed, someone may already have viewed or copied the code. If I pushed a secret, deleting it afterwards would not guarantee that it was safe. The second point, deployment, is where users begin seeing the code. CarePoint has no production site yet.
