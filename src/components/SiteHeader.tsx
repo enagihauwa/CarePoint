@@ -7,8 +7,8 @@ export default function SiteHeader() {
       <Link className="logo type-title-large" href="/">CarePoint Clinic</Link>
       <nav className="nav" aria-label="Main">
         <Link className="nav-link type-label-large" href="/#services">Services</Link>
-        <Link className="nav-link type-label-large" href="/login">Log in</Link>
-        <Link className="nav-link type-label-large" href="/signup">Sign up</Link>
+        <Link className="nav-link type-label-large" href="/auth?mode=login">Log in</Link>
+        <Link className="nav-link type-label-large" href="/auth?mode=signup">Sign up</Link>
       </nav>
     </header>
   );

@@ -1,0 +1,17 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-03.
+# AFTER the collapse: signup, login and reset are one route, /auth, chosen by ?mode=.
+# $ npx next build   (the Route list)
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/bookings
+├ ƒ /api/register
+├ ○ /auth
+├ ƒ /book
+├ ○ /icon.png
+└ ○ /terms
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
