@@ -1,0 +1,14 @@
+/* The number-input demo page only. Roles, type classes and spacing variables only. */
+.demo-card { margin-bottom: var(--space-3); display: grid; gap: var(--space-2); }
+.demo-card h2 { margin: 0; color: var(--color-on-surface); }
+.demo-readout {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: var(--space-2);
+  border-radius: var(--radius-input);
+  background: var(--color-surface-container);
+  color: var(--color-on-surface);
+}
+.demo-readout dt { color: var(--color-on-surface-variant); }
+.demo-readout dd { margin: 0 0 var(--space-1); }
