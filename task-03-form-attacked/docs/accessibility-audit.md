@@ -35,7 +35,8 @@ This sign-up result comes from the code and from 43 automated browser checks (`e
 
 | # | Problem | Where | Who it hurts |
 |---|---|---|---|
-| A0 | The page's first HTML already contains an alert, "The booking form has not finished loading...", so a screen reader may read it every time the page opens. | `src/app/book/BookingForm.tsx:133-138` | A screen-reader user hears a scary error on a healthy page. |
+| A0 | **Risk, not confirmed.** The page's first HTML already contains an alert, "The booking form has not finished loading...". Narrator did not read it in my run, so it may only matter for a slow connection or another screen reader. | `src/app/book/BookingForm.tsx:133-138` | A screen-reader user could hear a scary error on a healthy page. |
+| A6 | **Found by Narrator, not by the automated checks.** The Date and time field is read as five separate spin buttons (day, month, year, hours, minutes), and the year allows up to 275760. | `BookingForm.tsx:122-125` (`type="datetime-local"`) | A blind patient has to set five separate numbers to choose a time, which is slow and confusing. |
 | A1 | Field errors are not in a live region, so a screen reader is not told when they appear. | `BookingForm.tsx:77-80` | A blind patient submits, hears nothing, and does not know anything went wrong. |
 | A2 | An error is plain red text with no icon, and hint text is grey text of the same size, so the two differ only by colour. | `BookingForm.tsx:79`, `src/styles/book.css:29` | A colour-blind patient may not tell an error from a hint. |
 | A3 | After a failed submit, focus is not moved to the first problem. In the automated run it was on the page body. | `BookingForm.tsx:24-56` | A keyboard or screen-reader user must hunt for the error from the top of the page. |
@@ -53,20 +54,23 @@ I have not changed anything, so the "before" listening below is honest.
 - **A4:** use `aria-disabled` and not `disabled`, keep the button in the tab order, and keep focus on it while saving.
 - **A5:** move focus to the confirmation heading after a successful booking.
 - **B1:** open the terms link in a new tab, and say so in the link text.
+- **A6:** the real fix is to let the patient choose a time from a list of available slots, which belongs to the later work on availability. For now the native control stays, with a hint under the label that says what to enter, and the problem is kept on the defects list.
 
-## Screen reader, BEFORE the fixes **[ME]**
+## Screen reader, BEFORE the fixes
 
-Screen reader used: **[ME: Narrator, NVDA or TalkBack, and the browser]**. Page: `/book`.
+Screen reader used: Windows Narrator, in Chrome. Page: `/book`, unfixed. Listened to on 3 November 2026. These are my own notes, copied as I wrote them. The words in square brackets are marks added later.
 
 | Field | What was announced, exactly |
 |---|---|
-| Page load | [ME] |
-| Full name | [ME] |
-| Phone number | [ME] |
-| Doctor | [ME] |
-| Date and time | [ME] |
-| Book appointment button | [ME] |
-| After pressing it with empty fields | [ME] |
+| Page load | "Carepoint", "Book an appointment", "Choose a doctor and a time that suits you. No payment is needed to book". The "has not finished loading" alert (A0) was **not** read in this run. |
+| Group | "Your detail group" |
+| Full name | "full name", "Edit required aspopa" [unclear: what "aspopa" was] |
+| Phone number | "we'll call this number to confirm your visit required" [not noted: whether "Phone number" was said before the hint] |
+| Group | "Appointment group" |
+| Doctor | "Doctor", "Choose a doctor", "Combo box collapse required aspopa" [same unclear word] |
+| Date and time | Five separate controls: "Data Date and Time, Spin bottom zero, minimum 1 maximum 31"; "month date and time, Spin bottom zero, minimum 1 maximum 12"; "year date and time, Spin bottom zero, minimum 0 maximum 275760"; "hours date and time, Spin bottom zero, minimum 0 maximum 23"; "minutes date and time, Spin bottom zero, minimum 0 maximum 59" |
+| Book appointment button | [not noted yet] |
+| After pressing it with empty fields | [not noted yet] |
 
 ## Screen reader, AFTER the fixes **[ME]**
 
