@@ -17,7 +17,7 @@ The revert made a new commit, `5be57dc`, "Revert "lower the password maximum to 
 
 ## Revert, not reset
 
-I used `git revert`, not `git reset --hard`. My commits were already pushed to GitHub, and `reset --hard` rewrites history, which is the "can't undo quietly" point on my working-tree drawing. `revert` adds a new commit that undoes the old one and leaves the history intact, so it is safe on work other people may have copied. `reset --hard` would only have been right for a commit that was still only on my laptop.
+I used `git revert`, not `git reset --hard`. The regretted commit, `b4a7cc6`, was **local only**: it had not been pushed (GitHub's `main` was still at `7d9ab11`). So `reset --hard` would have been possible. I still chose `revert` because two later commits sat on top of it, `56a68fd` (the evidence of its effect) and `c690b82` (the README update), and `reset --hard` back to before `b4a7cc6` would have thrown both away. `revert` undoes exactly the one commit I name and keeps everything after it. It also leaves the history intact, which matters because pushing rewritten history is the "can't undo quietly" point on my working-tree drawing, and these commits will be pushed later.
 
 ## What went wrong on the way
 
