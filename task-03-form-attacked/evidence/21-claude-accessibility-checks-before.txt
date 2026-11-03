@@ -1,0 +1,22 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-03. State: BEFORE any accessibility fixes.
+# Script: evidence/21-accessibility-checks-script.js. A line that says PROBLEM is a real finding. A line that says 'ok' means that check found NO problem (its text describes the problem it looked for).
+# This is an automated check of attributes, focus and live regions. It is NOT a screen-reader test.
+
+# Accessibility checks (BEFORE) run by Claude Code, headless Chrome, http://localhost:3077
+# Automated checks of attributes, focus and live regions. NOT a screen-reader test.
+
+## /book (booking form)
+PROBLEM  A0  the page's first HTML already contains an alert saying the form has not finished loading (a screen reader may read it on every page load)
+PROBLEM  A1  field errors are not in a live region, so a screen reader is not told when they appear  [server status 400]
+PROBLEM  A2  an error is plain red text with no icon, so it differs from the grey hint text only by colour
+PROBLEM  A3  after a failed submit, focus is not moved to the first problem  [focus is on: BODY]
+PROBLEM  A4  the submit button uses the disabled attribute while saving, so keyboard focus is dropped from it  [focus while saving: BODY, disabled attribute: yes]
+PROBLEM  A5  after a successful booking the form is replaced by the confirmation but focus is not moved to it, so keyboard and screen-reader users are left on nothing  [focus is on: BODY]
+
+## /auth?mode=signup (sign-up form)
+PROBLEM  B1  the terms link opens in the same tab, so a patient who follows it loses everything they typed  [target attribute: none]
+ok       B2  terms checkbox has no aria-required
+ok       B3  sign-up button uses the disabled attribute (it uses aria-disabled)
+ok       B4  sign-up error slots are not live regions
+
+summary: 7 problem(s) found, 3 check(s) ok
