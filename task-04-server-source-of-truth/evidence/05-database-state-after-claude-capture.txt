@@ -1,0 +1,50 @@
+# Run by Claude Code, 2026-11-03. Database state AFTER the migration.
+                 List of tables
+ Schema |        Name        | Type  |  Owner   
+--------+--------------------+-------+----------
+ public | Booking            | table | postgres
+ public | Doctor             | table | postgres
+ public | EmailVerification  | table | postgres
+ public | Patient            | table | postgres
+ public | Payment            | table | postgres
+ public | PaymentEvent       | table | postgres
+ public | Service            | table | postgres
+ public | Session            | table | postgres
+ public | User               | table | postgres
+ public | _prisma_migrations | table | postgres
+(10 rows)
+
+ id | patientId | doctorId |    date    | time  
+----+-----------+----------+------------+-------
+  4 |         2 |        1 | 2026-11-04 | 04:17
+(1 row)
+
+ id |               email                |               name               |  role   | hash | userId |    phone    
+----+------------------------------------+----------------------------------+---------+------+--------+-------------
+  1 | unclaimed-bookings@example.invalid | Unclaimed bookings (placeholder) | patient | !    |      1 | placeholder
+(1 row)
+
+                                          Table "public.Booking"
+  Column   |              Type              | Collation | Nullable |                Default                
+-----------+--------------------------------+-----------+----------+---------------------------------------
+ id        | integer                        |           | not null | nextval('"Booking_id_seq"'::regclass)
+ date      | date                           |           | not null | 
+ time      | text                           |           | not null | 
+ createdAt | timestamp(3) without time zone |           | not null | CURRENT_TIMESTAMP
+ doctorId  | integer                        |           | not null | 
+ patientId | integer                        |           | not null | 
+Indexes:
+    "Booking_pkey" PRIMARY KEY, btree (id)
+    "Booking_doctorId_date_time_key" UNIQUE, btree ("doctorId", date, "time")
+    "Booking_patientId_idx" btree ("patientId")
+Foreign-key constraints:
+    "Booking_doctorId_fkey" FOREIGN KEY ("doctorId") REFERENCES "Doctor"(id) ON UPDATE CASCADE ON DELETE RESTRICT
+    "Booking_patientId_fkey" FOREIGN KEY ("patientId") REFERENCES "Patient"(id) ON UPDATE CASCADE ON DELETE RESTRICT
+Referenced by:
+    TABLE ""Payment"" CONSTRAINT "Payment_bookingId_fkey" FOREIGN KEY ("bookingId") REFERENCES "Booking"(id) ON UPDATE CASCADE ON DELETE RESTRICT
+
+ doctors 
+---------
+       5
+(1 row)
+

@@ -1,0 +1,25 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-03. Database state BEFORE the migration (the user's own screenshot 02 is still to be taken).
+                 List of tables
+ Schema |        Name        | Type  |  Owner   
+--------+--------------------+-------+----------
+ public | Booking            | table | postgres
+ public | Doctor             | table | postgres
+ public | Patient            | table | postgres
+ public | _prisma_migrations | table | postgres
+(4 rows)
+
+ patients 
+----------
+        0
+(1 row)
+
+ bookings 
+----------
+        1
+(1 row)
+
+ doctors 
+---------
+       5
+(1 row)
+

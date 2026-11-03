@@ -1,0 +1,32 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-03. The hand-edited three-step migration, applied with: npx prisma migrate deploy
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma\schema.prisma.
+Datasource "db": PostgreSQL database "carepoint", schema "public" at "localhost:5432"
+
+4 migrations found in prisma/migrations
+
+Applying migration `20261103221500_add_accounts_and_payments`
+Error: P3018
+
+A migration failed to apply. New migrations cannot be applied before the error is recovered from. Read more about how to resolve migration issues in a production database: https://pris.ly/d/migrate-resolve
+
+Migration name: 20261103221500_add_accounts_and_payments
+
+Database error code: 42601
+
+Database error:
+ERROR: syntax error at or near "TABLE"
+
+Position:
+[1m 25[0m     "role" "Role" NOT NULL DEFAULT 'patient',
+[1m 26[0m     "emailVerifiedAt" TIMESTAMP(3),
+[1m 27[0m     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+[1m 28[0m
+[1m 29[0m -- AlterTable
+[1m 30[1;31m ALTER TABLE "Doctor" ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;[0m
+
+DbError { severity: "ERROR", parsed_severity: Some(Error), code: SqlState(E42601), message: "syntax error at or near \"TABLE\"", detail: None, hint: None, position: Some(Original(1026)), where_: None, schema: None, table: None, column: None, datatype: None, constraint: None, file: Some("scan.l"), line: Some(1240), routine: Some("scanner_yyerror") }
+
+
+exit code: 1

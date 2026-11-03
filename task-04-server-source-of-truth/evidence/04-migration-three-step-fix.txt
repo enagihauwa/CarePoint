@@ -1,0 +1,18 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-03. The hand-edited three-step migration, applied with: npx prisma migrate deploy (second attempt; the first is in 04a)
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma\schema.prisma.
+Datasource "db": PostgreSQL database "carepoint", schema "public" at "localhost:5432"
+
+4 migrations found in prisma/migrations
+
+Applying migration `20261103221500_add_accounts_and_payments`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20261103221500_add_accounts_and_payments/
+    └─ migration.sql
+
+All migrations have been successfully applied.
+exit code: 0
