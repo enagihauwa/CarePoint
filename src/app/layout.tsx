@@ -6,8 +6,9 @@ import "../styles/spacing.css";
 import "../styles/home.css";
 
 // Base address for the canonical and Open Graph URLs. Set SITE_URL in .env once the site
-// has a real address. Until then it falls back to the local dev server.
-const siteUrl = process.env.SITE_URL ?? "http://localhost:3000";
+// has a real address. Until then it falls back to the local dev server. `||` and not `??`
+// because a copied .env.example sets SITE_URL to an empty string, which `??` would keep.
+const siteUrl = process.env.SITE_URL || "http://localhost:3000";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
