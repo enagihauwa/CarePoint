@@ -34,5 +34,5 @@ Two more were found by a fresh clone of the repo (`evidence/22-fresh-clone-run.t
 ## Checked and not a defect
 
 - The booking API returns `201` on success, `400` for bad input and `500` when the write fails (`evidence/11`, `evidence/13`). None of these claims success when nothing was saved.
-- The database holds only dummy test data after I deleted the first two rows (booking numbers 1 and 2 were never reused, which is how a PostgreSQL sequence works).
+- Booking numbers 1 and 2 were deleted for privacy and never reused, which is how a PostgreSQL sequence works. Row 3 still holds a real-looking name, so I cannot say the database holds only dummy data until that row is dealt with.
 - `.env` is ignored by git and never printed in the evidence.
