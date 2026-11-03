@@ -10,7 +10,7 @@ The following controls have been deliberately left out for now.
 
 **Why I did not implement it:**
 
-I decided to focus on the basic account security features first. Server-side validation, rate limiting and a breach check on new passwords are built and tested. Password hashing is measured (`docs/hashing.md`) but not applied yet, because there is no users table. Adding another authentication step could also make the login process more difficult for patients who may not be comfortable with technology.
+I decided to focus on the basic account security features first. Server-side validation, rate limiting and a breach check on new passwords are built and tested. Password hashing is measured (`docs/hashing.md`) and applied to new registrations, but nobody can log in yet. Adding another authentication step could also make the login process more difficult for patients who may not be comfortable with technology.
 
 **When I would add it:**
 

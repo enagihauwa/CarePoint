@@ -22,7 +22,8 @@ This folder holds the notes and the evidence. **The code is in the app itself**:
 
 | File | What it covers |
 |---|---|
-| `schema.md` | The nine-table design, every column, indexes and their cost (design only, not built) |
+| `schema.md` | The nine-table design, every column, indexes and their cost |
+| `migrations.md` | The required-column failure, the three-step fix, and a mistake of mine |
 | `hashing.md` | Argon2id measured against a fast hash |
 | `validation-placement.md` | What is checked where, and what the server must never trust |
 | `rate-limiting.md` | The limits, why two keys, what an in-memory store cannot do |
@@ -37,7 +38,8 @@ Files marked "claude-capture" were produced by Claude Code at my request. The ot
 
 | Files | Shows |
 |---|---|
-| `01`, `01a` | My paper schema drawing (a retake is pending) |
+| `01`, `01a`, `01b` | My paper schema drawing, and two earlier versions |
+| `02` to `06` | Database before and after the migration, the failure and the fix, and registration storing a hash (Claude captures) |
 | `07`, `08` | Hashing: two hashes of one password differ, and the timing |
 | `11`, `12`, `12b`, `12c` | Server validation timing, the raw-request attacks before and after, regression |
 | `13`, `13b`, `13c`, `14` | Rate limit triggered, UI check, logic checks, and the address limit defeated |
@@ -52,10 +54,10 @@ See the root `README.md` for set-up. For the evidence scripts, the `.sh` files n
 
 | Done | Not done |
 |---|---|
-| Server validation, body limit, rate limiting, breach check | The database tables (the schema is on paper only) |
-| Hashing measured | Hashing applied to stored passwords (no users table yet) |
-| Verification email template and render | Email verification, SMTP, background job, evidence `16` to `22` |
-| `not-implemented.md`, `defects.md` | Migrations by hand and `docs/migrations.md`, evidence `02` to `06`, `09`, `10` |
+| Server validation, body limit, rate limiting, breach check | Online booking (paused until Task 5) |
+| Hashing measured and applied to stored passwords | Login and sessions (Task 5) |
+| Nine tables, migrated by hand (`docs/migrations.md`), and registration creates a hashed user | Email verification, SMTP, background job, evidence `16` to `22` |
+| Verification email template and render, `not-implemented.md`, `defects.md` | My own screenshot `02`, the drift-error evidence, and the normalisation screenshots `09`, `10` |
 | | My 19 interview answers, and the optional walkthrough |
 
-Login and reset still return `501`. Nothing here claims a patient can log in.
+Login and reset still return `501`, and online booking is paused (`503`). Nothing here claims a patient can log in.

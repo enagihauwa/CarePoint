@@ -1,6 +1,6 @@
 # Database schema (paper first)
 
-Drafted by Claude at my request from my hand drawing (`evidence/01-schema-drawing.jpg`, dated 4/11/2026; earlier versions `01a` and `01b`) and my decisions, so the wording is not all mine. Nothing here is built yet. The drawing shows only key columns, and this document lists **every** column.
+Drafted by Claude at my request from my hand drawing (`evidence/01-schema-drawing.jpg`, dated 4/11/2026; earlier versions `01a` and `01b`) and my decisions, so the wording is not all mine. The tables are built and migrated (`docs/migrations.md`). The drawing shows only key columns, and this document lists **every** column.
 
 ## Names
 
