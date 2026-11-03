@@ -1,0 +1,116 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-03. More server checks (script: evidence/12-server-checks-script.sh), production build, throwaway database (dropped afterwards).
+# Section C is what is STILL accepted on purpose, to be fixed later. Section E is what the database stored.
+
+##### A. The three Task 3 attack requests, sent again (register)
+--- A1 one letter name, a@b, abc, password of spaces
+$ curl -i -X POST http://localhost:3077/api/register -H "Content-Type: application/json" -d '{"name":"a","email":"a@b","phone":"abc","password":"   "}'
+HTTP/1.1 400 Bad Request
+{"error":"Some details need fixing.","fields":{"name":["Your name should be between 2 and 100 characters."],"email":["Enter an email address like name@example.com."],"phone":["Enter a Nigerian number like 08031234567, or an international number starting with +."],"password":["Your password can't be only spaces."],"termsAccepted":["Please accept the terms before creating your account."]}}
+
+--- A2 empty body
+$ curl -i -X POST http://localhost:3077/api/register -H "Content-Type: application/json" -d '{}'
+HTTP/1.1 400 Bad Request
+{"error":"Some details need fixing.","fields":{"name":["Please enter your full name."],"email":["Please enter your email address."],"phone":["Please enter your phone number so the front desk can reach you."],"password":["Please create a password with at least 8 characters."],"termsAccepted":["Please accept the terms before creating your account."]}}
+
+--- A3 a 200,000-character name
+$ curl -i -X POST http://localhost:3077/api/register -H "Content-Type: application/json" --data @big.json
+HTTP/1.1 413 Payload Too Large
+{"error":"The request is too large."}
+
+##### B. More server checks
+--- B1 valid, but padded and mixed case
+$ curl -i -X POST http://localhost:3077/api/register -H "Content-Type: application/json" -d '{"name":"  Padded Name  ","email":"  MixedCase@Example.COM ","phone":"0803 123-4567","password":"correct horse battery","termsAccepted":true}'
+HTTP/1.1 201 Created
+{"id":1,"createdAt":"2026-11-03T16:00:44.750Z"}
+
+--- B2 password '  abcdef' (8 characters counting the spaces, so NOT trimmed)
+$ curl -i -X POST http://localhost:3077/api/register -H "Content-Type: application/json" -d '{"name":"No Trim","email":"notrim@example.com","phone":"08000000002","password":"  abcdef","termsAccepted":true}'
+HTTP/1.1 201 Created
+{"id":2,"createdAt":"2026-11-03T16:00:45.011Z"}
+
+--- B3 password ' abcdef' (7 characters)
+$ curl -i -X POST http://localhost:3077/api/register -H "Content-Type: application/json" -d '{"name":"No Trim","email":"notrim2@example.com","phone":"08000000002","password":" abcdef","termsAccepted":true}'
+HTTP/1.1 400 Bad Request
+{"error":"Some details need fixing.","fields":{"password":["Your password needs at least 8 characters."]}}
+
+--- B4 terms not accepted (false)
+$ curl -i -X POST http://localhost:3077/api/register -H "Content-Type: application/json" -d '{"name":"Terms Test","email":"terms@example.com","phone":"08000000003","password":"correct horse battery","termsAccepted":false}'
+HTTP/1.1 400 Bad Request
+{"error":"Some details need fixing.","fields":{"termsAccepted":["Please accept the terms before creating your account."]}}
+
+--- B5 terms sent as the text "true"
+$ curl -i -X POST http://localhost:3077/api/register -H "Content-Type: application/json" -d '{"name":"Terms Test","email":"terms@example.com","phone":"08000000003","password":"correct horse battery","termsAccepted":"true"}'
+HTTP/1.1 400 Bad Request
+{"error":"Some details need fixing.","fields":{"termsAccepted":["Please accept the terms before creating your account."]}}
+
+--- B6 name sent as a number
+$ curl -i -X POST http://localhost:3077/api/register -H "Content-Type: application/json" -d '{"name":12345,"email":"num@example.com","phone":"08000000004","password":"correct horse battery","termsAccepted":true}'
+HTTP/1.1 400 Bad Request
+{"error":"Some details need fixing.","fields":{"name":["Please enter your full name."]}}
+
+--- B7 request body larger than the 4 KB limit (declared)
+HTTP/1.1 413 Payload Too Large
+{"error":"The request is too large."}
+
+--- B8 not JSON at all
+$ curl -i -X POST http://localhost:3077/api/register -H "Content-Type: application/json" -d 'this is not json'
+HTTP/1.1 400 Bad Request
+{"error":"The request was not valid JSON."}
+
+##### C. Left on purpose for later (still accepted):
+--- C1 +0000000000 (defect O3)
+$ curl -i -X POST http://localhost:3077/api/register -H "Content-Type: application/json" -d '{"name":"Nonsense Number","email":"nonsense@example.com","phone":"+0000000000","password":"correct horse battery","termsAccepted":true}'
+HTTP/1.1 201 Created
+{"id":3,"createdAt":"2026-11-03T16:00:46.051Z"}
+
+--- C2 the same email again (defect O2, needs the schema)
+$ curl -i -X POST http://localhost:3077/api/register -H "Content-Type: application/json" -d '{"name":"Padded Two","email":"mixedcase@example.com","phone":"0803 123-4567","password":"correct horse battery","termsAccepted":true}'
+HTTP/1.1 201 Created
+{"id":4,"createdAt":"2026-11-03T16:00:46.163Z"}
+
+##### D. Login and reset answer generically
+--- D1 login: not an email
+$ curl -i -X POST http://localhost:3077/api/login -H "Content-Type: application/json" -d '{"email":"nope","password":"x"}'
+HTTP/1.1 400 Bad Request
+{"error":"Check your details and try again."}
+
+--- D2 login: empty password
+$ curl -i -X POST http://localhost:3077/api/login -H "Content-Type: application/json" -d '{"email":"a@example.com","password":""}'
+HTTP/1.1 400 Bad Request
+{"error":"Check your details and try again."}
+
+--- D3 login: password far too long
+$ curl -i -X POST http://localhost:3077/api/login -H "Content-Type: application/json" -d '{"email":"a@example.com","password":"pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"}'
+HTTP/1.1 400 Bad Request
+{"error":"Check your details and try again."}
+
+--- D4 login: valid shape
+$ curl -i -X POST http://localhost:3077/api/login -H "Content-Type: application/json" -d '{"email":"a@example.com","password":"anything"}'
+HTTP/1.1 501 Not Implemented
+{"error":"Logging in is not available yet."}
+
+--- D5 reset: not an email
+$ curl -i -X POST http://localhost:3077/api/reset -H "Content-Type: application/json" -d '{"email":"nope"}'
+HTTP/1.1 400 Bad Request
+{"error":"Check your details and try again."}
+
+--- D6 reset: valid shape
+$ curl -i -X POST http://localhost:3077/api/reset -H "Content-Type: application/json" -d '{"email":"a@example.com"}'
+HTTP/1.1 501 Not Implemented
+{"error":"Password reset is not available yet."}
+
+
+##### E. What the database stored (square brackets show spaces)
+ id |       name        |          email          |     phone     | terms 
+----+-------------------+-------------------------+---------------+-------
+  1 | [Padded Name]     | [mixedcase@example.com] | [08031234567] | t
+  2 | [No Trim]         | [notrim@example.com]    | [08000000002] | t
+  3 | [Nonsense Number] | [nonsense@example.com]  | [+0000000000] | t
+  4 | [Padded Two]      | [mixedcase@example.com] | [08031234567] | t
+(4 rows)
+
+
+##### F. Columns of the Patient table: there is no password column, so no password is stored yet
+id name email phone termsAcceptedAt createdAt
+
+##### G. Password text found in the server log: 0 matches. The server logs only the method, path, status and time.

@@ -1,0 +1,40 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-03.
+# The same three raw requests from Task 3 (task-03-client-validation/evidence/16), sent straight to POST /api/register with curl, no form, no browser.
+# Task 3 responses are copied from that file. Task 4 responses are from a production build with server validation, on a throwaway database (dropped afterwards).
+
+############################################################
+REQUEST 1: one-letter name, a@b, abc and a password of spaces
+  curl -i -X POST http://localhost:3000/api/register -H "Content-Type: application/json" -d '{"name":"a","email":"a@b","phone":"abc","password":"   "}'
+
+TASK 3 RESPONSE (server validated nothing):
+  HTTP/1.1 201 Created
+  {"id":11,"createdAt":"2026-11-03T11:27:01.039Z"}
+
+TASK 4 RESPONSE (server validation):
+  HTTP/1.1 400 Bad Request
+  {"error":"Some details need fixing.","fields":{"name":["Your name should be between 2 and 100 characters."],"email":["Enter an email address like name@example.com."],"phone":["Enter a Nigerian number like 08031234567, or an international number starting with +."],"password":["Your password can't be only spaces."],"termsAccepted":["Please accept the terms before creating your account."]}}
+
+############################################################
+REQUEST 2: an empty body
+  curl -i -X POST http://localhost:3000/api/register -H "Content-Type: application/json" -d '{}'
+
+TASK 3 RESPONSE (server validated nothing):
+  HTTP/1.1 201 Created
+  {"id":12,"createdAt":"2026-11-03T11:27:01.463Z"}
+
+TASK 4 RESPONSE (server validation):
+  HTTP/1.1 400 Bad Request
+  {"error":"Some details need fixing.","fields":{"name":["Please enter your full name."],"email":["Please enter your email address."],"phone":["Please enter your phone number so the front desk can reach you."],"password":["Please create a password with at least 8 characters."],"termsAccepted":["Please accept the terms before creating your account."]}}
+
+############################################################
+REQUEST 3: a 200,000-character name
+  curl -i -X POST http://localhost:3000/api/register -H "Content-Type: application/json" -d '(the file big.json)'
+
+TASK 3 RESPONSE (server validated nothing):
+  HTTP/1.1 201 Created
+  {"id":13,"createdAt":"2026-11-03T11:27:02.764Z"}
+
+TASK 4 RESPONSE (server validation):
+  HTTP/1.1 413 Payload Too Large
+  {"error":"The request is too large."}
+

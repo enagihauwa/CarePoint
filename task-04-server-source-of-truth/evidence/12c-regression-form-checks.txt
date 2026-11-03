@@ -1,0 +1,72 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-03. Regression: the Task 3 checks against the Task 4 server.
+
+##### The 43 browser checks of sign up, log in and reset (script: task-03-client-validation/evidence/20-behaviour-test-script.js)
+PASS  signup heading
+PASS  labels are associated with inputs
+PASS  inputs have aria-required
+PASS  no password hint before typing
+PASS  button is aria-disabled initially
+PASS  button is NOT the disabled attribute
+PASS  empty name error on blur
+PASS  name aria-invalid after error
+PASS  name aria-describedby points at its error slot
+PASS  error slot is a live region
+PASS  caution icon present with the error
+PASS  one-letter name blocked
+PASS  valid name clears error
+PASS  email format error appears in real time (no blur)
+PASS  valid email clears the error
+PASS  phone fragment blocked
+PASS  phone is type=tel with tel inputmode
+PASS  phone with spaces accepted
+PASS  password hint appears after typing starts
+PASS  password aria-describedby links hint and error  [password-hint password-error]
+PASS  short password error on blur
+PASS  show password toggle reveals text
+PASS  pressing the disabled button explains why  [Please fix the problems marked below before creating your account.]
+PASS  focus moves to first problem (name)
+PASS  terms-only message
+PASS  focus moves to the terms checkbox
+PASS  terms checkbox works from the keyboard (Space)
+PASS  button no longer aria-disabled when valid
+PASS  aria-disabled button is reachable with the Tab key
+PASS  URL changed to ?mode=login  [http://localhost:3077/auth?mode=login]
+PASS  login heading shown
+PASS  document title updated  [Log in | CarePoint Clinic]
+PASS  focus moved to the new heading
+PASS  NO page, data or script requests while switching forms  [none]
+      other requests seen while switching (not data requests): other GET /icon.png?icon.2t8dgkb2q_r7w.png
+PASS  login: bad email format NOT flagged on blur
+PASS  login: bad email format flagged on submit
+PASS  login: honest 'not available yet' message (no fake success)
+PASS  reset form shown
+PASS  browser Back returns to the login form
+PASS  no mode shows log in
+PASS  real submit: server answered  [status 201]
+PASS  real submit: page matches the status (no false success)  [status 201]
+PASS  no JavaScript errors on the page
+
+result: 43 passed, 0 failed
+
+##### The 19 form attacks (script: task-03-client-validation/evidence/15-form-attack-script.js). Same result as in Task 3: 10 sent, 9 blocked, because the server now applies the same rules as the form.
+RESULT   | WHAT WAS TYPED INTO THE FORM            | WHAT HAPPENED
+---------|-----------------------------------------|--------------------------------------------
+BLOCKED  | name: one letter                        | Your name should be between 2 and 100 characters.
+BLOCKED  | name: only spaces                       | Please enter your full name.
+SENT 201 | name: exactly 100 characters            | the form let it through; server answered 201
+BLOCKED  | name: 101 characters                    | Your name should be between 2 and 100 characters.
+SENT 201 | name: padded with spaces                | the form let it through; server answered 201
+SENT 201 | name: script tag                        | the form let it through; server answered 201
+SENT 201 | name: digits only                       | the form let it through; server answered 201
+BLOCKED  | email: a@b (no dot)                     | Enter an email address like name@example.com.
+SENT 201 | email: trailing space                   | the form let it through; server answered 201
+SENT 201 | email: valid, first time                | the form let it through; server answered 201
+SENT 201 | email: SAME address again               | the form let it through; server answered 201
+BLOCKED  | phone: letters                          | Enter a Nigerian number like 08031234567, or an international number starting with +.
+SENT 201 | phone: with spaces and hyphens          | the form let it through; server answered 201
+SENT 201 | phone: +0000000000 (nonsense international) | the form let it through; server answered 201
+BLOCKED  | password: 8 spaces                      | Your password can't be only spaces.
+BLOCKED  | password: 7 characters                  | Your password needs at least 8 characters.
+SENT 201 | password: exactly 64 characters         | the form let it through; server answered 201
+BLOCKED  | password: 65 characters                 | Your password can be at most 64 characters.
+BLOCKED  | terms: not ticked                       | Please accept the terms before creating your account.

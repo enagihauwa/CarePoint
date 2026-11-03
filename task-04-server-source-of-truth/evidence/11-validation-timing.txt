@@ -1,0 +1,51 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-03. BEFORE: the Task 3 version of POST /api/register (commit f6fa45b), production build, throwaway database.
+# Same request ten times. curl -w "status=%{http_code} time_ms=..." where time_ms is time_total x 1000.
+
+request 1 status=201 time_s=0.477171
+request 2 status=201 time_s=0.013244
+request 3 status=201 time_s=0.007812
+request 4 status=201 time_s=0.009976
+request 5 status=201 time_s=0.013766
+request 6 status=201 time_s=0.029637
+request 7 status=201 time_s=0.011195
+request 8 status=201 time_s=0.009721
+request 9 status=201 time_s=0.097727
+request 10 status=201 time_s=0.009792
+
+==================================================================
+# Run by Claude Code on the user's machine at the user's request, 2026-11-03. AFTER: the Task 4 version of POST /api/register (server validation, commit pending), production build, throwaway database, FRESHLY STARTED server (the same conditions as the BEFORE run).
+# Same request, ten times, exactly as in the BEFORE run.
+
+request 1 status=201 time_s=0.436126
+request 2 status=201 time_s=0.031664
+request 3 status=201 time_s=0.016263
+request 4 status=201 time_s=0.050212
+request 5 status=201 time_s=0.012328
+request 6 status=201 time_s=0.076130
+request 7 status=201 time_s=0.044132
+request 8 status=201 time_s=0.010609
+request 9 status=201 time_s=0.082176
+request 10 status=201 time_s=0.049867
+
+# Ten REJECTED requests (the one-letter attack), which stop at validation:
+rejected 1 status=400 time_s=0.008159
+rejected 2 status=400 time_s=0.007641
+rejected 3 status=400 time_s=0.006013
+rejected 4 status=400 time_s=0.006510
+rejected 5 status=400 time_s=0.005048
+rejected 6 status=400 time_s=0.025446
+rejected 7 status=400 time_s=0.011313
+rejected 8 status=400 time_s=0.006310
+rejected 9 status=400 time_s=0.005732
+rejected 10 status=400 time_s=0.005602
+
+==================================================================
+# The validation on its own (Run by Claude Code, 2026-11-03). Script: evidence/11-validation-bench-script.ts
+valid request (parse + normalise)    2.6 microseconds per parse (20000 parses)
+rejected request (all fields bad)    5.5 microseconds per parse (20000 parses)
+
+# What this shows (Claude's reading; the guide says to say what I think causes anything high):
+# - The FIRST request is slow in both runs (477 ms before, 436 ms after). That is a cold start: the route is loaded and the first database connection is opened. It is the same with and without validation, so validation is not the cause. This is a guess from the pattern; I did not measure the two parts separately.
+# - The other nine requests vary a lot from run to run on this laptop (8 to 98 ms before; 10 to 82 ms after; a separate warm run had 8 to 37 ms), with no code change between them. Ten requests cannot tell a few microseconds from that noise.
+# - The direct measurement is the benchmark above: about 2.6 microseconds to validate a good request and 5.5 to reject a bad one. The schema is built once when the server loads, not on each request.
+# - A rejected request is quick (about 4 to 25 ms), because it stops before the database is touched.
