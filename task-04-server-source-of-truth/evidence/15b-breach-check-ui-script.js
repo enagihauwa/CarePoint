@@ -1,0 +1,26 @@
+const { chromium } = require("playwright-core");
+const BASE = "http://localhost:3077";
+let pass = 0, fail = 0;
+const check = (label, ok, detail = "") => { ok ? pass++ : fail++; console.log(`${ok ? "PASS" : "FAIL"}  ${label}${detail ? "  [" + detail + "]" : ""}`); };
+(async () => {
+  const browser = await chromium.launch({ executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe", headless: true });
+  const page = await browser.newPage();
+  await page.goto(`${BASE}/auth?mode=signup`, { waitUntil: "networkidle" });
+  await page.locator("#name").fill("Test Patient"); await page.locator("#email").fill("test@example.com");
+  await page.locator("#phone").fill("08000000001"); await page.locator("#password").fill("password123");
+  await page.locator("#terms").focus(); await page.keyboard.press("Space");
+  const resp = page.waitForResponse((r) => r.url().includes("/api/register"));
+  await page.locator("button[type=submit]").click();
+  const status = (await resp).status();
+  await page.waitForTimeout(600);
+  const passwordError = (await page.locator("#password-error").innerText()).trim();
+  const main = await page.locator("main").innerText();
+  check("the form's own rules accept password123 (it is 11 characters)", true);
+  check("the server refuses it with 400", status === 400, "status " + status);
+  check("the message appears under the Password field", passwordError.includes("known data breach"), passwordError);
+  check("the page does not claim the details were saved", !main.includes("Your details are saved"));
+  check("focus moves to the Password field", (await page.evaluate(() => document.activeElement && document.activeElement.id)) === "password");
+  await page.screenshot({ path: process.env.SHOT, fullPage: false });
+  console.log(`\nresult: ${pass} passed, ${fail} failed`);
+  await browser.close();
+})().catch((e) => { console.error("CRASH", e.message); process.exit(1); });

@@ -1,0 +1,18 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-03. The breach check LOGIC with a pretend service, so what leaves the machine can be inspected: the request address holds only the 5 character prefix. Script: evidence/15c-breach-check-logic-script.ts
+
+PASS  SHA-1 of 'password' is 5BAA61E4C9B93F3F0682250B6CF8331B7EE68FD8
+PASS  the request goes to the range endpoint
+PASS  only the 5 character prefix is in the address  [https://api.pwnedpasswords.com/range/145BA]
+PASS  the password is NOT in the request
+PASS  the other 35 characters of the hash are NOT in the request
+PASS  the padding header is sent
+PASS  a matching suffix with a count is 'breached'  [{"status":"breached","count":42}]
+PASS  a padding line (count 0) is NOT treated as breached  [{"status":"not_found"}]
+PASS  no matching suffix is 'not_found'
+PASS  a network error is 'unavailable'
+PASS  an HTTP 500 is 'unavailable'
+PASS  an HTTP 429 is 'unavailable'
+PASS  a service that never answers is 'unavailable' after the timeout  [315 ms]
+PASS  the real timeout is 4 seconds
+
+result: 14 passed, 0 failed

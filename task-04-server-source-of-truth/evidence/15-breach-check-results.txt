@@ -1,0 +1,35 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-03. The breach check calling the REAL Have I Been Pwned service from a production build, against a throwaway database (dropped afterwards). Script: evidence/15-breach-check-script.sh.
+# Only the first 5 characters of each password's SHA-1 are sent to the service. The server log held 0 matches for any password, hash or prefix.
+
+##### A. Each password sent to POST /api/register (the details are otherwise valid)
+--- A1 password123, in 2,266,543 known breaches (the guide's test)
+$ curl -i -X POST http://localhost:3077/api/register -d '{"name":"Breach Test","email":"a1@example.com","phone":"08000000001","password":"password123","termsAccepted":true}'
+  HTTP/1.1 400 Bad Request
+  {"error":"Some details need fixing.","fields":{"password":["This password has appeared in a known data breach. Please choose a different one."]}}
+  total time: 1.130278s
+
+--- A2 sixty-four letter p's, seen 10 times in breaches (my own Task 3 test password)
+$ curl -i -X POST http://localhost:3077/api/register -d '{"name":"Breach Test","email":"a2@example.com","phone":"08000000001","password":"pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp","termsAccepted":true}'
+  HTTP/1.1 400 Bad Request
+  {"error":"Some details need fixing.","fields":{"password":["This password has appeared in a known data breach. Please choose a different one."]}}
+  total time: 0.645729s
+
+--- A3 'correct horse battery', not in any breach
+$ curl -i -X POST http://localhost:3077/api/register -d '{"name":"Breach Test","email":"a3@example.com","phone":"08000000001","password":"correct horse battery","termsAccepted":true}'
+  HTTP/1.1 201 Created
+  {"id":1,"createdAt":"2026-11-03T19:50:42.940Z"}
+  total time: 0.578014s
+
+--- A4 a random strong password, not in any breach
+$ curl -i -X POST http://localhost:3077/api/register -d '{"name":"Breach Test","email":"a4@example.com","phone":"08000000001","password":"Q7-lamp-zeta-9Rk2-orbit","termsAccepted":true}'
+  HTTP/1.1 201 Created
+  {"id":2,"createdAt":"2026-11-03T19:50:43.478Z"}
+  total time: 0.319644s
+
+##### B. Time of a registration that passes (it includes the call to the breach service), 5 requests
+  request 1 status=201 time_s=0.260600
+  request 2 status=201 time_s=0.324082
+  request 3 status=201 time_s=0.358974
+  request 4 status=201 time_s=0.298562
+  request 5 status=201 time_s=0.273867
+patients saved: 7 (the two that passed in part A, plus the five timing requests). No breached password was saved.
