@@ -1,0 +1,13 @@
+# Run by Claude Code at the user's request, 2026-11-04. The row the user created through the sign-up form, checked before it was deleted.
+ id |           email            | name_in_brackets |    phone    |           hash_start           | emailVerifiedAt 
+----+----------------------------+------------------+-------------+--------------------------------+-----------------
+  2 | test.normalise@example.com | [Test Normalise] | 08031234567 | $argon2id$v=19$m=65536,t=3,p=4 | 
+(1 row)
+
+DELETE 1
+DELETE 1
+ users_left 
+------------
+          1
+(1 row)
+

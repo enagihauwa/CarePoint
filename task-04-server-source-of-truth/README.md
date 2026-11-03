@@ -44,6 +44,7 @@ Files marked "claude-capture" were produced by Claude Code at my request. The ot
 | `11`, `12`, `12b`, `12c` | Server validation timing, the raw-request attacks before and after, regression |
 | `13`, `13b`, `13c`, `14` | Rate limit triggered, UI check, logic checks, and the address limit defeated |
 | `15`, `15a`, `15b`, `15c` | The breach check: results, my screenshot, regression, logic checks |
+| `09`, `10`, `10a` | My sign-up input (capitals in the email) and the stored, normalised row, and Claude's check of it |
 | `23`, `23a` | The verification email in Chrome, and the wrong first render |
 
 ## How to run it
@@ -57,7 +58,7 @@ See the root `README.md` for set-up. For the evidence scripts, the `.sh` files n
 | Server validation, body limit, rate limiting, breach check | Online booking (paused until Task 5) |
 | Hashing measured and applied to stored passwords | Login and sessions (Task 5) |
 | Nine tables, migrated by hand (`docs/migrations.md`), and registration creates a hashed user | Email verification, SMTP, background job, evidence `16` to `22` |
-| Verification email template and render, `not-implemented.md`, `defects.md` | My own screenshot `02`, the drift-error evidence, and the normalisation screenshots `09`, `10` |
+| Verification email template and render, `not-implemented.md`, `defects.md` | My own screenshot `02`, and the drift-error evidence |
 | | My 19 interview answers, and the optional walkthrough |
 
 Login and reset still return `501`, and online booking is paused (`503`). Nothing here claims a patient can log in.
