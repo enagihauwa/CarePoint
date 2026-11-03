@@ -30,7 +30,7 @@ Spaces at the start and end of a name or an email are removed before checking. A
 ## 3. When the format is checked
 
 - **Sign-up:** the email format is checked **in real time**, as the patient types, so a typo is caught while they can still fix it.
-- **Login:** the email format is checked **only on submit**. A patient typing a known address does not need warnings mid-word, and a login form should not tell a stranger anything about which addresses are valid or registered.
+- **Login:** the email format is checked **only on submit**. A patient typing an address they already use does not need warnings mid-word. This choice is only about not nagging the patient. It does not protect against someone finding out which emails are registered: checking an address's shape happens in the browser and says nothing about whether it has an account. That protection comes from what the server says on login and reset (`docs/enumeration.md`).
 
 ### Why checking that an email address exists is pointless
 
