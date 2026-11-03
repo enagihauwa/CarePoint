@@ -43,6 +43,7 @@ is not all mine.
 | [`docs/password-and-button.md`](docs/password-and-button.md) | The 8 to 64 password rule, a Show button instead of a confirm field, and why a hidden submit button was rejected for a disabled one with an explanation. |
 | [`docs/rollback.md`](docs/rollback.md) | A regretted commit undone by its id with `git revert`, why not `reset --hard`, and what went wrong on the way. |
 | [`docs/defects.md`](docs/defects.md) | Two defects fixed in this task and fifteen still open, each with a file, a line and the cost if it had shipped. |
+| [`docs/interview-answers.md`](docs/interview-answers.md) | Fourteen answers, including one on user enumeration, each saying what Claude did and what I did. |
 | [`docs/client-side-is-not-security.md`](docs/client-side-is-not-security.md) | The two attacks, which rules the server enforced (none), and what moves to Task 4. |
 | [`docs/accessibility-audit.md`](docs/accessibility-audit.md) | The five checks per field, the real problems found, the fixes, and my before/after Narrator notes. |
 | [`docs/terms-note.md`](docs/terms-note.md) | Why no terms wording was written, and what must happen before the form is used with real patients. |
@@ -112,5 +113,5 @@ running production build. They were run by Claude on my machine, not by me.
   hint reduces the confusion but does not solve it (A6 in the audit).
 - My Narrator notes **after** the accessibility fixes are empty (`[ME]`
   sections). The automated "after" run is not a substitute for listening.
-- Written: this task's defects list (`docs/defects.md`). Not written yet: its interview
-  answers.
+- Written: this task's defects list (`docs/defects.md`) and its 14 interview answers
+  (`docs/interview-answers.md`).
