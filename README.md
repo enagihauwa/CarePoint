@@ -37,7 +37,7 @@ Planned in `AGENT-RULES.md`, **not installed yet**: Argon2id, Nodemailer, pg-bos
 
 ## Getting started
 
-You need Node.js (I used 24.16.0), npm, Git and a running PostgreSQL (I used 18).
+You need Node.js with npm (I used 24.16.0, from https://nodejs.org), Git and a running PostgreSQL (I used 18). To check what you have, run `node -v`, `npm -v` and `psql --version`.
 
 ```bash
 git clone https://github.com/enagihauwa/CarePoint.git
@@ -46,11 +46,19 @@ npm install
 npx prisma generate
 ```
 
-Create an empty database called `carepoint`, then create a file called `.env` in the repo root. Copy `.env.example` and fill in `DATABASE_URL`, for example:
+Create an empty database called `carepoint`. With the command line (it asks for your PostgreSQL password; in pgAdmin you can also right-click Databases and choose Create):
+
+```bash
+psql -U postgres -c "CREATE DATABASE carepoint;"
+```
+
+Then create a file called `.env` in the main `CarePoint` folder, next to `package.json`. Copy `.env.example` and fill in `DATABASE_URL`:
 
 ```
 DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/carepoint"
 ```
+
+Replace `USER` and `PASSWORD` with your own PostgreSQL user name and password (the user is often `postgres`). Keep `carepoint` at the end, because that is the database you just created.
 
 Then create the tables and the five doctors, and start the app:
 
@@ -60,9 +68,11 @@ npx prisma db seed
 npm run dev
 ```
 
+`migrate deploy` builds the tables in your empty database from the migration files in `prisma/migrations/`. `db seed` fills in the five doctors, so the booking form has doctors to choose from.
+
 Open **`http://localhost:3000/book`**. Use `localhost`, not the "Network" address that `npm run dev` prints. On the network address the development server blocks the form's script, and a booking silently does nothing (`task-02-scaffold-ship-and-find/docs/false-success.md`).
 
-To check a booking really saved, run `npx prisma studio` and open the `Booking` table.
+To check a booking really saved, run `npx prisma studio`. It opens a page in your browser (the address is printed in the terminal). Click the `Booking` table on the left, and your booking should be a row with an `id` and a `createdAt` time.
 
 ## Environment variable names
 
