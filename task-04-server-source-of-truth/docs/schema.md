@@ -1,6 +1,6 @@
 # Database schema (paper first)
 
-Drafted by Claude at my request from my hand drawing (`evidence/01-schema-drawing.jpg`, first version `01a`) and my decisions, so the wording is not all mine. Nothing here is built yet. The drawing shows only key columns, and this document lists **every** column.
+Drafted by Claude at my request from my hand drawing (`evidence/01-schema-drawing.jpg`, dated 4/11/2026; earlier versions `01a` and `01b`) and my decisions, so the wording is not all mine. Nothing here is built yet. The drawing shows only key columns, and this document lists **every** column.
 
 ## Names
 
@@ -185,4 +185,5 @@ If a tax authority asked about a payment from 14 months ago, I would find it by 
 - **Whether `PaymentEvent` is made append-only by the database** (removing the right to change or delete it), or only by the application.
 - **Admin accounts** are created by a seed script, not by the sign-up form. Only patients register.
 - **My lecturer's answer** on the missing retrieval table.
-- **The drawing needs a retake**, with the whole sheet in the frame, a handwritten date, the unique-slot note and the "recorded by" line.
+- **Two small gaps in the drawing.** The "recorded by" links from User to Payment and PaymentEvent are written as notes, not drawn as lines, and the notes still contain some of Claude's instruction wording. I accepted the drawing as it is. This document is the full description, and it follows the drawing's tables, key columns, 1 and N marks and the unique doctor, date and time rule.
+- **Names differ from the drawing.** The drawing writes `verified_at`, `terms_at` and `expire`. The columns here are `emailVerifiedAt`, `termsAcceptedAt` and `expiresAt`, so that all timestamps read the same way.
