@@ -1,6 +1,6 @@
 # Validation rules
 
-Drafted by Claude at my request from my rough answers, so the wording is not all mine. The limits below (2 characters for a name, 8 for a password and so on) are product decisions for this assignment, not universal standards. Items marked **to confirm** are not settled yet.
+Drafted by Claude at my request from my rough answers, so the wording is not all mine. The limits below (2 characters for a name, 8 to 64 for a password and so on) are product decisions for this assignment, not universal standards. The wording at the bottom is still to confirm.
 
 Each rule says what breaks without it and which legitimate user it wrongly blocks.
 
@@ -23,9 +23,9 @@ Spaces at the start and end of a name or an email are removed before checking. A
 | Field | Rule | What breaks without it | Legitimate user it wrongly blocks |
 |---|---|---|---|
 | Full name | 2 to 100 characters. Letters, spaces, hyphens and apostrophes are allowed, and so is anything else a real name can contain. It is not restricted to letters only. | One-letter junk such as `a` gets in. A very long value breaks layouts and fills the database with rubbish. | A person whose legal name is a single character (rare), or whose name is longer than 100 characters. |
-| Phone number | After removing spaces and hyphens, either a Nigerian local number (11 digits starting with `0`, like `08031234567`) or an international number (`+` followed by digits, like `+2348031234567`). **To confirm:** how many digits an international number may have (see the questions at the end). | Letters and fragments such as `abc` or `0803` are saved, and the clinic calls a number that cannot work. | Someone whose Nigerian number does not follow the 11-digit mobile pattern, for example some landline numbers. A patient abroad is allowed only because the international form is accepted. |
+| Phone number | After removing spaces and hyphens, either a Nigerian local number (11 digits starting with `0`, like `08031234567`) or an international number (`+` followed by 8 to 15 digits, like `+2348031234567`). 15 is the international maximum length of a phone number, and 8 is my own lower limit. | Letters and fragments such as `abc` or `0803` are saved, and the clinic calls a number that cannot work. | Someone whose Nigerian number does not follow the 11-digit mobile pattern, for example some landline numbers, and someone abroad whose number has fewer than 8 or more than 15 digits. A patient abroad is allowed only because the international form is accepted. |
 | Email address | One `@`, something before it, and a domain with at least one dot after it, with no spaces. Characters such as `+` are allowed (`patient+care@example.com`). | A typo such as `john@` or `john.example.com` is saved, and the patient never gets a reset link. | An address on an internal host with no dot (`name@localhost`), which no real patient has. |
-| Password | At least 8 characters. Spaces inside are allowed. A password made only of spaces is rejected. Nothing is trimmed. **Maximum length: not decided yet.** | One- and two-character passwords can be guessed immediately. | A patient who prefers a short, memorable password, and a slow typist on a phone for whom 8 characters is a burden. A password made only of spaces blocks nobody who is real. |
+| Password | 8 to 64 characters. Spaces inside are allowed. A password made only of spaces is rejected. Nothing is trimmed. The maximum stops an enormous password from being sent for the server to hash (Task 4). | One- and two-character passwords can be guessed immediately. Without a maximum, a huge value makes the server do a lot of work. | A patient who prefers a short, memorable password, a slow typist on a phone for whom 8 characters is a burden, and someone who uses a passphrase longer than 64 characters. A password made only of spaces blocks nobody who is real. |
 
 ## 3. When the format is checked
 
@@ -48,4 +48,5 @@ The length and format messages below are not from my own rough answers. I should
 - Phone not valid: "Enter a Nigerian number like 08031234567, or an international number starting with +."
 - Email not valid: "Enter an email address like name@example.com."
 - Password too short: "Your password needs at least 8 characters."
+- Password too long: "Your password can be at most 64 characters."
 - Password only spaces: "Your password can't be only spaces."
