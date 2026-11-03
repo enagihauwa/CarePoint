@@ -1,0 +1,24 @@
+# Run by Claude Code at the user's request, 2026-11-03. Production build, THROWAWAY database carepoint_test (dropped afterwards). Registration now creates a hashed user plus patient.
+--- 1. new registration
+HTTP/1.1 201 Created
+{"message":"Check your details are right, then continue."}--- 2. the SAME email again (different case): must answer the same way
+HTTP/1.1 201 Created
+{"message":"Check your details are right, then continue."}--- 3. what the database holds
+         email         |   name    |  role   |           hash_start           | hash_len |    phone    | terms 
+-----------------------+-----------+---------+--------------------------------+----------+-------------+-------
+ hash.test@example.com | Hash Test | patient | $argon2id$v=19$m=65536,t=3,p=4 |       97 | 08031234567 | t
+(1 row)
+
+ users_named_hash_test 
+-----------------------
+                     1
+(1 row)
+
+ rows_containing_the_plaintext_password 
+----------------------------------------
+                                      0
+(1 row)
+
+--- 4. booking is paused
+HTTP/1.1 503 Service Unavailable
+{"error":"Online booking is paused while patient accounts are added. Please contact the front desk to book."}

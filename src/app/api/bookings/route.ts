@@ -1,59 +1,12 @@
-import { z } from "zod";
-import { prisma } from "@/lib/db";
 import { respond } from "@/lib/respond";
 
-// Task 2 only checks that every field is filled in. The real rules (phone format,
-// allowed dates, opening hours) are chosen and derived in Task 3.
-const filled = z.string().trim().min(1, "This field is required.");
-const BookingInput = z.object({
-  name: filled,
-  phone: filled,
-  doctorId: z.coerce.number("Choose a doctor.").int("Choose a doctor.").positive("Choose a doctor."),
-  date: z.iso.date("Enter a valid date."),
-  time: filled,
-});
-
+// Online booking is PAUSED. A booking now has to belong to a patient (Booking.patientId is required,
+// task-04-server-source-of-truth/docs/schema.md), and nobody can log in yet: login and sessions are
+// Task 5. Until then this answers honestly instead of saving a booking that belongs to nobody.
+// The old name-and-phone version of this route is in git history (before commit "pause online booking").
 export async function POST(request: Request) {
   const started = performance.now();
-
-  let json: unknown;
-  try {
-    json = await request.json();
-  } catch {
-    return respond(request, started, 400, { error: "The request was not valid JSON." });
-  }
-
-  const parsed = BookingInput.safeParse(json);
-  if (!parsed.success) {
-    return respond(request, started, 400, {
-      error: "Some fields are missing or invalid.",
-      fields: z.flattenError(parsed.error).fieldErrors,
-    });
-  }
-
-  try {
-    const doctor = await prisma.doctor.findUnique({ where: { id: parsed.data.doctorId } });
-    if (!doctor) {
-      return respond(request, started, 400, {
-        error: "Some fields are missing or invalid.",
-        fields: { doctorId: ["Choose a doctor from the list."] },
-      });
-    }
-    const booking = await prisma.booking.create({
-      data: { ...parsed.data, date: new Date(parsed.data.date) },
-    });
-    return respond(request, started, 201, {
-      id: booking.id,
-      createdAt: booking.createdAt,
-      doctor: `${doctor.name}, ${doctor.specialty}`,
-      date: parsed.data.date,
-      time: booking.time,
-    });
-  } catch (error) {
-    // Never report success if the write failed. The detail goes to the server log only.
-    console.error("Booking write failed:", error instanceof Error ? error.message : error);
-    return respond(request, started, 500, {
-      error: "We could not save your booking. Nothing was booked. Please try again.",
-    });
-  }
+  return respond(request, started, 503, {
+    error: "Online booking is paused while patient accounts are added. Please contact the front desk to book.",
+  });
 }
