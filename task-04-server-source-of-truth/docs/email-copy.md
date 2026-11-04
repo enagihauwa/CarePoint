@@ -7,7 +7,8 @@ Drafted by Claude at my request, so the wording is not all mine. I need to rewor
 - `evidence/23-email-render-claude-capture.png`: the email rendered in **headless Chrome**, run by Claude Code at my request, with a **sample** code (`048213`) and a **placeholder** expiry of 10 minutes. Nothing was sent.
 - `evidence/23a-email-wrong-first-render-claude-capture.png`: the **first, wrong** render, kept on purpose.
 - `evidence/23b-email-in-real-inbox.png`: **my own screenshot** of the email opened in a real Gmail inbox (cropped to the email body, so the sender and my address are not shown). It matches the Chrome render: same colours, sizes, spacing and rounded corners. The font is the Arial fallback, as expected.
-- **Still not checked:** a phone, Outlook or any other mail app, and whether it lands in the Inbox or Spam for a patient. The sample email was sent twice to test addresses, the first to a mistyped address that bounced (`docs/verification-design.md`).
+- **It landed in Spam**, not the Inbox (reported by me, opened on a laptop in the Gmail web page). So a patient may not see it unless they look there. A brand-new sending account with no history is a likely reason, but I have not proved that.
+- **Still not checked:** a phone, Outlook or any other mail app. The sample email was sent twice to test addresses, the first to a mistyped address that bounced (`docs/verification-design.md`).
 
 ## The wrong render, and what I traced it to
 
@@ -26,3 +27,4 @@ Two limits: the email is light theme only (no dark-mode roles), and DM Sans only
 3. **The expiry.** "10 minutes" is a placeholder. I will set the real figure in step 10 and update the email to match.
 
 Not checked: how a screen reader reads the code with its wide letter spacing.
+4. **Spam.** Because the first real email went to Spam, the sign-up page should tell patients to check their Spam folder. This is not in the email's own text, because a message that lands in Spam is never read. It belongs on the page.
