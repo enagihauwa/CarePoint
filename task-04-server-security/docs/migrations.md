@@ -40,6 +40,6 @@ Nine tables plus Prisma's own. The booking has `patientId` 2, the placeholder us
 
 ## Not done
 
-- **The drift error.** The brief wants me to show what Prisma says when the database no longer matches the migration history. I have not done that yet.
+- **The drift error is shown in `evidence/05b`.** I added a column by hand to a throwaway database. `migrate status` still said "up to date", but `migrate dev` found the difference, refused to go on, and offered only `migrate reset`, which wipes the data. Nothing was changed.
 - **My own screenshots** of `\dt` before and after. Claude's text captures are `02-...-claude-capture.txt` and `05-...-claude-capture.txt`.
 - **A way to undo.** Migrations here only go forward. Going back means restoring the backup or writing a new migration.

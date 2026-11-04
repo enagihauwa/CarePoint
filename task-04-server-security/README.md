@@ -40,7 +40,7 @@ Files marked "claude-capture" were produced by Claude Code at my request. The ot
 | Files | Shows |
 |---|---|
 | `01`, `01a`, `01b` | My paper schema drawing, and two earlier versions |
-| `02` to `06` | Database before and after the migration, the failure and the fix, and registration storing a hash (Claude captures) |
+| `02` to `06`, `05b` | Database before and after the migration, the failure and the fix, and registration storing a hash (Claude captures) |
 | `07`, `08` | Hashing: two hashes of one password differ, and the timing |
 | `11`, `12`, `12b`, `12c` | Server validation timing, the raw-request attacks before and after, regression |
 | `13`, `13b`, `13c`, `14` | Rate limit triggered, UI check, logic checks, and the address limit defeated |
@@ -62,7 +62,7 @@ See the root `README.md` for set-up. For the evidence scripts, the `.sh` files n
 |---|---|
 | Server validation, body limit, rate limiting, breach check | Online booking (paused until Task 5) |
 | Hashing measured and applied to stored passwords | Login and sessions (Task 5) |
-| Nine tables, migrated by hand (`docs/migrations.md`), and registration creates a hashed user | The drift-error evidence for the migrations |
+| Nine tables, migrated by hand (`docs/migrations.md`), and registration creates a hashed user | A fresh-clone run with no extra settings |
 | Email verification end to end: codes, queue, worker, Gmail, the page, and a real run | A sending domain so mail stops landing in Spam |
 | `not-implemented.md`, `defects.md`, `verification-design.md` | My own screenshot `02` |
 | | My 19 interview answers, and the optional walkthrough |
