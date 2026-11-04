@@ -10,9 +10,13 @@ async function main() {
         console.log(`SUCCESS: the app logged in to ${process.env.SMTP_HOST}:${process.env.SMTP_PORT} as the configured account.`);
     } catch (error) {
         console.error(`FAILED: could not log in to ${process.env.SMTP_HOST}:${process.env.SMTP_PORT}.`);
-        if (error instanceof Error) {
-            console.error(error.message);
-        }
+        // Print the cause, never the credentials. An AggregateError (it tries IPv4 and IPv6) has an
+        // empty message, so its inner errors are listed too.
+        const e = error as Error & { code?: string; command?: string; response?: string; responseCode?: number; errors?: Error[] };
+        console.error("type:", e?.constructor?.name, "| code:", e?.code ?? "none", "| smtp reply code:", e?.responseCode ?? "none");
+        if (e?.message) console.error("message:", e.message);
+        if (e?.response) console.error("server said:", e.response);
+        for (const inner of e?.errors ?? []) console.error("  inner:", (inner as Error & { code?: string }).code, inner.message);
         process.exitCode = 1;
     }
 }
