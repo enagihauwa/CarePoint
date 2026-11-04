@@ -20,3 +20,31 @@ Database schema is up to date!
 
 ##### 4. migrate dev: Prisma compares the real database with the migration history
 $ npx prisma migrate dev --name should_not_run
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma\schema.prisma.
+Datasource "db": PostgreSQL database "carepoint_drift", schema "public" at "localhost:5432"
+
+Drift detected: Your database schema is not in sync with your migration history.
+
+The following is a summary of the differences between the expected database schema given your migrations files, and the actual schema of the database.
+
+It should be understood as the set of changes to get from the expected schema to the actual schema.
+
+[*] Changed the `Patient` table
+  [+] Added column `nickname`
+
+We need to reset the "public" schema at "localhost:5432"
+
+You may use prisma migrate reset to drop the development database.
+All data will be lost.
+
+##### 5. Did it change anything?
+20261103221500_add_accounts_and_payments
+migration_lock.toml
+  migrations recorded: 4
+
+##### Reading of this (written by Claude)
+  `migrate status` said "Database schema is up to date!" even though someone had added a column by hand. It only compares the list of migration files with the list recorded in the database, not the tables themselves.
+  `migrate dev` does compare the real schema with what the migrations would build, and found the extra column. It refused to continue and offered only `prisma migrate reset`, which drops the data. It created no migration and changed nothing (still 4 recorded).
+  So the lesson for production is: never change the database by hand. If someone does, `migrate status` will not warn you, and the next `migrate dev` wants to wipe the database. The safe route is to put the change in a migration file, or to run `prisma migrate diff` and write the matching migration.
