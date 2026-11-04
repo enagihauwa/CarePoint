@@ -50,6 +50,7 @@ Files marked "claude-capture" were produced by Claude Code at my request. The ot
 | `18`, `18a` | Registration time with the email queued, against sending it in the request, and the queue checks |
 | `19` to `22b`, `19a`, `19b` | Code logic, the routes over HTTP (stored hash, expired, wrong, reused), and the page in a browser |
 | `19c`, `19d`, `19e` | The real end-to-end run: database state, the verified page and the duplicate notice (names hidden) |
+| `24` | A fresh clone following the root README: what worked and the gap it found |
 | `23`, `23a`, `23b` | The verification email in Chrome, the wrong first render, and in a real Gmail inbox |
 
 ## How to run it
@@ -62,7 +63,7 @@ See the root `README.md` for set-up. For the evidence scripts, the `.sh` files n
 |---|---|
 | Server validation, body limit, rate limiting, breach check | Online booking (paused until Task 5) |
 | Hashing measured and applied to stored passwords | Login and sessions (Task 5) |
-| Nine tables, migrated by hand (`docs/migrations.md`), and registration creates a hashed user | A fresh-clone run with no extra settings |
+| Nine tables, migrated by hand (`docs/migrations.md`), and registration creates a hashed user | A person (not Claude) following the README from a fresh clone |
 | Email verification end to end: codes, queue, worker, Gmail, the page, and a real run | A sending domain so mail stops landing in Spam |
 | `not-implemented.md`, `defects.md`, `verification-design.md` | My own screenshot `02` |
 | | My 19 interview answers, and the optional walkthrough |

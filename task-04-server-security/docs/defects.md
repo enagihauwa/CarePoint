@@ -38,7 +38,7 @@ Drafted by Claude at my request. Open item numbers are not renumbered when an it
 | O19 | **The first test email, and the first real email, landed in Spam.** A new Gmail account has no sending history. | `docs/email-copy.md` | Patients may never see the code. The page says to check Spam. A real fix needs a sending domain with SPF, DKIM and DMARC. |
 | O20 | **Gmail's mail server sometimes does not answer** from my network (30 s timeout). | `src/lib/email/sendmail.ts`, `evidence/16a` | The queue retries, so a patient is not blocked. The cause is not found. |
 | O21 | **Timing may reveal whether an email is registered.** A verify request for an unknown email skips two database lookups. The answers are identical. I did not measure the time. | `src/app/api/verify/route.ts` | A patient of the clinic could be identified by someone who measures response times closely. |
-| O22 | **My tests hid a bug by setting `DATABASE_URL` on the command line.** The worker failed in real use until I loaded `.env` first. | `scripts/loadEnv.ts`, `docs/verification-design.md` | The class of bug that passes every test and fails on a clean machine. A fresh-clone run without extra settings is still to be done. |
+| O22 | **My tests hid a bug by setting `DATABASE_URL` on the command line.** The worker failed in real use until I loaded `.env` first. | `scripts/loadEnv.ts`, `docs/verification-design.md` | The class of bug that passes every test and fails on a clean machine. The fresh-clone run without extra settings is now done (`evidence/24`): it found the README did not mention `VERIFICATION_SECRET`, the SMTP names or the worker, and the README was fixed. |
 
 ## Checked and not a defect
 
