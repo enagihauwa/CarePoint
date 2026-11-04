@@ -1,0 +1,22 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-04. A THROWAWAY database (carepoint_drift, dropped afterwards). The real database was not touched.
+
+##### 1. Apply all my migrations to a clean database
+$ npx prisma migrate deploy
+    └─ migration.sql
+
+All migrations have been successfully applied.
+
+##### 2. Someone changes the database by hand, outside any migration
+$ psql -c 'alter table "Patient" add column nickname text'
+ALTER TABLE
+
+##### 3. migrate status: does Prisma notice?
+$ npx prisma migrate status
+Datasource "db": PostgreSQL database "carepoint_drift", schema "public" at "localhost:5432"
+
+4 migrations found in prisma/migrations
+
+Database schema is up to date!
+
+##### 4. migrate dev: Prisma compares the real database with the migration history
+$ npx prisma migrate dev --name should_not_run
