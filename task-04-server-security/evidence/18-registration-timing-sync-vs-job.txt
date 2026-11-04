@@ -1,0 +1,23 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-04. Production build, THROWAWAY database (dropped afterwards). Part A: POST /api/register with the email QUEUED (no worker running, so nothing is sent). Part B: the time to hand one email to Gmail, which a synchronous registration would add.
+
+##### A. Registration response time with the email queued in the background job (8 requests, new emails)
+  request 1: status=201 time=2.690461s
+  request 2: status=201 time=0.445077s
+  request 3: status=201 time=0.486108s
+  request 4: status=201 time=0.477538s
+  request 5: status=201 time=0.429030s
+  request 6: status=201 time=0.365611s
+  request 7: status=201 time=0.386400s
+  request 8: status=201 time=0.463780s
+
+##### B. Time for one email to be handed to Gmail (3 real sends to the user's own address)
+  send 1: 2500 ms, accepted
+  send 2: 2277 ms, accepted
+  send 3: 2142 ms, accepted
+
+##### Reading of the numbers (written by Claude, from the output above)
+  Queued registration, requests 2 to 8: 0.37 to 0.49 s, median about 0.46 s. That time is mostly the Argon2id hash (about 77 ms, docs/hashing.md) and the call to the breach service (docs/breach-check.md).
+  Request 1 took 2.69 s because it was the first in a freshly started server: it also started the queue connection and created the queue. This is a one-off cost per server start, and it is in the queued figure, not hidden.
+  Handing one email to Gmail took 2.1 to 2.5 s in this run.
+  So a registration that sent the email INSIDE the request would take about 0.46 + 2.3 = roughly 2.8 s, about six times the queued 0.46 s. This sum is an estimate from two separate measurements. I did not build and time a synchronous version of the route.
+  The bigger problem is not the average. Earlier today the same connection to Gmail sometimes hung for 30 s with "Greeting never received" (evidence/16, 16a, 17a try 1). A synchronous registration would have hung for 30 s on those occasions, and the patient would see a spinning button and no confirmation. With the queue, the patient gets the answer in under half a second and the worker retries the email in the background.
