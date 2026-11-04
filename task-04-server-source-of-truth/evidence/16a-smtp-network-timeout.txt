@@ -1,0 +1,7 @@
+
+> test-email
+> tsx scripts/test-email.ts
+
+FAILED: could not log in to smtp.gmail.com:587.
+type: Error | code: ETIMEDOUT | smtp reply code: none
+message: Greeting never received
