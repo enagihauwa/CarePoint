@@ -6,22 +6,25 @@ Drafted by Claude at my request from the repo and from checks it ran, so the wor
 
 ## Status
 
-Updated 3 November 2026. Only Tasks 1 and 2 have been built.
+Updated 4 November 2026. Tasks 1 to 4 are built. Task 5 (sessions, compliance, defence) is not started.
 
 **Built, and checked on my machine**
-- The design system (colour roles, 15 type styles, 3 shadows) is generated into `src/styles/tokens.css` by `npm run tokens`. Task 1 notes are in `task-01-design-system/`.
-- The home page (`/`) and the booking page (`/book`) use only those tokens, apart from the few documented exceptions in `src/styles/spacing.css`.
-- The booking form saves a row through `POST /api/bookings`. I booked twice and checked each booking in the server log (`POST /api/bookings 201`) and in Prisma Studio (`task-02-scaffold-ship-and-find/evidence/11`, `12`).
-- With the database connection broken on purpose, a booking returns `500` and the page says nothing was booked (`evidence/13-write-failed-logs.txt`).
+- The design system is generated into `src/styles/tokens.css` by `npm run tokens`. Task 1 notes are in `task-01-design-system/`.
+- The home page (`/`) and the booking page (`/book`) use only those tokens, apart from the few documented exceptions in `src/styles/spacing.css`. Task 2 notes are in `task-02-scaffold-ship-and-find/`.
+- Sign-up, log-in and reset forms with browser-side rules, and an accessibility audit (`task-03-client-validation/`).
+- **The server checks everything itself** (`task-04-server-security/`): the same rules as the form on the server, a request size limit, rate limits, a breach check on new passwords, Argon2id password hashing, and a nine-table database designed on paper and migrated by hand.
+- **Email verification works end to end:** a 6-digit code is emailed through Gmail by a background worker (pg-boss, in the same PostgreSQL), and the sign-up page asks for it. Checked once for real on my own inbox (`task-04-server-security/evidence/19c` to `19e`).
 - The five doctors are seed data in `prisma/seed.ts`.
-- Each page has its own title. The home page has the SEO and Open Graph tags. Both pages have a favicon.
 
 **Followed from a fresh clone, but not yet by another person**
-- On 3 November Claude Code cloned the repo, followed the getting-started steps on an empty database and sent a test booking (`task-02-scaffold-ship-and-find/evidence/22-fresh-clone-run.txt`). That run found two bugs, both now fixed: `prisma generate` was listed before `.env` existed, and an empty `SITE_URL` crashed every page. It was not a person, so a friend still has to follow the whole README (`docs/readme-test.md`, not written yet).
+- On 3 November, and again on 4 November (`task-04-server-security/evidence/24-fresh-clone-run.txt`), Claude Code cloned the repo and followed this README on an empty database. The second run found that the README did not mention `VERIFICATION_SECRET`, so the worker failed. That is now in the steps below. It was not a person, so a friend still has to follow the whole README (`task-02-scaffold-ship-and-find/docs/readme-test.md`, not written yet).
 
-**Not built**
-- Patient accounts, login and passwords, the admin dashboard, payment records, the lab-result status, email confirmations and the job queue. These are Tasks 3 to 5 and their folders are empty.
-- Real validation. The booking form only checks that every field is filled in and that the date is a real date.
+**Not built, or not working**
+- **Log in and password reset.** Both answer `501`. Nobody can log in. Sessions are Task 5.
+- **Online booking is paused.** `/api/bookings` answers `503` because a booking must now belong to a patient, and no patient can log in yet.
+- Payments, the lab-result status and the admin dashboard.
+- The worker has to be started by hand (`npm run worker`). Nothing restarts it.
+- Mail from the test Gmail account lands in Spam. A real sending domain is not set up.
 
 ## Stack, and why
 
@@ -33,7 +36,7 @@ Updated 3 November 2026. Only Tasks 1 and 2 have been built.
 | `tsx` | Runs the seed script. |
 | `scripts/tokens-to-css.js` | Turns the Figma token exports into CSS. |
 
-Planned in `AGENT-RULES.md`, **not installed yet**: Argon2id, Nodemailer, pg-boss and node-cron.
+Also installed: `argon2` (Argon2id password hashing), `nodemailer` (Gmail SMTP) and `pg-boss` (the job queue in PostgreSQL). Planned in `AGENT-RULES.md` and **not installed**: node-cron.
 
 ## Getting started
 
@@ -59,6 +62,19 @@ DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/carepoint"
 
 Replace `USER` and `PASSWORD` with your own PostgreSQL user name and password (the user is often `postgres`). Keep `carepoint` at the end, because that is the database you just created.
 
+To try email verification you also need two more things in `.env`. Without them the site still runs, but no email is sent and the worker fails:
+
+```
+VERIFICATION_SECRET="a random string of at least 32 characters"
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT="587"
+SMTP_USER="the Gmail address that sends the codes"
+SMTP_PASSWORD="a Gmail APP password, not the normal password"
+SMTP_FROM="the same Gmail address"
+```
+
+Make the secret with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`. An app password needs 2-step verification on the Gmail account (myaccount.google.com/apppasswords). Gmail refuses the normal password. `npm run test-email` checks that the login works and sends nothing.
+
 Now run these, **in this order**. `prisma generate` needs `DATABASE_URL` to exist, so it has to come after you create `.env`:
 
 ```bash
@@ -67,6 +83,8 @@ npx prisma migrate deploy
 npx prisma db seed
 npm run dev
 ```
+
+In a **second terminal**, in the same folder, start the worker that sends the emails: `npm run worker`. The first time it starts, pg-boss creates its own `pgboss` tables in the database.
 
 `generate` builds the code the app uses to talk to the database. `migrate deploy` builds the tables in your empty database from the migration files in `prisma/migrations/`. `db seed` fills in the five doctors, so the booking form has doctors to choose from.
 
@@ -80,7 +98,8 @@ Set in `.env`, which git ignores. Only the names are in `.env.example`.
 
 - `DATABASE_URL`: the PostgreSQL connection string. Required.
 - `SITE_URL`: the public address, used for the canonical and Open Graph links. Optional, it defaults to `http://localhost:3000`.
-- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`: for email. Listed for later, not used yet.
+- `VERIFICATION_SECRET`: at least 32 characters. Keys the hash of each emailed code. Needed by the worker. Anyone who has it and a copy of the database could work out codes, so it stays in `.env`.
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM`: the Gmail account that sends the codes. `SMTP_PASSWORD` is an app password.
 
 ## What it deliberately does not do
 
@@ -94,18 +113,20 @@ From `AGENT-RULES.md` and `docs/business-brief.md`:
 
 | Defect | Where |
 |---|---|
-| The same doctor, date and time can be booked twice. Nothing in the database or the API prevents it. | `prisma/schema.prisma:20`, `src/app/api/bookings/route.ts:8` |
-| Dates in the past and any phone text are accepted. Only "filled in" and "a real date" are checked. | `src/app/api/bookings/route.ts:10`, `:12` |
+| The database now refuses the same doctor, date and time twice (a unique rule on `Booking`), but online booking is paused, so nothing uses it yet. | `prisma/schema.prisma`, `src/app/api/bookings/route.ts` |
+| The old booking rules (past dates accepted, any phone text) went away with the old route. They must be rebuilt when booking returns in Task 5. | `src/app/api/bookings/route.ts` |
 | When the database is down, the booking page shows an error but still answers HTTP 200. A check that only reads status codes would call it healthy. | `src/app/book/page.tsx:40` |
 | Several widths are written as multiples of `--space-4` because no width tokens exist. It works, but a spacing token is being used as a width. | `src/styles/home.css:43`, `:55`, `:71`, `:79`; `src/styles/book.css:8` |
 | Three values are not design tokens (`20ch`, `6vw` and the 1.5 line-height ratio), plus the Task 1 spacing and radius values. | `src/styles/spacing.css` |
 | Only the Latin subset of DM Sans is self-hosted, so accented characters outside it fall back to `system-ui`. | `src/styles/fonts.css:9` |
 | The canonical and Open Graph addresses say `localhost` until `SITE_URL` is set. There is no Open Graph preview image. | `src/app/layout.tsx:10` |
 
-Task 1 defects are in `task-01-design-system/docs/defects.md`.
+Task 1 defects are in `task-01-design-system/docs/defects.md`, Task 3 in `task-03-client-validation/docs/defects.md` and Task 4 in `task-04-server-security/docs/defects.md`.
 
 ## Links
 
 - Pull request for the information design work: https://github.com/enagihauwa/CarePoint/pull/1
 - Task 1: `task-01-design-system/`
 - Task 2 notes and evidence: `task-02-scaffold-ship-and-find/`
+- Task 3: `task-03-client-validation/`
+- Task 4: `task-04-server-security/`

@@ -1,0 +1,58 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-04. A FRESH CLONE of the committed state (HEAD a1585af) in a temp folder, following the root README literally: .env has DATABASE_URL only. Throwaway database carepoint_fresh (dropped afterwards). No real email is sent.
+
+$ git clone <this repo> fresh-clone && cd fresh-clone && npm install
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+$ create .env with DATABASE_URL only
+  .env has 1 line(s): DATABASE_URL
+
+$ npx prisma generate
+✔ Generated Prisma Client (7.10.1) to .\src\generated\prisma in 139ms
+
+
+$ npx prisma migrate deploy
+
+All migrations have been successfully applied.
+
+$ npx prisma db seed
+Seeded 5 doctors.
+
+The seed command has been executed.
+
+$ npm run build
+  exit code 0
+
+$ npm start, then the checks a newcomer would try
+--- home page
+  GET / -> 200
+--- book page
+  GET /book -> 200
+--- sign-up page
+  GET /auth?mode=signup -> 200
+--- register
+{"message":"Check your email for a 6-digit code. If it is not in your inbox, check your Spam folder."}  -> 201
+--- verify with a wrong code
+{"error":"That code is not right, or it has expired. Check it, or ask for a new one."}  -> 400
+--- booking (paused)
+{"error":"Online booking is paused while patient accounts are added. Please contact the front desk to book."}  -> 503
+
+$ npm run worker   (45 seconds; the job queued by the registration above is waiting)
+
+> worker
+> tsx scripts/worker.ts
+
+Worker running on queue "send-verification-email". Press Ctrl+C to stop.
+
+--- what the queue says about that job
+ retry |           0 | {"name": "Error", "stack": "Error: VERIFICATION_SECRET must be set in .env and be at least 32 characters.\n    at secretKey (C:\\Users\\USER\\AppData\\Local\\Temp\\claude\\c--Users-USER-Desktop-CarePoint\\89ec5ed9-2e9c-4a32-bda1-4
+
+  verification rows stored:      0
+  verification rows stored: 
+
+##### Reading of this (written by Claude)
+  What worked from a fresh clone with only DATABASE_URL set: install, prisma generate, migrate deploy, seed, build, the pages, registration (201), the verify route (generic 400), and the paused booking (503). No step needed anything that was not in the README, up to that point.
+  What failed: the worker. The registration queued a job, and the worker could not make a code because VERIFICATION_SECRET was not set. The job went to "retry" with the clear message "VERIFICATION_SECRET must be set in .env and be at least 32 characters". No code was stored and no email was sent. The README did not mention the secret, the SMTP settings or the worker. That was a gap in the README, not in the code.
+  Fix: the root README now lists VERIFICATION_SECRET and the SMTP_* names, says how to make the secret, and says to start `npm run worker` in a second terminal. The old name SMTP_PASS in the README was also wrong (the code reads SMTP_PASSWORD) and is corrected.
+  Not tested: a run with the new README by a person, and sending a real email from the clone (that needs real Gmail credentials, which a clone does not have).
