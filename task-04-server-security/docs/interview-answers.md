@@ -98,9 +98,21 @@ That is why I normalise names and emails but leave passwords exactly as entered.
 
 The same password can produce two different Argon2id hashes because Argon2id uses a unique random salt each time it hashes a password. This is a good security practice because even if two users choose the same password, their stored hashes will be different. It also makes it harder for attackers to use precomputed tables to crack passwords. The salt is included in the resulting hash, so I don't need to create a separate salt column in the database. The cost is that the hash takes more storage space than the original password, but I consider that a reasonable trade-off because the database stores a secure password hash instead of the actual password.
 
+## 12. Why did your first migration fail on Booking, what were your three fix steps, and what did you decide about the existing booking?
+
+*Drafted by Claude from my files (`evidence/03`, `docs/migrations.md`). I read it and approved it as it stands.*
+
+My first migration attempt failed because I made `patientId` a required column on `Booking`, and that table already had one row. Prisma refused: "Added the required column `patientId` to the `Booking` table without a default value. There are 1 rows in this table, it is not possible to execute this step." The existing booking had nothing to put in the new column. Prisma's own version would also have dropped `name` and `phone` before anything could be copied. I fixed it by hand-writing the migration in three steps: add `patientId` empty, fill it, then make it required and only then drop the old columns. I chose to keep the booking by attaching it to a placeholder patient with an unusable password, not the real person's details. The cost is that the booking now belongs to nobody. Claude ran this at my request, after a backup.
+
 ## 13. Why are payment amounts whole kobo integers, and why is PaymentEvent append-only?
 
 I used whole kobo integers for payment amounts because storing money as decimal or floating-point values can lead to rounding problems. Since 100 kobo equals one naira, storing the amount in kobo gives me an exact whole number to work with. In my schema, I used `amountKobo` for both `Payment` and `PaymentEvent`, and also for the service price list. I made `PaymentEvent` append-only so that payment history is preserved. Instead of changing or deleting an earlier record when a payment status changes, a new event is added. This gives the clinic a history of what changed, the previous and new status, the amount, the payment method, who recorded it and when. It also helps with accountability and auditing.
+
+## 14. Why a queue (pg-boss) for the verification email instead of sending it in the registration request?
+
+*Drafted by Claude from my files (`evidence/18`, `docs/verification-design.md`). I read it and approved it as it stands.*
+
+I used a queue so registration doesn't wait for Gmail. In my timing test, registration with the email queued took about 0.46 seconds. Handing one email to Gmail took 2.1 to 2.5 seconds (2,500, 2,277 and 2,142 ms), so sending inside the request would cost about 2.8 seconds, roughly six times as long. That is an estimate from two separate measurements. The bigger risk is that Gmail sometimes didn't answer for 30 seconds from my network, which would leave a patient waiting with no confirmation. With the queue, the patient gets an answer straight away and the worker retries in the background. The cost is that the worker must be running, and I start it by hand with `npm run worker`. If it isn't running, no email is sent.
 
 ## 15. Why is the code stored as a keyed hash (HMAC) and not Argon2id or plain SHA-256?
 
