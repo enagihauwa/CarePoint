@@ -11,7 +11,6 @@ function getTransporter() {
     port: Number(process.env.SMTP_PORT || 587),
     secure: false, // port 587 starts plain, then upgrades with STARTTLS
     requireTLS: true, // refuse to send credentials unless the connection is encrypted
-    family: 4, // IPv4 only: on this machine's network the IPv6 attempt to Gmail hangs for 30 s ("Greeting never received")
     auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASSWORD },
   });
   return transporter;
