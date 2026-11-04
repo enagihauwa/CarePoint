@@ -61,13 +61,15 @@ model Patient {
 
 // Only a hash of the session token is stored.
 model Session {
-  id        Int       @id @default(autoincrement())
-  user      User      @relation(fields: [userId], references: [id])
-  userId    Int
-  tokenHash String    @unique
-  createdAt DateTime  @default(now())
-  expiresAt DateTime
-  revokedAt DateTime?
+  id         Int       @id @default(autoincrement())
+  user       User      @relation(fields: [userId], references: [id])
+  userId     Int
+  tokenHash  String    @unique
+  createdAt  DateTime  @default(now())
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  // Updated when the session is used. Lets the server see how long a session has been idle.
+  lastSeenAt DateTime  @default(now())
 
   @@index([userId])
   @@index([expiresAt])
