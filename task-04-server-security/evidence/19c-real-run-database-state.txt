@@ -1,0 +1,22 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-04. The REAL run: worker started with 'npm run worker', code emailed through Gmail, typed into the page by the user. Email address and names hidden.
+ id | email  | verified 
+----+--------+----------
+  1 | unc*** | f
+  3 | jid*** | t
+(2 rows)
+
+ id | userId | attempts | used | code_hash_start | hash_len 
+----+--------+----------+------+-----------------+----------
+  1 |      3 |        1 | t    | 2e909d25cbf0... |       64
+(1 row)
+
+   state   | retry_count |        kind        | user_id |      took       
+-----------+-------------+--------------------+---------+-----------------
+ failed    |           3 | verify             | 3       | 00:00:00.057402
+ failed    |           3 | verify             | 3       | 00:00:00.115426
+ failed    |           3 | verify             | 3       | 00:00:00.07249
+ failed    |           3 | already_registered | 3       | 00:00:00.05884
+ completed |           0 | already_registered | 3       | 00:00:02.906512
+ completed |           0 | verify             | 3       | 00:00:02.353727
+(6 rows)
+
