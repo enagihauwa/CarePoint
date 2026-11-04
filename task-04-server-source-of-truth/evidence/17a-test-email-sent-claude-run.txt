@@ -1,0 +1,3 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-04: npx tsx scripts/send-test-email.ts <the user's own address>. One email, with a SAMPLE code (048213) that verifies nothing. The address was removed before saving.
+try 1 failed: ETIMEDOUT  Greeting never received
+SENT on try 2: accepted=["[the user's test address, removed from this file]"] rejected=[] response="250 2.0.0 OK  1793771225 5b1f17b1804b1-4b2a9faff90sm127180385e9.5 - gsmtp"
