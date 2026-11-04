@@ -93,3 +93,15 @@ Names and email addresses can contain accidental spaces, so I normalise them bef
 Passwords are different. Spaces can be part of a password, including at the beginning or end. If I automatically trim a password, I could change what the patient originally created and make it impossible for them to log in with the same password.
 
 That is why I normalise names and emails but leave passwords exactly as entered.
+
+## 11. Why did hashing the same password twice give two different hashes, why is that good, and what does it cost in the database?
+
+The same password can produce two different Argon2id hashes because Argon2id uses a unique random salt each time it hashes a password. This is a good security practice because even if two users choose the same password, their stored hashes will be different. It also makes it harder for attackers to use precomputed tables to crack passwords. The salt is included in the resulting hash, so I don't need to create a separate salt column in the database. The cost is that the hash takes more storage space than the original password, but I consider that a reasonable trade-off because the database stores a secure password hash instead of the actual password.
+
+## 13. Why are payment amounts whole kobo integers, and why is PaymentEvent append-only?
+
+I used whole kobo integers for payment amounts because storing money as decimal or floating-point values can lead to rounding problems. Since 100 kobo equals one naira, storing the amount in kobo gives me an exact whole number to work with. In my schema, I used `amountKobo` for both `Payment` and `PaymentEvent`, and also for the service price list. I made `PaymentEvent` append-only so that payment history is preserved. Instead of changing or deleting an earlier record when a payment status changes, a new event is added. This gives the clinic a history of what changed, the previous and new status, the amount, the payment method, who recorded it and when. It also helps with accountability and auditing.
+
+## 15. Why is the code stored as a keyed hash (HMAC) and not Argon2id or plain SHA-256?
+
+I used a keyed hash, HMAC, to protect the email verification code in the database. The verification code is short, so if I stored it as plain text, anyone who gained access to the database could read it and use it. A plain SHA-256 hash would be better than storing the code directly, but a six-digit code has a very small number of possible combinations, so someone could try all the possibilities against the hash. HMAC adds a secret key that is kept outside the database. This means that having access to the database alone is not enough to calculate and check the possible codes. I used this approach because it is suitable for short verification codes.
