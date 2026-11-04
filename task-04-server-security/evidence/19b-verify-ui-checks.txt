@@ -1,0 +1,23 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-04. Production build, THROWAWAY database (dropped afterwards), headless Chrome. No worker running, no email sent.
+PASS  registration answers 201
+PASS  the page says which address the code went to (the trimmed address as typed)
+PASS  the page tells the patient to check Spam
+PASS  the page states the 10 minute expiry
+PASS  the heading 'Check your email' has focus
+PASS  the old 'Your details are saved' claim is gone
+PASS  a short code is refused in the browser with a message, and nothing is sent
+PASS  focus stays on the code field
+(node:51968) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+PASS  a wrong code gets 400
+PASS  the message appears under the code field
+PASS  focus returns to the code field
+PASS  it does not claim the email is verified
+PASS  Send a new code answers 202
+PASS  the page confirms it, and says to check Spam
+PASS  the right code gets 200
+PASS  the page says the email is verified
+PASS  it does not claim that logging in works
+PASS  'Go back and fix it' returns to the form with the typed values kept
+
+result: 18 passed, 0 failed

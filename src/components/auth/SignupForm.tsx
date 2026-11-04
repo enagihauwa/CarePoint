@@ -6,11 +6,12 @@ import {
 } from "@/lib/validation/auth";
 import { CautionIcon, Field, PasswordField, TermsCheckbox } from "./fields";
 import ModeLink from "./ModeLink";
+import VerifyStep from "./VerifyStep";
 
 type Result =
   | { kind: "idle" }
   | { kind: "saving" }
-  | { kind: "saved"; name: string }
+  | { kind: "saved"; name: string; email: string }
   | { kind: "failed"; message: string };
 
 type FieldName = "name" | "email" | "phone" | "password" | "terms";
@@ -91,8 +92,8 @@ export default function SignupForm({ focusHeading = false }: { focusHeading?: bo
     const phone = normalizePhone(values.phone);
 
     try {
-      // The password is sent so the server can check it itself. The server does not store it yet
-      // (hashing and the users table come later) and never logs it.
+      // The password is sent so the server can check it, hash it with Argon2id and store only the hash.
+      // The server never logs it.
       const response = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -101,7 +102,7 @@ export default function SignupForm({ focusHeading = false }: { focusHeading?: bo
       const body = await response.json().catch(() => ({}));
       // Only a 201 counts as saved. Anything else is shown as the error it is.
       if (response.status === 201) {
-        setResult({ kind: "saved", name });
+        setResult({ kind: "saved", name, email });
       } else {
         // The server names the fields it did not accept (termsAccepted is the "terms" box).
         const fields: Record<string, string[]> = body.fields ?? {};
@@ -121,13 +122,10 @@ export default function SignupForm({ focusHeading = false }: { focusHeading?: bo
     }
   }
 
+  // After a 201 the patient is asked for the code that was emailed. "Go back and fix it" returns to the form
+  // with everything still typed in, so a mistyped email can be corrected.
   if (result.kind === "saved") {
-    return (
-      <section className="booking-card confirmation" role="status" aria-labelledby="signup-done">
-        <h1 className="confirmation-title type-title-large" id="signup-done">Thank you, {result.name}</h1>
-        <p className="type-body-large">Your details are saved. Logging in is not available yet, so there is nothing more to do for now.</p>
-      </section>
-    );
+    return <VerifyStep name={result.name} email={result.email} onChangeEmail={() => setResult({ kind: "idle" })} />;
   }
 
   return (

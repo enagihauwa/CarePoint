@@ -31,7 +31,7 @@ type FieldProps = {
   id: string;
   label: string;
   type?: HTMLInputTypeAttribute;
-  inputMode?: "text" | "tel" | "email";
+  inputMode?: "text" | "tel" | "email" | "numeric";
   autoComplete?: string;
   value: string;
   onChange: (value: string) => void;

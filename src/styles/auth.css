@@ -56,3 +56,7 @@
 }
 
 .book-title:focus { outline: none; }
+
+/* A link-looking action that is really a button (Resend, Use a different email). */
+button.auth-switch { background: none; border: 0; padding: 0; font: inherit; }
+button.auth-switch[aria-disabled="true"] { color: var(--color-on-surface-variant); cursor: not-allowed; text-decoration: none; }
