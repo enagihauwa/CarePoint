@@ -1,6 +1,6 @@
-# Email verification: design (before any code)
+# Email verification: design and what was built
 
-Drafted by Claude at my request, so the wording is not all mine. **Status: waiting for my approval. Nothing here is built.** The four decisions in the first table are mine. Everything else is Claude's proposal for me to accept or change.
+Drafted by Claude at my request, so the wording is not all mine. **Status: approved on 4 November 2026 and built.** The four decisions in the first table are mine. Everything else was Claude's proposal, which I approved. The section "What was built, and what happened" at the end records the results, including what went wrong.
 
 ## My decisions
 
@@ -76,3 +76,27 @@ The template is the one in `src/lib/email/verificationEmail.ts`, with the placeh
 ## Files this will add or change
 
 `src/lib/email/` (sender), `src/lib/verification.ts` (make and check codes), `src/app/api/verify/route.ts`, `src/app/api/verify/resend/route.ts`, `scripts/worker.ts`, the sign-up form (a code step and a corrected message), `.env.example`, `schema.md` (pg-boss tables) and `package.json` (`pg-boss`, `nodemailer`).
+
+## What was built, and what happened
+
+**Built as designed:** the code functions (`src/lib/verification.ts`), the queue and job (`src/lib/queue.ts`, `src/jobs/sendVerificationEmail.ts`), the worker (`scripts/worker.ts`, run with `npm run worker`), the routes (`/api/verify`, `/api/verify/resend`), registration queueing the email, and the code step on the sign-up page (`src/components/auth/VerifyStep.tsx`). The limits in the table above are the ones in the code.
+
+**Results**
+- Code logic: 18 checks (`evidence/19a`). Queue and job, with a fake mailer: 17 checks (`18a`). Routes over HTTP: 26 checks (`19` to `22b`). The page in a real browser: 18 checks (`19b`). All on a throwaway database.
+- **The real run** (`19c`, `19d`, `19e`): the worker started, a real code was emailed through Gmail to my own inbox, I typed it into the page, and the account became verified. The queue shows the verify job took 2.35 s and the duplicate notice 2.9 s.
+- Registration with the email queued took about 0.46 s. Handing one email to Gmail took 2.1 to 2.5 s, so sending it inside the request would have cost about six times as much (`18`).
+- **The reuse defect:** I looked for a way to reuse a spent code and did not find one (`22`). That does not prove there is none.
+
+**What went wrong**
+1. **The first real attempt sent nothing.** Every verify job failed in the worker with `P1010 role "USER" denied`. The worker's script loaded `.env` after its imports had already run, so the database client found no `DATABASE_URL` and connected as my Windows user instead of `postgres`. **My tests had passed because they set `DATABASE_URL` on the command line**, which hid the bug. The fix was a `scripts/loadEnv.ts` that must be the first import. I found it by reading the failed jobs in the queue table, not by guessing. The same mistake had broken the email test script earlier in the day.
+2. **My first test email bounced.** It went to a mistyped address. Gmail answered `250 OK` and the failure came back minutes later as a separate message.
+3. **The email landed in Spam** (`docs/email-copy.md`).
+4. **Gmail's mail server intermittently did not answer** from my network (`evidence/16a`). I first blamed IPv6. That was wrong, and I removed the change.
+
+## Weaknesses found in the built version
+
+- **A mistyped email leaves an unverified account behind.** Going back to fix the address and submitting again creates a second account for the corrected address. The first one stays, with no code ever sent to anyone who owns it.
+- **The verified page greets the name typed last, not the stored name.** A second registration with a different name and the same email verified the first account while greeting the second name.
+- **The two timing paths differ.** A verify request for an unknown email skips two database lookups, so it is slightly faster. I did not measure it. The answers are identical, but the time could still leak.
+- **The worker is started by hand.** If nobody runs `npm run worker`, jobs wait in the queue and no email goes out. A job waits 15 minutes before it is dropped.
+- **Failed jobs are deleted an hour after they finish**, so the record of why an email failed does not last.

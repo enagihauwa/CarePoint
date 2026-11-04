@@ -30,6 +30,7 @@ This folder holds the notes and the evidence. **The code is in the app itself**:
 | `breach-check.md` | How the check works, and why it fails open |
 | `email-copy.md` | The email's styling, the wrong first render, and the copy changes |
 | `not-implemented.md` | Security controls I chose not to build |
+| `verification-design.md` | Email verification: the design, what was built, and what went wrong |
 | `defects.md` | What is fixed and what is still open |
 
 ## Evidence (`evidence/`)
@@ -45,7 +46,11 @@ Files marked "claude-capture" were produced by Claude Code at my request. The ot
 | `13`, `13b`, `13c`, `14` | Rate limit triggered, UI check, logic checks, and the address limit defeated |
 | `15`, `15a`, `15b`, `15c` | The breach check: results, my screenshot, regression, logic checks |
 | `09`, `10`, `10a` | My sign-up input (capitals in the email) and the stored, normalised row, and Claude's check of it |
-| `23`, `23a` | The verification email in Chrome, and the wrong first render |
+| `16`, `16a`, `17`, `17a`, `17b` | Gmail refusing my normal password, a network timeout, the app password working, and two test sends |
+| `18`, `18a` | Registration time with the email queued, against sending it in the request, and the queue checks |
+| `19` to `22b`, `19a`, `19b` | Code logic, the routes over HTTP (stored hash, expired, wrong, reused), and the page in a browser |
+| `19c`, `19d`, `19e` | The real end-to-end run: database state, the verified page and the duplicate notice (names hidden) |
+| `23`, `23a`, `23b` | The verification email in Chrome, the wrong first render, and in a real Gmail inbox |
 
 ## How to run it
 
@@ -57,8 +62,9 @@ See the root `README.md` for set-up. For the evidence scripts, the `.sh` files n
 |---|---|
 | Server validation, body limit, rate limiting, breach check | Online booking (paused until Task 5) |
 | Hashing measured and applied to stored passwords | Login and sessions (Task 5) |
-| Nine tables, migrated by hand (`docs/migrations.md`), and registration creates a hashed user | Email verification, SMTP, background job, evidence `16` to `22` |
-| Verification email template and render, `not-implemented.md`, `defects.md` | My own screenshot `02`, and the drift-error evidence |
+| Nine tables, migrated by hand (`docs/migrations.md`), and registration creates a hashed user | The drift-error evidence for the migrations |
+| Email verification end to end: codes, queue, worker, Gmail, the page, and a real run | A sending domain so mail stops landing in Spam |
+| `not-implemented.md`, `defects.md`, `verification-design.md` | My own screenshot `02` |
 | | My 19 interview answers, and the optional walkthrough |
 
-Login and reset still return `501`, and online booking is paused (`503`). Nothing here claims a patient can log in.
+Login and reset still return `501`, and online booking is paused (`503`). The verification worker is started by hand with `npm run worker`. Nothing here claims a patient can log in.

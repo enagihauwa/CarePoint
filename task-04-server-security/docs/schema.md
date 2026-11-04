@@ -20,7 +20,7 @@ The real database uses singular PascalCase names, like the tables I already have
 
 **The retrieval table.** The guide asks for a table of text chunks for retrieval. CarePoint has no retrieval or question-answering feature, and I did not want to invent one to justify a table. My fifth table is `Service`, the price list for consultations and lab tests, which answers one of the clinic's three repeated questions ("how much does it cost?"). It is **not** a retrieval table, and I say so on purpose. I have not yet confirmed with my lecturer that this is acceptable.
 
-pg-boss, the background job library, creates and manages its own tables in a separate schema when it first runs. They are not part of this design.
+pg-boss, the background job library, creates and manages its own tables in a separate schema called `pgboss` when it first starts. They are not in my Prisma migrations and not part of this nine-table design. They were created in my real database on 4 November 2026, when the worker first ran. The tables are `bam`, `instance`, `job`, `job_common`, `job_dependency`, `queue`, `queue_stats` (plus dated copies of it), `schedule`, `subscription`, `version` and `warning`. I only use `job` and `queue`. **A consequence:** `prisma migrate` does not know about this schema, so a fresh database needs the worker (or any code that starts the queue) to run once before the tables exist, and `prisma migrate reset` would not remove them.
 
 ## The tables, every column
 
