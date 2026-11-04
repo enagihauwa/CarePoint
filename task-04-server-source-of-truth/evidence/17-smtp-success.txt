@@ -1,0 +1,6 @@
+# Run by the user on their own machine, 2026-11-04, with the Gmail APP password in .env. Saved by the loop that stops at the first SUCCESS (try 1).
+
+> test-email
+> tsx scripts/test-email.ts
+
+SUCCESS: the app logged in to smtp.gmail.com:587 as the configured account.

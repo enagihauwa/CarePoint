@@ -1,0 +1,17 @@
+# Copied by Claude Code from the terminal output the user pasted into the chat, 2026-11-04. The user ran this on their own machine
+# with the Gmail account's NORMAL password in .env (this loop was not saved to a file at the time). Only the last 3 lines of each try were shown.
+# Gmail refuses the normal password and asks for an app password. Try 2 shows the separate, intermittent network timeout (see 16a).
+# Command: for i in 1 2 3; do echo "--- try $i"; npm run test-email 2>&1 | tail -3; done
+
+--- try 1
+534 5.7.9  https://support.google.com/mail/?p=InvalidSecondFactor 5b1f17b1804b1-4b2ab3ea6a9sm160536025e9.15 - gsmtp
+server said: 534-5.7.9 Application-specific password required. For more information, go to
+534 5.7.9  https://support.google.com/mail/?p=InvalidSecondFactor 5b1f17b1804b1-4b2ab3ea6a9sm160536025e9.15 - gsmtp
+--- try 2
+FAILED: could not log in to smtp.gmail.com:587.
+type: Error | code: ETIMEDOUT | smtp reply code: none
+message: Greeting never received
+--- try 3
+534 5.7.9  https://support.google.com/mail/?p=InvalidSecondFactor 5b1f17b1804b1-4b43c17ecdasm43892285e9.5 - gsmtp
+server said: 534-5.7.9 Application-specific password required. For more information, go to
+534 5.7.9  https://support.google.com/mail/?p=InvalidSecondFactor 5b1f17b1804b1-4b43c17ecdasm43892285e9.5 - gsmtp
