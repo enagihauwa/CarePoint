@@ -1,5 +1,5 @@
 // Renders the verification email to HTML with a SAMPLE code and a PLACEHOLDER expiry. Nothing is sent.
-// Run: npx tsx task-04-server-source-of-truth/evidence/23-render-email.ts <output.html>
+// Run: npx tsx task-04-server-security/evidence/23-render-email.ts <output.html>
 import { writeFileSync } from "node:fs";
 import { verificationEmail } from "../../src/lib/email/verificationEmail";
 const { html } = verificationEmail({ name: "Sample Patient", code: "048213", expiresInMinutes: 10 });

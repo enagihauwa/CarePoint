@@ -1,4 +1,4 @@
-// Checks for src/lib/verification.ts. Run: npx tsx task-04-server-source-of-truth/evidence/19a-code-logic-script.ts
+// Checks for src/lib/verification.ts. Run: npx tsx task-04-server-security/evidence/19a-code-logic-script.ts
 try { process.loadEnvFile(); } catch {}
 import { generateCode, hashCode, codeMatches, expiryFromNow, CODE_TTL_MINUTES } from "../../src/lib/verification";
 let pass = 0, fail = 0;

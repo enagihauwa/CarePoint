@@ -1,6 +1,6 @@
-# Task 4: the server is the source of truth
+# Task 4: server security
 
-Task 3 showed that the browser's rules are not a security boundary. Task 4 moves the rules to the server, slows down guessing, checks new passwords against known breaches, and designs the real database. Some parts are **not finished**, and the Status section says which.
+Task 4 is the server security task. Task 3 showed that the browser's rules are not a security boundary. Task 4 moves the rules to the server, slows down guessing, checks new passwords against known breaches, and designs the real database. Some parts are **not finished**, and the Status section says which.
 
 Drafted by Claude at my request from the files in this folder, so the wording is not all mine.
 

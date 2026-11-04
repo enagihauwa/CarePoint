@@ -1,0 +1,20 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-04. THROWAWAY database carepoint_test (dropped afterwards), real pg-boss, FAKE mailer: no email was sent.
+PASS  pg-boss created its own tables in a separate schema called pgboss  [bam, instance, job, job_common, job_dependency, queue, queue_stats, queue_stats_20261104, queue_stats_20261105, schedule, subscription, version, warning]
+PASS  my own tables are still in the public schema and untouched  [Booking, Doctor, EmailVerification, Patient, Payment, PaymentEvent, Service, Session, User, _prisma_migrations]
+PASS  the job ran: exactly one email was handed to the mailer  [1 email(s)]
+PASS  the email contains a 6-digit code
+PASS  one verification row is stored, unused, about 10 minutes ahead  [expires in 598 s]
+PASS  the stored value is a hash of that code, not the code
+PASS  the job in the queue holds only the user id and the kind, never the code  [{"kind":"verify","userId":2}]
+PASS  the code appears nowhere in the queue's tables
+PASS  a second job gives a second code and retires the first  [used, live]
+PASS  after two simulated mail failures the job was retried and completed  [{"state":"completed","retry_count":2}]
+PASS  only one email went out in the end
+PASS  only the newest code is live after the retries  [1 live code(s)]
+PASS  and the code in the email that went out is the live one
+PASS  the 'someone tried to register' notice was sent
+PASS  that notice contains no code
+PASS  and it did not create a verification row  [5 rows before and after]
+PASS  a job for a user that does not exist completes without sending anything  [{"state":"completed"}]
+
+result: 17 passed, 0 failed
