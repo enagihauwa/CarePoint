@@ -1,0 +1,21 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-04. The real VERIFICATION_SECRET from .env is used; it is never printed.
+PASS  every code is exactly 6 digits
+PASS  codes with a leading zero occur (about 10%), so zero-padding works  [19902 of 200000 = 9.95%]
+PASS  the codes are not all the same, and are spread out  [181062 different values in 200000]
+PASS  the first digit is spread evenly (each digit 9% to 11%)  [19902, 20179, 20060, 19868, 19925, 19943, 20035, 20159, 19919, 20010]
+PASS  the hash is 64 hex characters
+PASS  the same user and code always give the same hash
+PASS  the same code for a different user gives a different hash
+PASS  a different code gives a different hash
+PASS  the stored hash does not contain the code
+PASS  the right code matches
+PASS  a wrong code does not match
+PASS  the right code for the wrong user does not match
+PASS  a code with the wrong shape is refused (5 digits, letters, spaces, empty)
+PASS  a damaged stored hash does not match and does not crash
+PASS  expiry is 10 minutes after now
+PASS  a different secret gives a different hash
+PASS  a missing secret is refused with a clear error
+PASS  a short secret is refused
+
+result: 18 passed, 0 failed
