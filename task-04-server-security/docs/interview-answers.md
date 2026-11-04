@@ -1,6 +1,6 @@
 # Task 4 interview answers
 
-Batch 1 (questions 1 to 5), pasted by me. The questions were suggested by Claude, because the Task 4 guide lists none.
+All 19 answers. The questions were suggested by Claude, because the Task 4 guide lists none. Answers 12, 14 and 18 were drafted by Claude from my files and approved by me as they stand, and each says so. The others are as I wrote or pasted them.
 
 ## 1. Why did you need server-side validation when the form was already checking the fields? What did the raw request test show?
 
@@ -125,6 +125,14 @@ During the real verification run, the first emails were not delivered because th
 ## 17. Someone registers with an email that already has an account. What does the response say, what does the owner of that email receive, and why is it done this way?
 
 When someone tries to register with an email address that is already in use, the page and API return exactly the same response as they would for a new email address. The person attempting to register cannot tell whether an account already exists. However, the actual owner of the email receives a message saying, "Someone tried to register your email." The message does not contain a verification code. I chose this approach to prevent strangers from using the registration process to discover which email addresses have accounts on the platform. Giving a different response for an existing email would expose that information. Sending a notification to the real owner provides awareness of the attempt without revealing a code that could be used to verify or access the account.
+
+## 18. Name two security controls you chose not to build. For each, say why not now and what would make you add it.
+
+*Drafted by Claude from my files (`docs/not-implemented.md`, `evidence/14`). I read it and approved it as it stands.*
+
+**Two-factor authentication (2FA).** I didn't build it because I wanted to finish the basics first: server-side validation, rate limiting, the breach check and password hashing. An extra login step could also make things harder for patients who aren't comfortable with technology. I would add it when the app holds more sensitive patient information or the clinic asks for another layer of protection. The first accounts that would need it are the front-desk staff, because they can see patient details, so I would start there.
+
+**IP reputation checks.** I didn't build them because they add cost and can wrongly flag legitimate patients, especially people on shared networks or mobile internet, which many patients here use. I would consider them if the app faced persistent attacks from suspicious addresses that rate limiting couldn't handle. They would also be weak at the moment, because my rate limiter reads the client address from a header that a client can fake, as I showed in `evidence/14`. I would have to fix that first, or the check would be trusting an address that attackers can choose.
 
 ## 19. Looking at `docs/defects.md`, which open defect worries you most, and what would you fix first with more time?
 

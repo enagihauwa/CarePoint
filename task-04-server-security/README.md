@@ -66,6 +66,6 @@ See the root `README.md` for set-up. For the evidence scripts, the `.sh` files n
 | Nine tables, migrated by hand (`docs/migrations.md`), and registration creates a hashed user | A person (not Claude) following the README from a fresh clone |
 | Email verification end to end: codes, queue, worker, Gmail, the page, and a real run | A sending domain so mail stops landing in Spam |
 | `not-implemented.md`, `defects.md`, `verification-design.md` | |
-| | My 19 interview answers, and the optional walkthrough |
+| | The optional walkthrough |
 
 Login and reset still return `501`, and online booking is paused (`503`). The verification worker is started by hand with `npm run worker`. Nothing here claims a patient can log in.
