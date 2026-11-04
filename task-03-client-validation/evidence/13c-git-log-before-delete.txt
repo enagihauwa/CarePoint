@@ -2,10 +2,10 @@
 # $ git log --oneline --graph --all   (BEFORE deleting experiment/hidden-submit-button, so the experiment commit is visible)
 
 * 657269d experiment: hide the create account button until the form is valid
-* 4ec0878 add screenshot of the disabled until valid button with its explanation
-* 7d9ab11 write the task 3 readme
-* b4767ac record the form fix and the after fix attack evidence
-* d212c5c send the trimmed name and email and the cleaned phone number from the sign-up form
-* f8fac09 add the form attack and direct request evidence and the client side is not security notes
-* 0cd3ba5 add the after state accessibility evidence and record the fixes in the audit
-* 874b13d fix the accessibility problems found in the audit: live error slots, focus handling, aria-disabled while saving, terms link in a new tab
+* 43a6dcd add screenshot of the disabled until valid button with its explanation
+* 326b8f1 write the task 3 readme
+* cf0e98d record the form fix and the after fix attack evidence
+* b6bbdbb send the trimmed name and email and the cleaned phone number from the sign-up form
+* e4dc3e0 add the form attack and direct request evidence and the client side is not security notes
+* a65adaa add the after state accessibility evidence and record the fixes in the audit
+* d341d91 fix the accessibility problems found in the audit: live error slots, focus handling, aria-disabled while saving, terms link in a new tab

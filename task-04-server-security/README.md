@@ -32,6 +32,7 @@ This folder holds the notes and the evidence. **The code is in the app itself**:
 | `not-implemented.md` | Security controls I chose not to build |
 | `verification-design.md` | Email verification: the design, what was built, and what went wrong |
 | `defects.md` | What is fixed and what is still open |
+| `history-rewrite.md` | Removing a real person's name from git history, what it cost, and what is still open |
 
 ## Evidence (`evidence/`)
 

@@ -1,4 +1,4 @@
-# Run by Claude Code on the user's machine at the user's request, 2026-11-03. BEFORE: the Task 3 version of POST /api/register (commit f6fa45b), production build, throwaway database.
+# Run by Claude Code on the user's machine at the user's request, 2026-11-03. BEFORE: the Task 3 version of POST /api/register (commit a156f0c), production build, throwaway database.
 # Same request ten times. curl -w "status=%{http_code} time_ms=..." where time_ms is time_total x 1000.
 
 request 1 status=201 time_s=0.477171

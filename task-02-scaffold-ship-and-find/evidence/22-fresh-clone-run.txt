@@ -23,7 +23,7 @@ $ git clone /c/Users/USER/Desktop/CarePoint CarePoint
 Cloning into 'CarePoint'...
 done.
 [exit 0]
-a660243 add task 2 defects with files, lines and production cost
+458adae add task 2 defects with files, lines and production cost
    D   A   T
 
 $ npm install
@@ -195,8 +195,8 @@ $ psql ... select id, name, "doctorId", date, time, "createdAt" from "Booking"  
 ##### Found: GET /book returned 500 (SITE_URL empty after copying .env.example). Fixed in the main repo (layout.tsx). Pulling the fix into the fresh clone and re-testing.
 $ git pull
 From C:/Users/USER/Desktop/CarePoint
-   a660243..a40c950  main       -> origin/main
-Updating a660243..a40c950
+   458adae..f30ea8a  main       -> origin/main
+Updating 458adae..f30ea8a
 Fast-forward
  src/app/layout.tsx | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)

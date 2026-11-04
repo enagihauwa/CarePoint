@@ -42,7 +42,7 @@ Claude sent three direct requests to `POST /api/register` using curl, without go
 
 ### 11. Why did you use `git revert` instead of `git reset --hard`, and what went wrong the first time?
 
-I used `git revert` to undo the regretted password change. The commit was still local and had not been pushed, but there were two later commits on top of it. Using `git reset --hard` would have thrown away those later commits as well, so I chose `git revert` to undo only the specific change while preserving the later work. The commit was `b4a7cc6`, which reduced the password maximum from 64 to 6 characters, making it impossible to meet the minimum of 8. My first revert attempt stopped in the Vim commit-message editor, which I closed without saving. I then had to clear the staged changes before trying again with `--no-edit`. The successful revert was `5be57dc`.
+I used `git revert` to undo the regretted password change. The commit was still local and had not been pushed, but there were two later commits on top of it. Using `git reset --hard` would have thrown away those later commits as well, so I chose `git revert` to undo only the specific change while preserving the later work. The commit was `f5eeebf`, which reduced the password maximum from 64 to 6 characters, making it impossible to meet the minimum of 8. My first revert attempt stopped in the Vim commit-message editor, which I closed without saving. I then had to clear the staged changes before trying again with `--no-edit`. The successful revert was `b5c9c5e`.
 
 ### 12. Where does the wording of your terms and privacy notice come from?
 

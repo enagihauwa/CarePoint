@@ -1,4 +1,4 @@
-# Run by Claude Code on the user's machine at the user's request, 2026-11-04. A FRESH CLONE of the committed state (HEAD a1585af) in a temp folder, following the root README literally: .env has DATABASE_URL only. Throwaway database carepoint_fresh (dropped afterwards). No real email is sent.
+# Run by Claude Code on the user's machine at the user's request, 2026-11-04. A FRESH CLONE of the committed state (HEAD 8711782) in a temp folder, following the root README literally: .env has DATABASE_URL only. Throwaway database carepoint_fresh (dropped afterwards). No real email is sent.
 
 $ git clone <this repo> fresh-clone && cd fresh-clone && npm install
   run `npm fund` for details

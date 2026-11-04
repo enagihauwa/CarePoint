@@ -1,4 +1,4 @@
-# Run by Claude Code on the user's machine at the user's request, 2026-11-03. State: AFTER the accessibility fixes (commit 874b13d).
+# Run by Claude Code on the user's machine at the user's request, 2026-11-03. State: AFTER the accessibility fixes (commit d341d91).
 # Same script as the BEFORE run (evidence/21-accessibility-checks-script.js). A line that says 'ok' means that check found NO problem; its text describes the problem it looked for.
 # Automated check of attributes, focus and live regions. NOT a screen-reader test.
 
