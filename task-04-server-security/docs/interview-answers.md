@@ -47,3 +47,49 @@ I accepted this for now because I didn't want patients to be prevented from regi
 However, I understand that there is a risk. If the service is down, a password that has appeared in a known data breach might get through because the application couldn't check it.
 
 The server records the message: `Breach check unavailable: registration allowed without it.` But there is currently no failure count or alert to show how often this happens. That is something that still needs attention.
+
+## 6. Your breach check sends only 5 characters of a hash to Have I Been Pwned. What does the service send back, and who does the final comparison?
+
+The application doesn't send the actual password or its full hash to Have I Been Pwned. It first hashes the password and sends only the first five characters of that hash.
+
+The service responds with a list of matching hash suffixes and how many times each one has appeared in known data breaches. My application then checks the returned list against the remaining part of the hash it already calculated.
+
+This means the final comparison happens on my application, not on the Have I Been Pwned service. The service only receives the first five characters, so it doesn't receive the actual password or the full hash needed to identify the password directly.
+
+## 7. The breach check fails open, but the rate limiter fails closed. Why did you choose opposite behaviour?
+
+I chose different behaviours because the two situations have different consequences.
+
+For the breach check, I used fail-open because I didn't want registration to stop just because an external service was temporarily unavailable. The disadvantage is that a password might not be checked during that period.
+
+For rate limiting, I used fail-closed because it is a security control against repeated requests. If the rate limiter cannot work properly, I don't want the application to simply allow unlimited requests. That could make it easier for someone to abuse the login or registration endpoints.
+
+So, I accepted the risk of temporarily missing a breach check rather than blocking registration, but I didn't want a failure in rate limiting to remove that protection.
+
+## 8. Why does a rate-limited request return a generic message instead of saying whether the email or address limit was reached?
+
+I used a generic message so the response doesn't reveal which rate-limit condition was triggered.
+
+If the application tells someone that a particular email has reached its limit, it could give an attacker useful information about that email address and the activity associated with it.
+
+The `429 Too Many Requests` status code tells the person that they need to wait before trying again. The `Retry-After` header also gives information about when they can try again.
+
+My intention was to provide enough information for a genuine user without exposing unnecessary details about the security checks.
+
+## 9. Why do login and password reset return generic messages, while registration gives field-level messages?
+
+I made the difference because of the information each process can reveal.
+
+During login and password reset, I don't want the application to tell someone whether an email address is registered or not. That could allow an attacker to find out which people have accounts on the platform.
+
+Registration is different because the user needs to understand what is wrong with the information they entered. For example, they should know if their name, email or phone number is missing or incorrectly formatted.
+
+So, I used more specific validation messages during registration, while keeping login and reset responses generic to reduce the risk of exposing account information.
+
+## 10. Why does the server trim names and emails but never trim passwords?
+
+Names and email addresses can contain accidental spaces, so I normalise them before storing them. Emails are also converted to lowercase so that the same address isn't treated as different simply because of capital letters.
+
+Passwords are different. Spaces can be part of a password, including at the beginning or end. If I automatically trim a password, I could change what the patient originally created and make it impossible for them to log in with the same password.
+
+That is why I normalise names and emails but leave passwords exactly as entered.
