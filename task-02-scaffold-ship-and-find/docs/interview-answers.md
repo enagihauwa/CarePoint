@@ -54,7 +54,7 @@ Claude tested it and showed me that, with the BOM present, the real `DATABASE_UR
 
 ### 14. Why are your booking numbers 3 and 4 instead of 1 and 2?
 
-The booking records initially had IDs 3 and 4 because the first two test records had been created and later deleted. PostgreSQL does not automatically reset its auto-increment sequence when records are deleted, so the next records continued from ID 3. After row 3 is deleted, only the dummy record `[name removed]` remains. The IDs do not mean that records 1 and 2 are still in the database; they simply show that those numbers were previously used. This is normal database sequence behaviour.
+The booking records initially had IDs 3 and 4 because the first two test records had been created and later deleted. PostgreSQL does not automatically reset its auto-increment sequence when records are deleted, so the next records continued from ID 3. After row 3 is deleted, only one booking remains, which belongs to a real person whose details I have removed from my notes. The IDs do not mean that records 1 and 2 are still in the database; they simply show that those numbers were previously used. This is normal database sequence behaviour.
 
 ### 15. Explain your working-tree drawing. Where is the point you cannot undo quietly, and why?
 
