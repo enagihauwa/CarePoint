@@ -1,5 +1,5 @@
 // The database connection URL lives in prisma.config.ts (read from DATABASE_URL in .env).
-// Translated from task-04-server-source-of-truth/docs/schema.md (my paper design, evidence/01).
+// Translated from task-04-server-security/docs/schema.md (my paper design, evidence/01).
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"

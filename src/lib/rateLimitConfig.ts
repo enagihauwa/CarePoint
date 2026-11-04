@@ -1,5 +1,5 @@
 // Rate limits for the account endpoints (Task 4, step 8). The reasons are in
-// task-04-server-source-of-truth/docs/rate-limiting.md. Every attempt is counted, successful or not,
+// task-04-server-security/docs/rate-limiting.md. Every attempt is counted, successful or not,
 // because there are no accounts yet to tell them apart.
 const MINUTE = 60_000;
 const HOUR = 60 * MINUTE;

@@ -1,6 +1,6 @@
 // Task 4, step 4: how long does a password hash take on this machine, and how does Argon2id
 // compare with a fast hash (SHA-256)? Run it twice and save the output (see the commands in
-// task-04-server-source-of-truth/docs). Nothing here touches the database.
+// task-04-server-security/docs). Nothing here touches the database.
 const argon2 = require("argon2");
 const crypto = require("crypto");
 

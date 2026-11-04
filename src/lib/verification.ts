@@ -1,6 +1,6 @@
 import { createHmac, randomInt, timingSafeEqual } from "node:crypto";
 
-// The numbers from task-04-server-source-of-truth/docs/verification-design.md (my decisions).
+// The numbers from task-04-server-security/docs/verification-design.md (my decisions).
 export const CODE_LENGTH = 6;
 export const CODE_TTL_MINUTES = 10;
 export const MAX_WRONG_TRIES = 5;
