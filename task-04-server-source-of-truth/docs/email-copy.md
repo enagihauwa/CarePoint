@@ -6,7 +6,8 @@ Drafted by Claude at my request, so the wording is not all mine. I need to rewor
 
 - `evidence/23-email-render-claude-capture.png`: the email rendered in **headless Chrome**, run by Claude Code at my request, with a **sample** code (`048213`) and a **placeholder** expiry of 10 minutes. Nothing was sent.
 - `evidence/23a-email-wrong-first-render-claude-capture.png`: the **first, wrong** render, kept on purpose.
-- It was **not** tested in Gmail, Outlook or a phone. Chrome is more forgiving than those. I can only claim it renders correctly in Chrome. My own screenshot of the email arriving in a real inbox is still to be taken (after SMTP works in step 10).
+- `evidence/23b-email-in-real-inbox.png`: **my own screenshot** of the email opened in a real Gmail inbox (cropped to the email body, so the sender and my address are not shown). It matches the Chrome render: same colours, sizes, spacing and rounded corners. The font is the Arial fallback, as expected.
+- **Still not checked:** a phone, Outlook or any other mail app, and whether it lands in the Inbox or Spam for a patient. The sample email was sent twice to test addresses, the first to a mistyped address that bounced (`docs/verification-design.md`).
 
 ## The wrong render, and what I traced it to
 
