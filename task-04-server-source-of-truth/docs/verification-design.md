@@ -62,6 +62,7 @@ The template is the one in `src/lib/email/verificationEmail.ts`, with the placeh
 ## Known weaknesses I am accepting
 
 - **The job can send twice.** If the worker dies after sending but before it records success, the job runs again and sends a second code. The newest code wins, so this only costs a duplicate email.
+- **"Sent" does not mean delivered.** My first test email went to a mistyped address. Gmail answered `250 OK` when the app handed the message over, and the failure (`550 5.1.1 The email account that you tried to reach does not exist`) came back minutes later as a separate bounce message in the sending inbox. The job can only know the mail server accepted the message. So a patient who mistypes their email waits for a code that will never come. The sign-up page must say which address the code was sent to, and offer Resend and a way to correct the address.
 - **A queued email can be lost** if the database is down when the job is added. The patient can use Resend.
 - **The verification state is not used yet.** Nothing checks `emailVerifiedAt` until login exists (Task 5).
 - **Someone who can read the patient's email can verify the account.** Email verification proves access to the inbox and nothing more.
