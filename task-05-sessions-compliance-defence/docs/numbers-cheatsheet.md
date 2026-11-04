@@ -51,6 +51,16 @@ Notes: the register limit of 10 an hour is **my number, not measured** (`docs/de
 | Job and queue | job takes 2.35 s, finished jobs deleted after 1 hour | `evidence/19c-real-run-database-state.txt`, `src/lib/queue.ts` | |
 | Database | 9 tables of my own, 4 migrations | `prisma/schema.prisma`, `evidence/02b-database-state-now.png` | |
 
+## Task 5: sessions (src/lib/sessionConfig.ts, docs/decisions.md)
+
+| Number | Value | Where | Why |
+|---|---|---|---|
+| Patient session | 7 days (604,800 s) | `src/lib/sessionConfig.ts` | Patients book rarely on their own phones. |
+| Admin session | 8 hours (28,800 s) | same | The front desk is a shared computer that sees every patient. |
+| Session token | 32 random bytes, 43 characters in the cookie, SHA-256 stored (64 hex) | `src/lib/session.ts`, `evidence/01a-login-session-checks.txt` | 256 bits of randomness: nothing to guess. |
+| Cookie flags | `HttpOnly`, `SameSite=Lax`, `Path=/`, `Secure` except on localhost | same | Decision 1 in `docs/decisions.md`. |
+| Login timing, wrong password against unknown email | 136 ms against 135 ms (medians of 10) | `evidence/01a-login-session-checks.txt` | The dummy hash makes them the same. |
+
 ## Still to add in Task 5
 
 Session length, cookie flags, the deletion grace period, the job interval and purge counts, and the two session token IDs. Add each one here as I decide it, with the reason.

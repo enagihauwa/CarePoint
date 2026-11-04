@@ -1,0 +1,37 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-04. Production build, THROWAWAY database (dropped afterwards). Not the user's own evidence. Second run: the first run's Secure-flag check failed because the host was read from request.url, and the code was fixed to read the Host header.
+PASS  the right password gives 200  [{"name":"patient","role":"patient","emailVerified":true}]
+PASS  the body holds name, role and verified only (no id, no token)
+  Set-Cookie flags: Max-Age=604800; Path=/; HttpOnly; SameSite=Lax
+PASS  the cookie is named carepoint_session
+PASS  HttpOnly is set (page scripts cannot read it)
+PASS  SameSite=Lax is set
+PASS  Path=/ is set
+PASS  a patient's Max-Age is 7 days (604800 seconds)
+PASS  Secure is NOT set on localhost (the development server has no HTTPS)
+PASS  the token is 43 characters (32 random bytes)  [43 characters]
+PASS  on a non-localhost host the cookie IS Secure
+PASS  an admin's Max-Age is 8 hours (28800 seconds)  [Max-Age=28800]
+PASS  two logins by the patient made two session rows  [2 rows]
+PASS  the stored value is the SHA-256 hash of the cookie's token
+PASS  the raw token is stored nowhere in the session table
+PASS  two logins gave two different tokens
+PASS  and two different stored hashes (prefixes be32504e and e6bd9da3)
+PASS  expiresAt is about 7 days ahead  [604800 s]
+PASS  lastSeenAt is set
+PASS  the server log shows only a hash prefix, never the token
+PASS  the server log never holds the password
+  wrong password -> 401 {"error":"Incorrect email or password."}
+  unknown email  -> 401 {"error":"Incorrect email or password."}
+PASS  a wrong password and an unknown email give the identical status and body
+PASS  neither sets a cookie
+  median time, wrong password for a real account: 136 ms; unknown email: 135 ms; placeholder account (invalid stored hash): 116 ms
+PASS  an unknown email takes about as long as a wrong password (medians within 25 ms)  [136 vs 135 ms]
+PASS  a stored value that is not a real hash is not much faster either (within 40% of a real check)  [116 ms]
+PASS  an unverified account can log in, and the page is told it is unverified
+PASS  a password with spaces at both ends works as typed (never trimmed)
+PASS  and the trimmed version does not
+PASS  bad input gets the generic 400 or the size 413  [400, 400, 413]
+PASS  the same login on an unverified-then-verified flow never returns another user's data
+PASS  the per-email limit answers 429 on the 6th try  [401,401,401,401,401,429,429]
+
+result: 30 passed, 0 failed
