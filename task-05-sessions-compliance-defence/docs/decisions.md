@@ -13,6 +13,6 @@ Recorded 4 November 2026. **Drafted by Claude.** Claude proposed each choice wit
 
 ## Open question, raised by Claude because two of my files disagree
 
-`AGENT-RULES.md` names **node-cron** for the scheduled purge. The Task 5 checklist says "node-cron **or** a pg-boss schedule". My own Task 4 code already runs a pg-boss worker. I have to choose, and the choice goes here: **(not chosen yet)**.
+**Decided 4 November 2026: the pg-boss schedule** (I accepted Claude's suggestion). Original question: `AGENT-RULES.md` names **node-cron** for the scheduled purge. The Task 5 checklist says "node-cron **or** a pg-boss schedule". My own Task 4 code already runs a pg-boss worker. I chose pg-boss. The node-cron line in `AGENT-RULES.md` therefore no longer matches what I build, and I should update it.
 
 Claude's suggestion is the pg-boss schedule: it is already installed, it keeps its state in PostgreSQL so a restart does not lose the schedule, and it needs no second scheduler. The cost is that the purge only runs while the worker is running (`npm run worker`).
