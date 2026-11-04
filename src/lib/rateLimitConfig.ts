@@ -12,6 +12,9 @@ export const ADDRESS_LIMITS = {
   // A proposal, not derived from the clinic: nobody has measured how many patients the front desk
   // registers in an hour.
   register: { max: 10, windowMs: HOUR },
+  // Email verification (task-04-server-security/docs/verification-design.md). A proposal, not measured.
+  verify: { max: 20, windowMs: 15 * MINUTE },
+  resend: { max: 10, windowMs: HOUR },
 } as const;
 
 export const EMAIL_LIMITS = {
@@ -19,6 +22,10 @@ export const EMAIL_LIMITS = {
   login: { max: 5, windowMs: 15 * MINUTE },
   // Nobody needs more than a couple of reset emails an hour. This caps inbox flooding.
   reset: { max: 3, windowMs: HOUR },
+  // The code's own cap of 5 wrong tries is what stops guessing. At most 3 new codes an hour is 15 guesses
+  // an hour against 1,000,000 possibilities.
+  verify: { max: 10, windowMs: 15 * MINUTE },
+  resend: { max: 3, windowMs: HOUR },
 } as const;
 
 // The most counters kept in memory. When it is full, expired ones go first, then the oldest.

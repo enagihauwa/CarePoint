@@ -1,0 +1,8 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-04. Production build, THROWAWAY database (dropped afterwards). No worker running, no email sent: codes are made with the same functions the worker uses.
+##### 22. A used code cannot be used a second time
+  first use of the code -> 200 {"message":"Your email is verified."}
+  the SAME code again   -> 400 {"error":"That code is not right, or it has expired. Check it, or ask for a new one."}
+PASS  the first use works
+PASS  the second use is refused
+PASS  even if the account were unverified again, the spent code still does not work  [status 400]
+  Defect check: I looked for a way to reuse a code and did not find one in these routes. This does not prove there is none.

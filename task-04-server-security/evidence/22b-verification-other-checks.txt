@@ -1,0 +1,14 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-04. Production build, THROWAWAY database (dropped afterwards). No worker running, no email sent: codes are made with the same functions the worker uses.
+PASS  with two live codes only the NEWEST works (older refused, newest accepted)  [old 400, new 200]
+PASS  a code that is not exactly 6 digits gets the generic 400 before the database is used
+PASS  an already-verified account gets the same refusal
+PASS  resend gives the identical 202 answer for an unverified account, a missing one and a verified one  [{"message":"If that email can be verified, we have sent a new code. Check your Spam folder too."}]
+PASS  resend queued exactly one job for the unverified account and none for the verified or missing ones  [jobs: [{"kind":"verify","userId":9}]]
+PASS  a new and a duplicate registration give the identical 201 answer  [{"message":"Check your email for a 6-digit code. If it is not in your inbox, check your Spam folder."}]
+PASS  registration queued a 'verify' job and the duplicate queued an 'already_registered' job  [["verify","already_registered"]]
+PASS  the account is created unverified
+PASS  no verification code exists yet (the worker makes it, and none is running)
+PASS  the per-email verify limit (10 per 15 minutes) answers 429 after 10 tries  [400,400,400,400,400,400,400,400,400,400,429,429]
+PASS  the per-email resend limit (3 per hour) answers 429 on the 4th  [202,202,202,429]
+
+result: 26 passed, 0 failed

@@ -1,0 +1,5 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-04. Production build, THROWAWAY database (dropped afterwards). No worker running, no email sent: codes are made with the same functions the worker uses.
+##### 20. An expired code is refused
+  the RIGHT code, but it expired a minute ago -> 400 {"error":"That code is not right, or it has expired. Check it, or ask for a new one."}
+PASS  an expired code is refused with 400
+PASS  the user is not verified

@@ -1,0 +1,8 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-04. Production build, THROWAWAY database (dropped afterwards). No worker running, no email sent: codes are made with the same functions the worker uses.
+##### 19. What the database holds for a code, and a correct code verifying the account
+  stored row: codeHash=5b40a4e478262d07... (64 hex chars), not expired=true, usedAt=null, attempts=0
+PASS  the database holds a 64-character hash, not the code
+  POST /api/verify with the right code -> 200 {"message":"Your email is verified."}
+PASS  the right code gives 200
+PASS  the user is now marked verified
+PASS  the code is marked used

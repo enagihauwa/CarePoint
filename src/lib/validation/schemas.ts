@@ -65,6 +65,10 @@ export const LoginSchema = z.object({
 
 export const ResetSchema = z.object({ email: loginEmail });
 
+// The code is exactly six digits. Anything else is refused before the database is touched.
+export const VerifySchema = z.object({ email: loginEmail, code: z.string().regex(/^\d{6}$/) });
+export const ResendSchema = z.object({ email: loginEmail });
+
 export const GENERIC_BAD_REQUEST = "Check your details and try again.";
 
 // The first message for each field, in the shape { field: ["message"] }.
