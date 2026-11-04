@@ -52,35 +52,35 @@ The server records the message: `Breach check unavailable: registration allowed 
 
 The application doesn't send the actual password or its full hash to Have I Been Pwned. It first hashes the password and sends only the first five characters of that hash.
 
-The service responds with a list of matching hash suffixes and how many times each one has appeared in known data breaches. My application then checks the returned list against the remaining part of the hash it already calculated.
+The service sends back a list of matching hash suffixes and how many times each one has appeared in known breaches. My application then compares the returned suffixes with the remaining part of the hash it calculated.
 
-This means the final comparison happens on my application, not on the Have I Been Pwned service. The service only receives the first five characters, so it doesn't receive the actual password or the full hash needed to identify the password directly.
+This means the final comparison happens inside my application, not on the Have I Been Pwned service. The service only receives the first five characters, so it doesn't receive the full hash or the actual password.
 
 ## 7. The breach check fails open, but the rate limiter fails closed. Why did you choose opposite behaviour?
 
 I chose different behaviours because the two situations have different consequences.
 
-For the breach check, I used fail-open because I didn't want registration to stop just because an external service was temporarily unavailable. The disadvantage is that a password might not be checked during that period.
+For the breach check, I used fail-open because I didn't want registration to stop simply because an external service was temporarily unavailable. The disadvantage is that a password might not be checked during that period.
 
-For rate limiting, I used fail-closed because it is a security control against repeated requests. If the rate limiter cannot work properly, I don't want the application to simply allow unlimited requests. That could make it easier for someone to abuse the login or registration endpoints.
+For rate limiting, I used fail-closed because it is a security control against repeated requests. If the rate limiter itself fails, the application should not allow requests to continue without that protection.
 
-So, I accepted the risk of temporarily missing a breach check rather than blocking registration, but I didn't want a failure in rate limiting to remove that protection.
+In the code, a rate-limiter failure returns `503 Service Unavailable`, with a generic message and a `Retry-After` header of 60 seconds. So, I accepted the possibility of missing a breach check temporarily, but not the removal of rate-limit protection.
 
 ## 8. Why does a rate-limited request return a generic message instead of saying whether the email or address limit was reached?
 
-I used a generic message so the response doesn't reveal which rate-limit condition was triggered.
+I used one generic message so the application doesn't reveal which limit was reached.
 
-If the application tells someone that a particular email has reached its limit, it could give an attacker useful information about that email address and the activity associated with it.
+The message is: "Too many attempts. Please try again later."
 
-The `429 Too Many Requests` status code tells the person that they need to wait before trying again. The `Retry-After` header also gives information about when they can try again.
+The application returns `429 Too Many Requests` and includes a `Retry-After` header to tell the client how long to wait before trying again.
 
-My intention was to provide enough information for a genuine user without exposing unnecessary details about the security checks.
+I also wanted to avoid revealing whether a particular email address had reached its limit. The email counter works whether or not an account exists, so the rate-limiting response doesn't expose whether that email is registered.
 
 ## 9. Why do login and password reset return generic messages, while registration gives field-level messages?
 
-I made the difference because of the information each process can reveal.
+I made the difference because of the information each process could reveal.
 
-During login and password reset, I don't want the application to tell someone whether an email address is registered or not. That could allow an attacker to find out which people have accounts on the platform.
+During login and password reset, I don't want the application to tell someone whether an email address is registered or not. That could make it easier for an attacker to identify people who have accounts on the platform.
 
 Registration is different because the user needs to understand what is wrong with the information they entered. For example, they should know if their name, email or phone number is missing or incorrectly formatted.
 
