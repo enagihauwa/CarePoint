@@ -1,6 +1,6 @@
 // The background worker: takes verification-email jobs off the queue and runs them.
 // Run in its own terminal: npm run worker   (the website does not need to be running for it to start)
-try { process.loadEnvFile(); } catch { /* no .env: the variables must already be set */ }
+import "./loadEnv"; // must stay the first import (see loadEnv.ts)
 import { sendVerificationEmail } from "../src/jobs/sendVerificationEmail";
 import { getBoss, VERIFICATION_QUEUE, type VerificationJob } from "../src/lib/queue";
 
