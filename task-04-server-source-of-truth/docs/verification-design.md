@@ -51,7 +51,7 @@ These numbers are Claude's proposal, derived as above and not measured. The exis
 
 - **Queue:** pg-boss, in my existing PostgreSQL. No Redis. It creates its own schema and tables the first time it starts, outside my Prisma migrations. The worker is a separate process (`npm run worker`), not part of the Next.js server, so a slow or failing email cannot stall a web request.
 - **Retries:** 3 attempts with a growing delay, then the job is marked failed. The patient can use Resend either way.
-- **Sending:** `nodemailer` with Gmail SMTP. Host and port are recorded in the evidence when I configure it. The account's address and app password live only in `.env` (`SMTP_USER`, `SMTP_PASS`, `MAIL_FROM`), and `.env.example` names them with no values.
+- **Sending:** `nodemailer` with Gmail SMTP. Host and port are recorded in the evidence when I configure it. The account's address and app password live only in `.env` (`SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM`), and `.env.example` names them with no values.
 - **The first attempt is expected to fail.** I will try the account's normal password, capture Gmail's rejection (`evidence/16`), then switch to an app password (`17`). This needs 2-step verification on the Gmail account.
 - **Timing (`18`):** registration response time with the email sent inside the request, against queued in the job.
 
