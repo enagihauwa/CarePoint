@@ -30,6 +30,12 @@ enum ServiceKind {
   lab_test
 }
 
+// What an emailed code is for. A code made for one purpose must never work for the other.
+enum CodePurpose {
+  verify
+  reset
+}
+
 // One person who can log in: a patient, or a front-desk member of staff (created by a seed script).
 model User {
   id              Int       @id @default(autoincrement())
@@ -146,15 +152,18 @@ model Service {
   createdAt DateTime    @default(now())
 }
 
+// Holds every emailed one-time code: email verification and password reset. The table keeps its first name;
+// "purpose" says which kind a row is.
 model EmailVerification {
-  id        Int       @id @default(autoincrement())
-  user      User      @relation(fields: [userId], references: [id])
+  id        Int         @id @default(autoincrement())
+  user      User        @relation(fields: [userId], references: [id])
   userId    Int
+  purpose   CodePurpose @default(verify)
   codeHash  String
   expiresAt DateTime
-  attempts  Int       @default(0)
+  attempts  Int         @default(0)
   usedAt    DateTime?
-  createdAt DateTime  @default(now())
+  createdAt DateTime    @default(now())
 
   @@index([userId, expiresAt])
 }
