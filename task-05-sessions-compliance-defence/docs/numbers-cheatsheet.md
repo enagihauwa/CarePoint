@@ -65,6 +65,10 @@ Notes: the register limit of 10 an hour is **my number, not measured** (`docs/de
 | Reset code | 6 digits, 10 minutes, 5 wrong tries (the Task 4 numbers, kept) | `src/lib/verification.ts`, `docs/password-reset.md` | Same reasons as verification. A reset code is worth more, so this is a trade I must defend. |
 | Choosing a new password | 10 per email and 20 per address, per 15 minutes | `src/lib/rateLimitConfig.ts` (`resetConfirm`) | The same as verify. **My number, not measured.** |
 | Sessions ended by a reset | all of the user's (1 in `evidence/11b`) | `evidence/11b-sessions-before-and-after-reset.txt` | A stolen cookie must stop working when the password changes. |
+| Admin session | 8 hours (28,800 s), already above | `src/lib/sessionConfig.ts` | Same reason as decision 2. |
+| Bookings listed on the front-desk page | the newest 50 | `src/app/admin/page.tsx` | A page size, not a business rule. **My number, not measured.** |
+| Largest payment accepted | 2,000,000,000 kobo (20,000,000 naira) | `src/lib/money.ts` | A technical ceiling under PostgreSQL's integer limit, not a price. No price was invented. |
+| Test for two clicks at once | 12 requests at once, on 5 bookings | `evidence/16a-admin-payments-script.ts` | 3 was too gentle: it passed without the lock (mistake 17). |
 
 ## Still to add in Task 5
 

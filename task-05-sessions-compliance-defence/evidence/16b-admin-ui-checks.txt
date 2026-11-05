@@ -1,0 +1,11 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-05. Real headless Chrome against a PRODUCTION BUILD, THROWAWAY database (dropped afterwards). Not the user's own evidence (that is 16, from my own browser).
+PASS  a patient in a real browser gets HTTP 403 and the 'no access' page
+PASS  and the page shows no patient or booking data
+PASS  a visitor with no login who opens /admin lands on the login page
+PASS  after logging in the admin is sent on to /admin and sees the booking
+PASS  submitting an empty form shows a message and saves nothing
+  after recording: Front desk Newest 50 bookings. Record a payment once the patient has paid at the desk. Booking 1: UI Patient Doctor Dr UI When 2026-12-09 at 15:00 Phone 08055556666 Payment Paid ₦12,500.50 by bank transfer, recorded by UI Desk, reference CP-20261105-ABE4A998
+PASS  the page shows the payment as paid, by bank transfer, recorded by the admin
+PASS  the form is gone for that booking, and the database agrees (paid, 1250050 kobo, by the admin)
+
+result: 7 passed, 0 failed

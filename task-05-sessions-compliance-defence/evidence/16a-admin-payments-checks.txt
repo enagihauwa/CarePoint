@@ -1,0 +1,61 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-05. Production build, THROWAWAY database (a schema-only copy, dropped afterwards). The real 'npm run create-admin' script ran as a child process. Not the user's own evidence (that is 16).
+# Sanity checks first. I deliberately removed (a) the admin role check from the API, (b) the 403 from the page and (c) took 'recordedById' from the request body: 9 checks failed as they should. (d) I removed the row lock that makes simultaneous clicks take turns, and my first race test (3 requests) STILL PASSED twice, so it proved nothing. I made it harsher (12 simultaneous requests on each of 5 bookings): without the lock, 10 of 12 requests each created a payment, 10 payments for one booking, and the check failed. All four were reverted and checked against a backup. The run below is the restored code.
+PASS  the script refuses a weak password and creates nothing  [Not created.  Your password needs at least 8 characters.]
+PASS  the script refuses a missing email
+  create-admin -> exit 0: Admin account created (user id 1). Now remove ADMIN_PASSWORD from .env.
+PASS  a valid run creates one admin (email lower-cased)
+PASS  the admin is verified, has no patient profile, and an Argon2id hash
+PASS  the script's output never holds the password or the email
+PASS  running it again for the same email refuses
+PASS  it will not turn an existing patient into staff
+PASS  registering with role:'admin' in the body makes a patient, never staff
+PASS  an admin's session cookie lasts 8 hours (28800 s)
+PASS  the login answer tells the page the role is admin
+PASS  /admin with no cookie: redirected to login, asking to come back to /admin  [/auth?mode=login&next=/admin]
+PASS  /admin with a made-up cookie: also sent to login (the page's own database check)
+  patient opens /admin -> HTTP 403
+PASS  a PATIENT opening /admin gets a real HTTP 403
+PASS  the 403 page says so, and holds no booking data (no names, no phone numbers)
+PASS  an unverified patient also gets 403
+PASS  the ADMIN sees the page (200) with the bookings, patient names and phone numbers
+PASS  an unpaid booking shows 'Not paid yet' and a form
+PASS  logged out: 401
+  patient calls the API -> 403 {"error":"Only front-desk staff can record payments.","code":"admin_only"}
+PASS  a PATIENT calling the API by hand gets 403 admin_only
+PASS  and no payment was created by either
+PASS  the admin's cookie sent from another site's Origin: 403, nothing saved
+  admin records -> 201 {"reference":"CP-20261105-15E234B1","amountKobo":1250050,"method":"cash","paidAt":"2026-11-05T21:33:33.799Z"}
+PASS  the admin records a payment: 201
+PASS  it is stored as paid, by cash, for exactly 1,250,050 kobo (12500.50 naira, no floating point)
+PASS  it is recorded by the logged-in admin, NOT by the id sent in the body
+PASS  paidAt is now, not the date sent in the body
+PASS  it has a reference like CP-20261105-AB12CD34  [CP-20261105-15E234B1]
+PASS  exactly one PaymentEvent was written: nothing -> paid, with the amount, method and admin
+PASS  recording the same booking again: 409 already_paid
+PASS  and still ONE payment and ONE event (the second did not overwrite)
+  12 simultaneous requests x 5 bookings: 1x201 11x409 -> 1 payment, 1 event | 1x201 11x409 -> 1 payment, 1 event | 1x201 11x409 -> 1 payment, 1 event | 1x201 11x409 -> 1 payment, 1 event | 1x201 11x409 -> 1 payment, 1 event
+PASS  12 simultaneous requests for one booking, five times over: always exactly one 201, eleven 409, ONE payment and ONE event
+PASS  a PENDING payment is changed to paid (same row), not duplicated
+PASS  its event says pending -> paid
+PASS  bad input is refused (400): amount 0  [400]
+PASS  bad input is refused (400): amount -5  [400]
+PASS  bad input is refused (400): amount 12.345  [400]
+PASS  bad input is refused (400): amount abc  [400]
+PASS  bad input is refused (400): amount 1e5  [400]
+PASS  bad input is refused (400): amount empty  [400]
+PASS  bad input is refused (400): amount number not text  [400]
+PASS  bad input is refused (400): amount over the ceiling  [400]
+PASS  bad input is refused (400): method bitcoin  [400]
+PASS  bad input is refused (400): no method  [400]
+PASS  bad input is refused (400): no booking id  [400]
+PASS  bad input is refused (400): not json  [400]
+PASS  a body over 4 KB: 413
+PASS  a booking that does not exist: 404
+PASS  none of those saved a payment
+PASS  a decimal amount in whole naira works too (5000.5 -> 500050 kobo)
+PASS  the page now shows the payment: amount, method, who recorded it, and the reference
+PASS  and no payment form is left on a paid booking (4 bookings, all paid: no form at all)
+PASS  the server log has 'Payment recorded: payment=… booking=… by=…' lines
+PASS  the log never holds an amount, a name, an email, a phone number or a password
+
+result: 52 passed, 0 failed

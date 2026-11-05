@@ -22,6 +22,7 @@ Started 4 November 2026. **Drafted by Claude from the repo, the documents and th
 | 14 | 4 | Claude | The root README did not mention `VERIFICATION_SECRET`, the SMTP settings or the worker. A fresh clone's worker failed. | A fresh clone followed the README. | README rewritten. | commit `d4d4343`, `task-04-server-security/evidence/24-fresh-clone-run.txt` |
 | 15 | 5 | Claude | I decided whether to add the `Secure` cookie flag by reading the host from `request.url`. In this framework that always says `localhost`, so on a real host the session cookie would have been sendable over plain HTTP. | My own login test, which asks for a cookie from a non-localhost host, failed. | The host is now read from the `Host` header. | `task-05-sessions-compliance-defence/evidence/01a-login-session-checks.txt` (first run failed, second passed), `src/lib/session.ts` |
 | 16 | 5 | Claude | My first test of logout logged in as one patient 8 times. Login allows 5 per email per 15 minutes, so the later logins were refused and my test went on with an **empty token**. Five checks failed, and several others, such as "the old token no longer works", **passed without proving anything**. | I read the failures and saw that the logout deleted 0 rows. | The test now stops if a login does not give a 43-character token, and each scenario has its own user. It runs again from a clean database. | `task-05-sessions-compliance-defence/evidence/06a-proxy-logout-checks.txt` (header), `06a-proxy-logout-script.ts` |
+| 17 | 5 | Claude | My first test for two clicks recording one payment sent **three** requests at once. When I deliberately removed the row lock, it **still passed twice**, so it proved nothing. With 12 simultaneous requests on each of 5 bookings and the lock removed, 10 of 12 requests each created a payment: 10 payments for one booking. | I removed the lock on purpose to see whether the test would notice. | The test sends 12 at once, five times over. With the lock restored there is exactly one payment each time. | `task-05-sessions-compliance-defence/evidence/16a-admin-payments-checks.txt` (header), `src/app/api/admin/payments/route.ts` |
 
 ## Mistakes the commits do not show (add yours)
 
@@ -34,6 +35,6 @@ Write these in my own words. For each one: what I believed, what was true, how I
 ## Patterns I can see so far
 
 Drafted by Claude. Check them before using them.
-- **Tests that share the bug's assumptions pass and prove nothing** (13, 16, and the earlier version of 14).
+- **Tests that share the bug's assumptions pass and prove nothing** (13, 16, 17, and the earlier version of 14).
 - **A claim written before it was checked, then corrected** (3, 5, 9).
 - **Private data committed, because redacting the file later does not remove it from history** (4).

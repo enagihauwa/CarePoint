@@ -14,4 +14,7 @@ Started 5 November 2026. **Drafted by Claude from what was built and left out.**
 | **The proxy covers only `/account`** | `/book` is public by design (soft gating). Each protected page must also call `getCurrentUser()` itself. A page that forgets is open. | `src/proxy.ts` |
 | **The `Origin` check runs on logout and booking only** | Those are the routes that change data for a logged-in person. Login, register and reset have no session to abuse. | `src/lib/session.ts` (`sameOrigin`) |
 | **The table is still called `EmailVerification` and the queue `send-verification-email`**, though both now carry reset codes | A name debt, not a bug. | `prisma/schema.prisma` |
+| **A wrong payment amount cannot be corrected** | Staff type the amount. There is no edit or undo: a correction would need a new event, which I did not design. A payment recorded wrongly stays wrong. | `src/app/api/admin/payments/route.ts` |
+| **No price list is used when recording a payment** | I would have had to invent prices. The `Service` table exists and is empty. | `prisma/schema.prisma` |
+| **Only one admin account, made by a script, and no way to change its password** | No admin screens beyond payments. A forgotten admin password can be reset with the normal reset flow. | `scripts/create-admin.ts` |
 | **The draft booking is kept per tab** (`sessionStorage`), so it is lost if the tab is closed before logging in | The simplest storage that keeps nothing between visits and holds nothing personal. | `src/app/book/BookingForm.tsx` |

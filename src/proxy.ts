@@ -11,11 +11,11 @@ export function proxy(request: NextRequest) {
   // Change the path on a copy of the address the browser used, so the host stays the one they typed.
   const login = request.nextUrl.clone();
   login.pathname = "/auth";
-  login.search = "?mode=login";
+  login.search = request.nextUrl.pathname === "/admin" ? "?mode=login&next=/admin" : "?mode=login";
   return NextResponse.redirect(login);
 }
 
 // Only the pages that need a login. Add each protected path here when it is built.
 export const config = {
-  matcher: ["/account/:path*"],
+  matcher: ["/account/:path*", "/admin/:path*"],
 };
