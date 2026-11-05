@@ -1,0 +1,18 @@
+# Run by the user on 2026-11-05. BEFORE a real logout (network on).
+ id | userId |  prefix  |        createdAt        
+----+--------+----------+-------------------------
+  6 |      3 | cd005bea | 2026-11-05 12:46:12.791
+  7 |      3 | a6d5500c | 2026-11-05 12:55:03.037
+  8 |      3 | a67c74b6 | 2026-11-05 13:04:29.694
+  9 |      3 | 0b1daa12 | 2026-11-05 13:08:42.666
+(4 rows)
+
+# After the list above I logged in again, then clicked Log out with the network on. The server log said: Session ended rows_deleted=1 hash_prefix=a2bd1dd6. I could not find the matching "Session created" line in my terminal any more. AFTER the real logout:
+ id | userId |  prefix  |        createdAt        
+----+--------+----------+-------------------------
+  6 |      3 | cd005bea | 2026-11-05 12:46:12.791
+  7 |      3 | a6d5500c | 2026-11-05 12:55:03.037
+  8 |      3 | a67c74b6 | 2026-11-05 13:04:29.694
+  9 |      3 | 0b1daa12 | 2026-11-05 13:08:42.666
+(4 rows)
+
