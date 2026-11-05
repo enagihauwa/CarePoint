@@ -1,0 +1,8 @@
+# Pasted by the user from their own terminal, 2026-11-05, right after the "logout" with the network set to Offline
+# (08-logout-naive-network-blocked.png). The page said "You are logged out." The session is still here.
+# Command: psql -U postgres -h localhost -d carepoint -c 'select id, "userId", left("tokenHash",8) as prefix, "createdAt" from "Session";'
+
+ id | userId |  prefix  |        createdAt
+----+--------+----------+-------------------------
+  5 |      3 | 3a0b3b68 | 2026-11-05 10:36:47.019
+(1 row)
