@@ -4,23 +4,23 @@ import { useEffect, useRef, useState, type FormEvent, type MouseEvent } from "re
 import { CautionIcon, ErrorSlot } from "@/components/auth/fields";
 
 export type DoctorOption = { id: number; name: string; specialty: string };
+// Who is logged in, or null. Only what the page needs to say "Booking as ...".
+export type Account = { name: string; emailVerified: boolean } | null;
 
 type Confirmation = { id: number; doctor: string; date: string; time: string };
 type Result =
   | { kind: "idle" }
   | { kind: "saving" }
   | { kind: "saved"; booking: Confirmation }
-  | { kind: "failed"; message: string; fields: Record<string, string[]> };
+  | { kind: "failed"; message: string; code: string | null; fields: Record<string, string[]> };
 
 // The ids of the inputs, in page order. The date and time inputs are one field for the patient.
-const FIELD_ORDER = ["name", "phone", "doctorId", "datetime"] as const;
+const FIELD_ORDER = ["doctorId", "datetime"] as const;
 type FieldId = (typeof FIELD_ORDER)[number];
 
 // The server validates date and time separately. The patient sees one field, so show whichever failed.
 function messagesFor(fields: Record<string, string[]>): Record<FieldId, string | null> {
   return {
-    name: fields.name?.[0] ?? null,
-    phone: fields.phone?.[0] ?? null,
     doctorId: fields.doctorId?.[0] ?? null,
     datetime: fields.date?.[0] ?? fields.time?.[0] ?? null,
   };
@@ -28,16 +28,46 @@ function messagesFor(fields: Record<string, string[]>): Record<FieldId, string |
 
 const describedBy = (id: string, hint?: boolean) => [hint ? `${id}-hint` : null, `${id}-error`].filter(Boolean).join(" ");
 
-export default function BookingForm({ doctors }: { doctors: DoctorOption[] }) {
+// Soft gating (docs/decisions.md, decision 3): anyone may look and choose. What they chose is kept in THIS tab
+// only (sessionStorage), so a person who has to log in does not type it twice. It holds a doctor and a time and
+// nothing personal, and it is cleared after a booking is saved. Storage can be blocked, so every use is wrapped.
+const DRAFT_KEY = "carepoint_booking_draft";
+function readDraft(): { doctorId: string; datetime: string } {
+  try {
+    const raw = JSON.parse(sessionStorage.getItem(DRAFT_KEY) ?? "{}");
+    return { doctorId: typeof raw.doctorId === "string" ? raw.doctorId : "", datetime: typeof raw.datetime === "string" ? raw.datetime : "" };
+  } catch {
+    return { doctorId: "", datetime: "" };
+  }
+}
+function writeDraft(draft: { doctorId: string; datetime: string }) {
+  try { sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft)); } catch { /* storage blocked: nothing is kept, nothing breaks */ }
+}
+function clearDraft() {
+  try { sessionStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
+}
+
+export default function BookingForm({ doctors, account }: { doctors: DoctorOption[]; account: Account }) {
   const [result, setResult] = useState<Result>({ kind: "idle" });
+  const [doctorId, setDoctorId] = useState("");
+  const [datetime, setDatetime] = useState("");
   // False until this script has run in the browser. Until then the button is really disabled, so
   // a form whose script never loaded cannot fall back to a plain page submit.
   const [ready, setReady] = useState(false);
-  useEffect(() => setReady(true), []);
   const confirmationRef = useRef<HTMLHeadingElement>(null);
+
+  // Restore what was chosen before a login. Only a doctor that still exists is restored.
+  useEffect(() => {
+    const draft = readDraft();
+    if (doctors.some((doctor) => String(doctor.id) === draft.doctorId)) setDoctorId(draft.doctorId);
+    setDatetime(draft.datetime);
+    setReady(true);
+  }, [doctors]);
 
   const saving = result.kind === "saving";
   const errors = messagesFor(result.kind === "failed" ? result.fields : {});
+  const needsLogin = result.kind === "failed" && result.code === "login_required";
+  const needsVerify = result.kind === "failed" && result.code === "verify_required";
 
   // After a failed submit, move focus to the first problem. After a successful booking, move it to
   // the confirmation, so a keyboard or screen-reader user is never left on nothing.
@@ -49,29 +79,36 @@ export default function BookingForm({ doctors }: { doctors: DoctorOption[] }) {
     if (result.kind === "saved") confirmationRef.current?.focus();
   }, [result]);
 
+  function choose(next: { doctorId: string; datetime: string }) {
+    setDoctorId(next.doctorId);
+    setDatetime(next.datetime);
+    writeDraft(next);
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (saving) return;
     setResult({ kind: "saving" });
-    const { datetime, ...rest } = Object.fromEntries(new FormData(event.currentTarget)) as Record<string, string>;
     // One "Date and time" field for the patient. The API and the database keep them separate.
-    const [date = "", time = ""] = (datetime ?? "").split("T");
+    const [date = "", time = ""] = datetime.split("T");
 
     try {
       const response = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...rest, date, time }),
+        body: JSON.stringify({ doctorId, date, time }),
       });
       const body = await response.json().catch(() => ({}));
 
       // Only a 201 counts as a booking. Anything else is shown as the error it is.
       if (response.status === 201) {
+        clearDraft();
         setResult({ kind: "saved", booking: body });
       } else {
         setResult({
           kind: "failed",
           message: body.error ?? `The server answered with status ${response.status}.`,
+          code: typeof body.code === "string" ? body.code : null,
           fields: body.fields ?? {},
         });
       }
@@ -79,6 +116,7 @@ export default function BookingForm({ doctors }: { doctors: DoctorOption[] }) {
       setResult({
         kind: "failed",
         message: "Could not reach the server. Check your connection and try again.",
+        code: null,
         fields: {},
       });
     }
@@ -110,33 +148,21 @@ export default function BookingForm({ doctors }: { doctors: DoctorOption[] }) {
   }
 
   return (
-    // method="post" so that, whatever happens, names and phone numbers never go into a URL.
+    // method="post" so that, whatever happens, nothing typed here can go into a URL.
     <form className="booking-card booking-form" method="post" onSubmit={handleSubmit} noValidate>
-      <fieldset className="field-group">
-        <legend className="group-title type-title-medium">Your details</legend>
-
-        <div className="field">
-          <label className="field-label type-label-large" htmlFor="name">Full name</label>
-          <input className="field-input type-body-large" id="name" name="name" type="text"
-            autoComplete="name" required aria-invalid={errors.name ? true : undefined} aria-describedby={describedBy("name")} />
-          <ErrorSlot id="name" message={errors.name} />
-        </div>
-
-        <div className="field">
-          <label className="field-label type-label-large" htmlFor="phone">Phone number</label>
-          <input className="field-input type-body-large" id="phone" name="phone" type="tel"
-            autoComplete="tel" required aria-invalid={errors.phone ? true : undefined} aria-describedby={describedBy("phone", true)} />
-          <p className="field-hint type-body-small" id="phone-hint">We&apos;ll call this number to confirm your visit.</p>
-          <ErrorSlot id="phone" message={errors.phone} />
-        </div>
-      </fieldset>
+      <p className="type-body-large">
+        {account
+          ? <>Booking as <strong>{account.name}</strong>. Your name and phone number come from your account.</>
+          : "You can choose a doctor and a time first. We will ask you to log in or create an account when you confirm."}
+      </p>
 
       <fieldset className="field-group">
         <legend className="group-title type-title-medium">Appointment</legend>
 
         <div className="field">
           <label className="field-label type-label-large" htmlFor="doctorId">Doctor</label>
-          <select className="field-input type-body-large" id="doctorId" name="doctorId" required defaultValue=""
+          <select className="field-input type-body-large" id="doctorId" name="doctorId" required value={doctorId}
+            onChange={(event) => choose({ doctorId: event.target.value, datetime })}
             aria-invalid={errors.doctorId ? true : undefined} aria-describedby={describedBy("doctorId")}>
             <option value="" disabled>Choose a doctor</option>
             {doctors.map((doctor) => (
@@ -148,8 +174,9 @@ export default function BookingForm({ doctors }: { doctors: DoctorOption[] }) {
 
         <div className="field">
           <label className="field-label type-label-large" htmlFor="datetime">Date and time</label>
-          <input className="field-input type-body-large" id="datetime" name="datetime" type="datetime-local"
-            required aria-invalid={errors.datetime ? true : undefined} aria-describedby={describedBy("datetime", true)} />
+          <input className="field-input type-body-large" id="datetime" name="datetime" type="datetime-local" required value={datetime}
+            onChange={(event) => choose({ doctorId, datetime: event.target.value })}
+            aria-invalid={errors.datetime ? true : undefined} aria-describedby={describedBy("datetime", true)} />
           <p className="field-hint type-body-small" id="datetime-hint">
             This has five parts: day, month, year, hour and minute. Type each part, or use the arrow keys to change it.
           </p>
@@ -158,9 +185,13 @@ export default function BookingForm({ doctors }: { doctors: DoctorOption[] }) {
       </fieldset>
 
       {result.kind === "failed" && (
-        <p className="message message-error auth-error type-body-large" role="alert">
-          <CautionIcon /><span>{result.message}</span>
-        </p>
+        <div className="message message-error auth-error type-body-large" role="alert">
+          <p><CautionIcon /><span>{result.message}</span></p>
+          {needsLogin && (
+            <p>We kept your choices. <a href="/auth?mode=login&next=/book">Log in</a> or <a href="/auth?mode=signup">create an account</a>, then come back to this page.</p>
+          )}
+          {needsVerify && <p><a href="/account">Go to your account to verify your email</a>.</p>}
+        </div>
       )}
 
       {!ready && (

@@ -1,0 +1,39 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-05. Production build, THROWAWAY database (a schema-only copy, dropped afterwards). Not the user's own evidence (that is 03 and 04).
+# Sanity check first: I deliberately broke the route three ways and re-ran. (a) Verified-email rule removed: 'an unverified patient: 403' failed and an unverified booking was saved. (b) A patientId taken from the request body: 'a body naming ANOTHER patient is ignored' failed. (c) The same-site Origin check removed: 'a booking from another site's Origin: 403' failed. All three were reverted, and the route was checked against its backup. The run below is the restored code.
+  logged out      -> 401 {"error":"Log in or create an account to confirm your booking.","code":"login_required"}
+PASS  logged out: 401 with code login_required
+PASS  junk cookie: 401 too
+PASS  no booking was saved by either
+  unverified      -> 403 {"error":"Verify your email before booking.","code":"verify_required"}
+PASS  an unverified patient: 403 with code verify_required
+  admin           -> 403 {"error":"Only patient accounts can book appointments.","code":"not_a_patient"}
+PASS  a staff account (no patient profile): 403 with code not_a_patient
+PASS  still no booking saved
+  patient         -> 201 {"id":1,"createdAt":"2026-11-05T20:46:50.528Z","doctor":"Dr Test A, General practice","date":"2026-12-01","time":"09:30"}
+PASS  a verified patient: 201
+PASS  the answer holds booking number, doctor, date and time, and no patient id
+PASS  the booking belongs to the logged-in patient, from the session
+PASS  a body naming ANOTHER patient is ignored: the booking is still the logged-in patient's
+  same slot again -> 409 {"error":"That time is already booked for this doctor. Please choose another time.","code":"slot_taken","fields":{"time":["That time is already booked. Please choose another."]}}
+PASS  the same doctor, date and time, by another patient: 409 slot_taken
+PASS  and only ONE booking exists for that slot
+PASS  another doctor at that time is fine (201)
+PASS  the same doctor at another time is fine (201)
+  bad doctor 400, date 400, time 400, no fields 400, not json 400, huge 413
+PASS  a doctor that does not exist: 400 with a message on doctorId
+PASS  an impossible date: 400 with a message on date
+PASS  an impossible time: 400 with a message on time
+PASS  an empty body: 400
+PASS  a body that is not JSON: 400
+PASS  a body over 4 KB: 413
+PASS  none of those saved anything
+PASS  a booking from another site's Origin: 403, nothing saved
+PASS  a booking from this site's own Origin works (201)
+PASS  after logging out, the old cookie cannot book (401)
+PASS  an expired session cannot book (401)
+PASS  /book is public: a visitor with no cookie sees it (200)
+PASS  a logged-out visitor is told they will be asked to log in when they confirm
+PASS  the form no longer asks for a name or phone number
+PASS  a logged-in patient sees 'Booking as <their name>'
+
+result: 29 passed, 0 failed

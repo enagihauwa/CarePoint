@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import SiteHeader from "@/components/SiteHeader";
+import { getCurrentUser } from "@/lib/currentUser";
 import { prisma } from "@/lib/db";
 import "../../styles/book.css";
 import "../../styles/auth.css";
@@ -26,6 +27,9 @@ async function loadDoctors(): Promise<DoctorOption[] | null> {
 
 export default async function BookPage() {
   const doctors = await loadDoctors();
+  // The page is public (soft gating). Who is logged in only changes what the form says: the server decides.
+  const user = await getCurrentUser();
+  const account = user ? { name: user.name, emailVerified: user.emailVerified } : null;
 
   return (
     <>
@@ -45,7 +49,7 @@ export default async function BookPage() {
             No doctors are available to book yet.
           </p>
         ) : (
-          <BookingForm doctors={doctors} />
+          <BookingForm doctors={doctors} account={account} />
         )}
       </main>
     </>

@@ -14,7 +14,13 @@ const CODE_MESSAGE = "Enter the 6-digit code from the email.";
 // Shown after a 201 from /api/register. The page says which address the code went to, because a mistyped
 // address gets no code and no error (the first test email in this project bounced that way), and it says
 // to check Spam, because the first real email landed there.
-export default function VerifyStep({ name, email, onChangeEmail }: { name: string; email: string; onChangeEmail: () => void }) {
+// Used in two places. After sign-up it is the whole page. On the account page of a patient who logged in without
+// verifying ("embedded") it sits under the page's own heading, so it uses a smaller heading, says honestly that a code
+// may not have been sent yet, and has no "wrong email" link: that email is the account's.
+export default function VerifyStep({ name, email, onChangeEmail, onVerified, embedded = false }: {
+  name: string; email: string; onChangeEmail?: () => void; onVerified?: () => void; embedded?: boolean;
+}) {
+  const Heading = embedded ? "h2" : "h1";
   const [code, setCode] = useState("");
   const [state, setState] = useState<State>({ kind: "idle" });
   const [codeError, setCodeError] = useState<string | null>(null);
@@ -44,6 +50,7 @@ export default function VerifyStep({ name, email, onChangeEmail }: { name: strin
       // Only a 200 counts as verified.
       if (response.status === 200) {
         setState({ kind: "verified" });
+        onVerified?.();
       } else {
         const message = body.error ?? `The server answered with status ${response.status}.`;
         setState({ kind: "failed", message });
@@ -75,7 +82,7 @@ export default function VerifyStep({ name, email, onChangeEmail }: { name: strin
   if (state.kind === "verified") {
     return (
       <section className="booking-card confirmation" role="status" aria-labelledby="verified-title">
-        <h1 className="confirmation-title type-title-large" id="verified-title" ref={headingRef} tabIndex={-1}>Your email is verified, {name}</h1>
+        <Heading className="confirmation-title type-title-large" id="verified-title" ref={headingRef} tabIndex={-1}>Your email is verified, {name}</Heading>
         <p className="type-body-large">Your account is ready. <a href="/auth?mode=login">Log in</a> with your email and password. Online booking is paused for now.</p>
       </section>
     );
@@ -83,9 +90,11 @@ export default function VerifyStep({ name, email, onChangeEmail }: { name: strin
 
   return (
     <>
-      <h1 className="book-title type-headline-medium" ref={headingRef} tabIndex={-1}>Check your email</h1>
+      <Heading className="book-title type-headline-medium" ref={headingRef} tabIndex={-1}>{embedded ? "Verify your email" : "Check your email"}</Heading>
       <p className="book-intro type-body-large">
-        We sent a 6-digit code to <strong>{email}</strong>. It expires in 10 minutes. If you cannot find it, check your Spam folder too.
+        {embedded
+          ? <>Your email <strong>{email}</strong> is not verified yet, and booking needs it. If you have a 6-digit code, enter it. If not, or if it has expired, ask for a new one below. Codes expire after 10 minutes. Check your Spam folder too.</>
+          : <>We sent a 6-digit code to <strong>{email}</strong>. It expires in 10 minutes. If you cannot find it, check your Spam folder too.</>}
       </p>
 
       <form className="booking-card booking-form" onSubmit={handleSubmit} noValidate>
@@ -112,10 +121,12 @@ export default function VerifyStep({ name, email, onChangeEmail }: { name: strin
             {resend.kind === "sending" ? "Sending…" : "Send a new code"}
           </button>
         </p>
-        <p className="auth-switch-row type-body-medium">
-          Wrong email address?{" "}
-          <button type="button" className="auth-switch" onClick={onChangeEmail}>Go back and fix it</button>
-        </p>
+        {onChangeEmail && (
+          <p className="auth-switch-row type-body-medium">
+            Wrong email address?{" "}
+            <button type="button" className="auth-switch" onClick={onChangeEmail}>Go back and fix it</button>
+          </p>
+        )}
       </form>
     </>
   );

@@ -1,0 +1,26 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-05. Real headless Chrome against a PRODUCTION BUILD, THROWAWAY database (dropped afterwards). Not the user's own evidence (that is 03 and 04, from my own browser).
+# Two runs failed first because of faults in my TEST, not the app: (1) Next.js has its own empty role=alert element, so my wait for the booking message read an empty string; (2) my URL wait '**/book' also matched the login page's own address '...&next=/book'. (3) A third run crashed on the login limit (5 per email per 15 minutes) because I re-used the same emails on the same server process without restarting it. The test now looks only inside the form, waits for the exact path, and runs on a restarted server. The run below is the clean one.
+  logged-out submit -> "Log in or create an account to confirm your booking. We kept your choices. Log in or create an account, then come back to this page."
+PASS  a logged-out visitor who confirms is asked to log in or create an account
+PASS  the message links to the login page with ?next=/book
+  draft kept in this tab: {"doctorId":"1","datetime":"2026-12-05T10:15"}
+PASS  only the doctor and the time are kept in the browser, nothing personal
+PASS  nothing was booked
+PASS  after login the visitor is sent back to /book
+PASS  and the doctor they chose is still selected
+PASS  and the date and time they typed are still there
+PASS  the form now says who is booking
+PASS  the booking is saved for the logged-in patient
+PASS  the kept choices are cleared after a booking
+PASS  a ?next= pointing at another site is ignored: the visitor stays on this site
+PASS  so is a protocol-relative one (//evil.example)
+  unverified submit -> "Verify your email before booking. Go to your account to verify your email."
+PASS  an unverified patient is told to verify their email
+PASS  with a link to the account page
+PASS  and nothing was booked for them
+PASS  the account page shows a verification panel with a code box
+PASS  and the panel has no 'wrong email address' link (that email is the account's)
+PASS  entering the code verifies the account, and the panel goes away
+PASS  after verifying, the same patient can book
+
+result: 19 passed, 0 failed

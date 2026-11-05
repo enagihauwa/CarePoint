@@ -4,6 +4,7 @@ import SiteHeader from "@/components/SiteHeader";
 import { getCurrentUser } from "@/lib/currentUser";
 import "../../styles/book.css";
 import "../../styles/auth.css";
+import AccountVerify from "./AccountVerify";
 import LogoutButton from "./LogoutButton";
 
 export const metadata: Metadata = { title: "My account" };
@@ -33,6 +34,7 @@ export default async function AccountPage() {
           </dl>
           <LogoutButton />
         </section>
+        {!user.emailVerified && user.role === "patient" && <AccountVerify name={user.name} email={user.email} />}
       </main>
     </>
   );
