@@ -69,4 +69,4 @@ See the root `README.md` for set-up. For the evidence scripts, the `.sh` files n
 | `not-implemented.md`, `defects.md`, `verification-design.md` | |
 | | The optional walkthrough |
 
-Login and reset still return `501`, and online booking is paused (`503`). The verification worker is started by hand with `npm run worker`. Nothing here claims a patient can log in.
+**This describes the end of Task 4. Login, reset and booking were built afterwards, in Task 5 (see `task-05-sessions-compliance-defence/README.md`).** At the end of Task 4, login and reset returned `501` and online booking was paused (`503`). The verification worker is started by hand with `npm run worker`. Nothing here claims a patient can log in.

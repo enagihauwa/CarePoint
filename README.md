@@ -6,7 +6,7 @@ Drafted by Claude at my request from the repo and from checks it ran, so the wor
 
 ## Status
 
-Updated 4 November 2026. Tasks 1 to 4 are built. Task 5 (sessions, compliance, defence) is not started.
+Updated 5 November 2026. Tasks 1 to 4 are built. **Task 5 (sessions, compliance, defence) is in progress**: sessions, login, logout, password reset and booking for logged-in patients are built. The admin page, account deletion and the scheduled purge are not (`task-05-sessions-compliance-defence/README.md`).
 
 **Built, and checked on my machine**
 - The design system is generated into `src/styles/tokens.css` by `npm run tokens`. Task 1 notes are in `task-01-design-system/`.
@@ -14,16 +14,19 @@ Updated 4 November 2026. Tasks 1 to 4 are built. Task 5 (sessions, compliance, d
 - Sign-up, log-in and reset forms with browser-side rules, and an accessibility audit (`task-03-client-validation/`).
 - **The server checks everything itself** (`task-04-server-security/`): the same rules as the form on the server, a request size limit, rate limits, a breach check on new passwords, Argon2id password hashing, and a nine-table database designed on paper and migrated by hand.
 - **Email verification works end to end:** a 6-digit code is emailed through Gmail by a background worker (pg-boss, in the same PostgreSQL), and the sign-up page asks for it. Checked once for real on my own inbox (`task-04-server-security/evidence/19c` to `19e`).
+- **Log in, log out and sessions work** (`task-05-sessions-compliance-defence/`): a random token whose hash is stored, a cookie with `HttpOnly` and `SameSite=Lax`, 7 days for patients, one message for every failed login, and logout that deletes the session. Each was seen in my own browser.
+- **Password reset works**: an emailed code, a new password, and every session of that user ends. Seen in my own browser with two windows.
+- **Booking works for a logged-in patient with a verified email.** A visitor can look and choose first, and is asked to log in when they confirm. **This was tested by Claude Code over HTTP and in a headless browser. I have not yet booked an appointment myself.**
 - The five doctors are seed data in `prisma/seed.ts`.
 
 **Followed from a fresh clone, but not yet by another person**
 - On 3 November, and again on 4 November (`task-04-server-security/evidence/24-fresh-clone-run.txt`), Claude Code cloned the repo and followed this README on an empty database. The second run found that the README did not mention `VERIFICATION_SECRET`, so the worker failed. That is now in the steps below. It was not a person, so a friend still has to follow the whole README (`task-02-scaffold-ship-and-find/docs/readme-test.md`, not written yet).
 
 **Not built, or not working**
-- **Log in and password reset.** Both answer `501`. Nobody can log in. Sessions are Task 5.
-- **Online booking is paused.** `/api/bookings` answers `503` because a booking must now belong to a patient, and no patient can log in yet.
-- Payments, the lab-result status and the admin dashboard.
-- The worker has to be started by hand (`npm run worker`). Nothing restarts it.
+- **The admin page**, and so nobody can record a payment as paid. There is no admin account yet.
+- **Account deletion and the scheduled purge** of old data.
+- Payments (nothing creates a payment for a booking yet) and the lab-result status.
+- The worker has to be started by hand (`npm run worker`), and **restarted after code changes**. Nothing restarts it.
 - Mail from the test Gmail account lands in Spam. A real sending domain is not set up.
 
 ## Stack, and why
@@ -36,7 +39,7 @@ Updated 4 November 2026. Tasks 1 to 4 are built. Task 5 (sessions, compliance, d
 | `tsx` | Runs the seed script. |
 | `scripts/tokens-to-css.js` | Turns the Figma token exports into CSS. |
 
-Also installed: `argon2` (Argon2id password hashing), `nodemailer` (Gmail SMTP) and `pg-boss` (the job queue in PostgreSQL). Planned in `AGENT-RULES.md` and **not installed**: node-cron.
+Also installed: `argon2` (Argon2id password hashing), `nodemailer` (Gmail SMTP) and `pg-boss` (the job queue in PostgreSQL). `AGENT-RULES.md` still names node-cron for the scheduled purge, but I chose a pg-boss schedule, so node-cron will not be installed.
 
 ## Getting started
 
@@ -88,7 +91,7 @@ In a **second terminal**, in the same folder, start the worker that sends the em
 
 `generate` builds the code the app uses to talk to the database. `migrate deploy` builds the tables in your empty database from the migration files in `prisma/migrations/`. `db seed` fills in the five doctors, so the booking form has doctors to choose from.
 
-Open **`http://localhost:3000/book`**. Use `localhost`, not the "Network" address that `npm run dev` prints. On the network address the development server blocks the form's script, and a booking silently does nothing (`task-02-scaffold-ship-and-find/docs/false-success.md`).
+Open **`http://localhost:3000/book`** to book, or **`http://localhost:3000/auth?mode=signup`** to create an account first. After logging in, **`/account`** shows your details and a Log out button. Use `localhost`, not the "Network" address that `npm run dev` prints. On the network address the development server blocks the form's script, and a booking silently does nothing (`task-02-scaffold-ship-and-find/docs/false-success.md`).
 
 To check a booking really saved, run `npx prisma studio`. It opens a page in your browser (the address is printed in the terminal). Click the `Booking` table on the left, and your booking should be a row with an `id` and a `createdAt` time.
 
@@ -113,15 +116,16 @@ From `AGENT-RULES.md` and `docs/business-brief.md`:
 
 | Defect | Where |
 |---|---|
-| The database now refuses the same doctor, date and time twice (a unique rule on `Booking`), but online booking is paused, so nothing uses it yet. | `prisma/schema.prisma`, `src/app/api/bookings/route.ts` |
-| The old booking rules (past dates accepted, any phone text) went away with the old route. They must be rebuilt when booking returns in Task 5. | `src/app/api/bookings/route.ts` |
-| When the database is down, the booking page shows an error but still answers HTTP 200. A check that only reads status codes would call it healthy. | `src/app/book/page.tsx:40` |
+| Booking checks only the format of the date and time. **Past dates and times outside opening hours are accepted**: those are business rules I have not defined. | `src/app/api/bookings/route.ts` |
+| One patient can book any number of free slots. No limit has been chosen. | `src/app/api/bookings/route.ts` |
+| A new page that forgets to call `getCurrentUser()` is unprotected, because the proxy only checks that a cookie exists. | `src/proxy.ts`, `src/lib/currentUser.ts` |
+| When the database is down, the booking page shows an error but still answers HTTP 200. A check that only reads status codes would call it healthy. | `src/app/book/page.tsx:45` |
 | Several widths are written as multiples of `--space-4` because no width tokens exist. It works, but a spacing token is being used as a width. | `src/styles/home.css:43`, `:55`, `:71`, `:79`; `src/styles/book.css:8` |
 | Three values are not design tokens (`20ch`, `6vw` and the 1.5 line-height ratio), plus the Task 1 spacing and radius values. | `src/styles/spacing.css` |
 | Only the Latin subset of DM Sans is self-hosted, so accented characters outside it fall back to `system-ui`. | `src/styles/fonts.css:9` |
 | The canonical and Open Graph addresses say `localhost` until `SITE_URL` is set. There is no Open Graph preview image. | `src/app/layout.tsx:10` |
 
-Task 1 defects are in `task-01-design-system/docs/defects.md`, Task 3 in `task-03-client-validation/docs/defects.md` and Task 4 in `task-04-server-security/docs/defects.md`.
+Task 1 defects are in `task-01-design-system/docs/defects.md`, Task 3 in `task-03-client-validation/docs/defects.md` and Task 4 in `task-04-server-security/docs/defects.md`. What Task 5 left out on purpose is in `task-05-sessions-compliance-defence/docs/not-implemented.md`.
 
 ## Links
 
@@ -130,3 +134,4 @@ Task 1 defects are in `task-01-design-system/docs/defects.md`, Task 3 in `task-0
 - Task 2 notes and evidence: `task-02-scaffold-ship-and-find/`
 - Task 3: `task-03-client-validation/`
 - Task 4: `task-04-server-security/`
+- Task 5: `task-05-sessions-compliance-defence/`
