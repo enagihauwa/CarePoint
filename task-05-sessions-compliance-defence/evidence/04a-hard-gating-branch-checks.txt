@@ -1,0 +1,12 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-05. NOT the user's own evidence (that is 04, from the user's own browser).
+# The branch is `hard-gating`, one commit on top of main. Production build of that branch, THROWAWAY database (dropped afterwards), checked with curl.
+# Changes on the branch: src/proxy.ts (matcher also covers /book, and the redirect carries ?next=/book) and src/app/book/page.tsx (redirect when there is no real session).
+
+--- logged out, GET /book
+307 -> http://localhost:3077/auth?mode=login&next=/book
+
+--- a made-up 43-character cookie, GET /book (passes the proxy, stopped by the page's own database check)
+307 -> http://localhost:3077/auth?mode=login&next=/book
+
+--- a real login, GET /book
+200, and the page says "Booking as <the patient's name>"
