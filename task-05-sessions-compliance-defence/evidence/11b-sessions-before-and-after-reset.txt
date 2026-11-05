@@ -1,0 +1,11 @@
+# Run by the user on 2026-11-05. BEFORE the password reset: browser A (Incognito) is logged in.
+ id | userId |  prefix  |        createdAt        
+----+--------+----------+-------------------------
+ 13 |      3 | 56e86901 | 2026-11-05 20:20:05.998
+(1 row)
+
+# AFTER the reset. The server log said: Password reset: user=3 sessions_deleted=1
+ id | userId | prefix | createdAt 
+----+--------+--------+-----------
+(0 rows)
+

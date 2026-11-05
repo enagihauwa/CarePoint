@@ -62,6 +62,9 @@ Notes: the register limit of 10 an hour is **my number, not measured** (`docs/de
 | Login timing, wrong password against unknown email | 136 ms against 135 ms (medians of 10) | `evidence/01a-login-session-checks.txt` | The dummy hash makes them the same. |
 | `lastSeenAt` refresh | at most once a minute (60,000 ms) | `src/lib/currentUser.ts` | One busy page should not write to the database on every request. **My number, not measured.** |
 | Cookie length check | 43 characters | `src/lib/currentUser.ts` | Anything else is junk, so the database is not asked. |
+| Reset code | 6 digits, 10 minutes, 5 wrong tries (the Task 4 numbers, kept) | `src/lib/verification.ts`, `docs/password-reset.md` | Same reasons as verification. A reset code is worth more, so this is a trade I must defend. |
+| Choosing a new password | 10 per email and 20 per address, per 15 minutes | `src/lib/rateLimitConfig.ts` (`resetConfirm`) | The same as verify. **My number, not measured.** |
+| Sessions ended by a reset | all of the user's (1 in `evidence/11b`) | `evidence/11b-sessions-before-and-after-reset.txt` | A stolen cookie must stop working when the password changes. |
 
 ## Still to add in Task 5
 
