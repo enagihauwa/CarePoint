@@ -1,0 +1,2 @@
+Session created: user=3 hash_prefix=4ca8da4e lifetime_seconds=604800
+Session created: user=3 hash_prefix=8cd04f4b lifetime_seconds=604800
