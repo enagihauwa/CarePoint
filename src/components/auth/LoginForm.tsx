@@ -74,6 +74,7 @@ export default function LoginForm({ focusHeading = false }: { focusHeading?: boo
             ? "Your email is verified. Online booking is paused for now, so there is nothing more to do here yet."
             : "Your email is not verified yet. You can log in, but booking will need a verified email. Online booking is paused for now."}
         </p>
+        <p className="type-body-large"><a href="/account">Go to my account</a></p>
       </section>
     );
   }

@@ -41,6 +41,26 @@ export function isLocalhost(request: Request): boolean {
   return host === "localhost" || host === "127.0.0.1" || host === "[::1]" || host === "::1";
 }
 
+// Logging out: the same cookie again with no value and no life left, so the browser throws it away.
+// The flags must match the ones it was set with, or some browsers keep the old cookie.
+export function clearedSessionCookie(secure: boolean): string {
+  return sessionCookie("", 0, secure);
+}
+
+// A request that changes data must come from this site's own pages. SameSite=Lax already stops the browser
+// sending the cookie on cross-site POSTs; this is the second lock (decision 1). A request with no Origin
+// header (a script, not a browser) is allowed: it has no browser session to be tricked into using.
+export function sameOrigin(request: Request): boolean {
+  const origin = request.headers.get("origin");
+  if (!origin) return true;
+  const host = (request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? "").split(",")[0].trim();
+  try {
+    return new URL(origin).host.toLowerCase() === host.toLowerCase();
+  } catch {
+    return false;
+  }
+}
+
 // HttpOnly: JavaScript on the page cannot read the cookie, which limits what an injected script can steal.
 // Path=/: sent for the whole site. Max-Age: the browser throws it away when the session would have expired.
 export function sessionCookie(token: string, seconds: number, secure: boolean): string {
