@@ -69,6 +69,10 @@ export const ResetSchema = z.object({ email: loginEmail });
 export const VerifySchema = z.object({ email: loginEmail, code: z.string().regex(/^\d{6}$/) });
 export const ResendSchema = z.object({ email: loginEmail });
 
+// Choosing a new password with the emailed code. The password follows the SAME rules as registration, exactly as
+// typed, never trimmed.
+export const ResetConfirmSchema = z.object({ email: loginEmail, code: z.string().regex(/^\d{6}$/), password });
+
 export const GENERIC_BAD_REQUEST = "Check your details and try again.";
 
 // The first message for each field, in the shape { field: ["message"] }.

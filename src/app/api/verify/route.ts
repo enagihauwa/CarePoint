@@ -31,9 +31,10 @@ export async function POST(request: Request) {
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user || user.emailVerifiedAt) return respond(request, started, 400, { error: CODE_FAILED });
 
-    // Only the newest code that is unused and not expired can work.
+    // Only the newest code that is unused and not expired can work, and only a code made FOR verification:
+    // a password-reset code must never verify an email.
     const row = await prisma.emailVerification.findFirst({
-      where: { userId: user.id, usedAt: null, expiresAt: { gt: new Date() } },
+      where: { userId: user.id, purpose: "verify", usedAt: null, expiresAt: { gt: new Date() } },
       orderBy: { id: "desc" },
     });
     if (!row) return respond(request, started, 400, { error: CODE_FAILED });

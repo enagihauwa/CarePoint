@@ -7,7 +7,7 @@ export const VERIFICATION_QUEUE = "send-verification-email";
 
 // Only a user id and a kind go in the job. The code itself is made inside the worker, so the plaintext
 // never sits in the queue's tables.
-export type VerificationJob = { userId: number; kind: "verify" | "already_registered" };
+export type VerificationJob = { userId: number; kind: "verify" | "already_registered" | "reset" };
 
 // 3 retries with a growing delay (30 s, then about 1 min, then about 2 min), then the job is marked failed.
 // A finished job is deleted after an hour, and a job that waits unclaimed for 15 minutes is dropped,

@@ -15,6 +15,8 @@ export const ADDRESS_LIMITS = {
   // Email verification (task-04-server-security/docs/verification-design.md). A proposal, not measured.
   verify: { max: 20, windowMs: 15 * MINUTE },
   resend: { max: 10, windowMs: HOUR },
+  // Choosing a new password with an emailed code. The same numbers as verify: a proposal, not measured.
+  resetConfirm: { max: 20, windowMs: 15 * MINUTE },
 } as const;
 
 export const EMAIL_LIMITS = {
@@ -26,6 +28,8 @@ export const EMAIL_LIMITS = {
   // an hour against 1,000,000 possibilities.
   verify: { max: 10, windowMs: 15 * MINUTE },
   resend: { max: 3, windowMs: HOUR },
+  // As for verify: the code's own cap of 5 wrong tries is what stops guessing (docs/password-reset.md).
+  resetConfirm: { max: 10, windowMs: 15 * MINUTE },
 } as const;
 
 // The most counters kept in memory. When it is full, expired ones go first, then the oldest.

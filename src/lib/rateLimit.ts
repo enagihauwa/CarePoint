@@ -90,7 +90,7 @@ function limiterFailed(request: Request, started: number, error: unknown) {
   return respond(request, started, 503, { error: UNAVAILABLE }, { "Retry-After": "60" });
 }
 
-export type Scope = "login" | "reset" | "register" | "verify" | "resend";
+export type Scope = "login" | "reset" | "register" | "verify" | "resend" | "resetConfirm";
 
 export function guardAddress(request: Request, started: number, scope: Scope, store: RateStore = defaultStore) {
   try {
@@ -104,7 +104,7 @@ export function guardAddress(request: Request, started: number, scope: Scope, st
 export function guardEmail(
   request: Request,
   started: number,
-  scope: "login" | "reset" | "verify" | "resend",
+  scope: "login" | "reset" | "verify" | "resend" | "resetConfirm",
   rawEmail: unknown,
   store: RateStore = defaultStore,
 ) {
