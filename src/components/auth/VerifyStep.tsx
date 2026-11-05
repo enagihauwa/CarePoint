@@ -76,7 +76,7 @@ export default function VerifyStep({ name, email, onChangeEmail }: { name: strin
     return (
       <section className="booking-card confirmation" role="status" aria-labelledby="verified-title">
         <h1 className="confirmation-title type-title-large" id="verified-title" ref={headingRef} tabIndex={-1}>Your email is verified, {name}</h1>
-        <p className="type-body-large">Your account is ready. Logging in is not available yet, so there is nothing more to do for now.</p>
+        <p className="type-body-large">Your account is ready. <a href="/auth?mode=login">Log in</a> with your email and password. Online booking is paused for now.</p>
       </section>
     );
   }
