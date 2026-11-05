@@ -1,0 +1,31 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-05. Production build, THROWAWAY database (a schema-only copy, dropped afterwards). Not the user's own evidence. First run: 20 passed, 5 failed. Two failures were my test expecting an absolute redirect URL (the server correctly sends a path). Three were my test logging in as one user 8 times against a limit of 5 per 15 minutes, so later logins were refused and the test carried on with an empty token; that made some other checks pass for the wrong reason. The test now stops if a login fails and uses one user per scenario. Second run, below, is the one that counts.
+  no cookie        -> 307 Location: /auth?mode=login
+PASS  no cookie: redirected to the login page by the proxy
+PASS  the redirect is a path only, so the browser stays on the host it used  [/auth?mode=login]
+PASS  the same on another host: still a path only, never a fixed host  [/auth?mode=login]
+  made-up cookie   -> 307 Location: /auth?mode=login
+PASS  a made-up 43-character cookie passes the proxy but the page sends it to login
+PASS  a wrong-length cookie is also sent to login
+PASS  and neither page shows any account details
+PASS  a live session sees its own account page (200)  [status 200]
+PASS  the page says the email is verified
+PASS  an unverified account sees 'Not verified yet' and only its own email
+PASS  an expired session (end time one second ago) is sent to login
+PASS  a revoked session is sent to login
+PASS  a stale lastSeenAt (10 minutes old) is refreshed by a visit  [0 s old]
+PASS  a second visit straight away does not write again
+  logout           -> 200 {"loggedOut":true}  Set-Cookie: carepoint_session=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax
+PASS  the session row existed before logout and is GONE after (deleted, not just hidden)
+PASS  logout answers 200
+PASS  the cookie is cleared (Max-Age=0) with the same name, Path, HttpOnly and SameSite
+PASS  the OLD token (a stolen copy) no longer works
+PASS  another session of the same user is NOT logged out
+PASS  logging out twice is not an error (200)
+PASS  logging out with no cookie is not an error (200)
+PASS  on a non-localhost host the clearing cookie is Secure too
+PASS  a logout from another site's Origin is refused (403)
+PASS  and it did NOT delete the session
+PASS  the server log has 'Session ended' lines with a hash prefix
+PASS  the server log never holds a full token
+
+result: 25 passed, 0 failed

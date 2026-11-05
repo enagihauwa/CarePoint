@@ -60,6 +60,8 @@ Notes: the register limit of 10 an hour is **my number, not measured** (`docs/de
 | Session token | 32 random bytes, 43 characters in the cookie, SHA-256 stored (64 hex) | `src/lib/session.ts`, `evidence/01a-login-session-checks.txt` | 256 bits of randomness: nothing to guess. |
 | Cookie flags | `HttpOnly`, `SameSite=Lax`, `Path=/`, `Secure` except on localhost | same | Decision 1 in `docs/decisions.md`. |
 | Login timing, wrong password against unknown email | 136 ms against 135 ms (medians of 10) | `evidence/01a-login-session-checks.txt` | The dummy hash makes them the same. |
+| `lastSeenAt` refresh | at most once a minute (60,000 ms) | `src/lib/currentUser.ts` | One busy page should not write to the database on every request. **My number, not measured.** |
+| Cookie length check | 43 characters | `src/lib/currentUser.ts` | Anything else is junk, so the database is not asked. |
 
 ## Still to add in Task 5
 

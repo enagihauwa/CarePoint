@@ -21,6 +21,7 @@ Started 4 November 2026. **Drafted by Claude from the repo, the documents and th
 | 13 | 4 | Claude | **The same mistake twice.** The email test script, then the worker, loaded `.env` after the imports had already read their settings. The worker connected to PostgreSQL as my Windows user and every verification job failed. **My tests passed because they set `DATABASE_URL` on the command line.** | I read the failed jobs in the queue table (`P1010 role "USER" denied`). | `scripts/loadEnv.ts` as the first import. | commit `47f7850`, `task-04-server-security/docs/verification-design.md`, `evidence/19c` |
 | 14 | 4 | Claude | The root README did not mention `VERIFICATION_SECRET`, the SMTP settings or the worker. A fresh clone's worker failed. | A fresh clone followed the README. | README rewritten. | commit `d4d4343`, `task-04-server-security/evidence/24-fresh-clone-run.txt` |
 | 15 | 5 | Claude | I decided whether to add the `Secure` cookie flag by reading the host from `request.url`. In this framework that always says `localhost`, so on a real host the session cookie would have been sendable over plain HTTP. | My own login test, which asks for a cookie from a non-localhost host, failed. | The host is now read from the `Host` header. | `task-05-sessions-compliance-defence/evidence/01a-login-session-checks.txt` (first run failed, second passed), `src/lib/session.ts` |
+| 16 | 5 | Claude | My first test of logout logged in as one patient 8 times. Login allows 5 per email per 15 minutes, so the later logins were refused and my test went on with an **empty token**. Five checks failed, and several others, such as "the old token no longer works", **passed without proving anything**. | I read the failures and saw that the logout deleted 0 rows. | The test now stops if a login does not give a 43-character token, and each scenario has its own user. It runs again from a clean database. | `task-05-sessions-compliance-defence/evidence/06a-proxy-logout-checks.txt` (header), `06a-proxy-logout-script.ts` |
 
 ## Mistakes the commits do not show (add yours)
 
@@ -33,6 +34,6 @@ Write these in my own words. For each one: what I believed, what was true, how I
 ## Patterns I can see so far
 
 Drafted by Claude. Check them before using them.
-- **Tests that share the bug's assumptions pass and prove nothing** (13, and the earlier version of 14).
+- **Tests that share the bug's assumptions pass and prove nothing** (13, 16, and the earlier version of 14).
 - **A claim written before it was checked, then corrected** (3, 5, 9).
 - **Private data committed, because redacting the file later does not remove it from history** (4).
