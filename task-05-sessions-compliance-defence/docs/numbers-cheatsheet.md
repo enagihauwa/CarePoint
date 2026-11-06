@@ -65,10 +65,16 @@ Notes: the register limit of 10 an hour is **my number, not measured** (`docs/de
 | Reset code | 6 digits, 10 minutes, 5 wrong tries (the Task 4 numbers, kept) | `src/lib/verification.ts`, `docs/password-reset.md` | Same reasons as verification. A reset code is worth more, so this is a trade I must defend. |
 | Choosing a new password | 10 per email and 20 per address, per 15 minutes | `src/lib/rateLimitConfig.ts` (`resetConfirm`) | The same as verify. **My number, not measured.** |
 | Sessions ended by a reset | all of the user's (1 in `evidence/11b`) | `evidence/11b-sessions-before-and-after-reset.txt` | A stolen cookie must stop working when the password changes. |
-| Admin session | 8 hours (28,800 s), already above | `src/lib/sessionConfig.ts` | Same reason as decision 2. |
 | Bookings listed on the front-desk page | the newest 50 | `src/app/admin/page.tsx` | A page size, not a business rule. **My number, not measured.** |
 | Largest payment accepted | 2,000,000,000 kobo (20,000,000 naira) | `src/lib/money.ts` | A technical ceiling under PostgreSQL's integer limit, not a price. No price was invented. |
 | Test for two clicks at once | 12 requests at once, on 5 bookings | `evidence/16a-admin-payments-script.ts` | 3 was too gentle: it passed without the lock (mistake 17). |
+
+| Deletion grace period | 14 days | `src/lib/deletionConfig.ts`, decision 5 | A patient who asks by accident can cancel; pending bookings and payments have time to settle; still prompt enough for "without undue delay". **My number, not measured.** |
+| When the purge runs | every night at 02:00, Africa/Lagos | `src/lib/deletionConfig.ts` | "Night" when the clinic is closed. **My choice of hour, not measured.** |
+| A missed purge | made up once when the worker returns (`missed: once`) | `scripts/worker.ts` | The default would skip it and wait a whole day. |
+| Purge job retries | 2 retries, 5 minutes apart | `scripts/worker.ts` | If the transaction fails, nothing changed, so trying again is safe. **My number, not measured.** |
+| Wrong passwords when asking to delete | share the login limit: 5 per 15 minutes per email | `src/app/api/account/delete/route.ts` | A stolen session must not be able to guess the password without limit. |
+| Test for two deletion requests at once | 4 at once, exactly 1 succeeds | `evidence/12a-account-deletion-script.ts` | |
 
 ## Still to add in Task 5
 

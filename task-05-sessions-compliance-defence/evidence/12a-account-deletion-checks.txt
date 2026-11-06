@@ -1,0 +1,88 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-05. Production build, THROWAWAY database (a schema-only copy of the user's database, with the NEW migration applied to the COPY ONLY; the user's real database was not touched and does not have the new columns yet). The real 'npm run purge-now' script and the real worker ran as child processes. Not the user's own evidence (that is 12, 13 and 14).
+# Sanity checks first. I deliberately broke the purge job three ways (no transaction, no 'patients only' filter, 'lt' instead of 'lte') and the deletion and booking routes four ways (no password check, no 'still active' condition, sessions not deleted, a pending patient allowed to book). 8 checks failed for the job breaks and 14 for the route breaks, as they should. All were reverted and checked against backups. One flaw of mine was found by reading the output: the first JOB FAILED line had an empty reason, because Prisma's message starts with a blank line. It now logs the error code (P2002). The run below is the restored code.
+PASS  logged out: 401
+PASS  an admin cannot use it: 403 not_a_patient
+  wrong password -> 401 {"error":"That password is not right. Nothing was changed.","code":"wrong_password"}
+PASS  a wrong password is refused: 401 wrong_password
+PASS  and nothing changed: still active, both sessions still there
+PASS  from another site's Origin: 403, nothing changed
+PASS  a missing password: 400
+  correct password -> 200 {"purgeAfter":"2026-11-19T21:44:07.399Z","graceDays":14}
+PASS  the right password: 200 with the purge date and the grace period (14 days)
+PASS  the account is now pending_deletion, with the request time recorded
+PASS  the purge date is exactly 14 days after the request  [14 days]
+PASS  NOTHING was erased yet: name, email, phone and password hash are all still there
+PASS  ALL of the patient's sessions were deleted (2 before, 0 after)
+PASS  another patient's session is untouched
+PASS  the answer clears the browser's cookie
+PASS  both of the patient's old cookies are dead
+PASS  the other patient's cookie still works
+PASS  a pending patient CAN log in (so they can cancel)
+PASS  the account page says it is scheduled for deletion, shows a date, and offers 'Cancel the deletion'
+PASS  and does not offer 'Delete my account' again
+PASS  asking again while pending: 409 already_pending
+PASS  a pending patient cannot book: 403 deletion_pending
+PASS  cancel from another site's Origin: 403
+PASS  cancel with no login: 401
+PASS  cancelling: 200, the account is active again and the request time is cleared
+PASS  cancelling when nothing is scheduled: 409 not_pending
+PASS  after cancelling, the patient can book again (201)
+PASS  the account page offers 'Delete my account' again
+  4 simultaneous requests -> 200,409,409,409
+PASS  four simultaneous requests: exactly one succeeds
+PASS  and the clock was started once (one request time)
+  wrong passwords, one after another -> 401,401,401,401,429,429
+PASS  wrong passwords share the login limit: 429 after the allowed tries
+PASS  and the account is still active
+  JOB START purge-deleted-accounts at=2026-11-05T21:44:09.042Z grace_days=14 cutoff=2026-10-22T21:44:09.042Z
+  JOB END purge-deleted-accounts accounts_anonymised=2 sessions_deleted=1 codes_deleted=2 bookings_kept=2 payments_kept=2 duration_ms=42
+PASS  the job logs JOB START and JOB END
+PASS  the END line has the counts: 2 accounts anonymised, 1 session, 2 codes, 2 bookings kept, 2 payments kept
+PASS  the log lines hold no name, no email and no id
+PASS  the result object agrees (2 due, 2 anonymised)
+PASS  an account requested 15 days ago is anonymised: placeholder email and name, no password, not verified, status deleted
+PASS  its phone number is erased
+PASS  an account requested EXACTLY 14 days ago is purged too (the boundary counts)
+PASS  each placeholder email is different (the unique rule holds)
+PASS  an account requested 13 days ago is NOT touched (name, email, phone, status all as before)
+PASS  an active account is not touched
+PASS  a staff account is NEVER purged, even if marked pending 30 days ago
+PASS  its sessions are deleted
+PASS  its emailed codes are deleted (verify and reset)
+PASS  the original names and emails are in no User row any more
+PASS  the bookings are KEPT, still linked to the (now anonymous) patient
+PASS  the payments are KEPT exactly: same references, amounts, methods
+PASS  the payment history (events) is KEPT
+PASS  the purged patient can no longer log in with the old email and password (401)
+PASS  their old cookie is dead
+PASS  the placeholder account cannot be logged into either
+PASS  even a session row that somehow survived (a real, unexpired one) does not work for a deleted account
+PASS  the same email can be registered again afterwards, as a brand new account
+  JOB START purge-deleted-accounts at=2026-11-05T21:44:09.042Z grace_days=14 cutoff=2026-10-22T21:44:09.042Z
+  JOB END purge-deleted-accounts accounts_anonymised=0 sessions_deleted=0 codes_deleted=0 bookings_kept=0 payments_kept=0 duration_ms=2
+PASS  running it a SECOND time: 0 accounts anonymised, 0 of everything
+PASS  and not one user row changed
+  JOB START purge-deleted-accounts at=2026-11-05T21:44:09.042Z grace_days=14 cutoff=2026-10-22T21:44:09.042Z
+  JOB FAILED purge-deleted-accounts nothing_changed=true reason=P2002
+PASS  when the second account fails, the job fails and logs JOB FAILED with nothing_changed=true
+PASS  and the FIRST account, which was processed before the failure, is back exactly as it was (one transaction)
+  JOB START purge-deleted-accounts at=2026-11-05T21:44:09.042Z grace_days=14 cutoff=2026-10-22T21:44:09.042Z
+  JOB END purge-deleted-accounts accounts_anonymised=2 sessions_deleted=1 codes_deleted=0 bookings_kept=0 payments_kept=0 duration_ms=8
+PASS  after the cause is removed, the next run purges both
+  npm run purge-now -> exit 0
+    JOB START purge-deleted-accounts at=2026-11-05T21:44:11.392Z grace_days=14 cutoff=2026-10-22T21:44:11.392Z
+    JOB END purge-deleted-accounts accounts_anonymised=1 sessions_deleted=0 codes_deleted=0 bookings_kept=0 payments_kept=0 duration_ms=356
+PASS  the real purge-now script runs the same job: exit 0, JOB START and JOB END, 1 account
+PASS  the real worker starts and says which queues and which schedule it keeps  [Worker running on queues "send-verification-email" and "purge-deleted-accounts" (purge schedule: 0 2 * * *, Africa/Lagos). Press Ctrl+C to stop.]
+  schedule in PostgreSQL: [{"name":"purge-deleted-accounts","cron":"0 2 * * *","timezone":"Africa/Lagos","missed":"once"}]
+PASS  the nightly schedule is stored in PostgreSQL: 02:00, Africa/Lagos, and a missed run is made up once
+  worker output:
+    Worker running on queues "send-verification-email" and "purge-deleted-accounts" (purge schedule: 0 2 * * *, Africa/Lagos). Press Ctrl+C to stop.
+    JOB START purge-deleted-accounts at=2026-11-05T21:44:15.479Z grace_days=14 cutoff=2026-10-22T21:44:15.479Z
+    JOB END purge-deleted-accounts accounts_anonymised=1 sessions_deleted=0 codes_deleted=0 bookings_kept=0 payments_kept=0 duration_ms=71
+PASS  a job on the purge queue is picked up by the worker, which logs JOB START and JOB END
+PASS  and that account is anonymised
+PASS  the server log has 'Deletion requested: user=… sessions_deleted=2' and 'Deletion cancelled: user=…'
+PASS  the server log never holds a name, email, phone number or password
+
+result: 64 passed, 0 failed

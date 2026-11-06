@@ -23,6 +23,8 @@ export default function LoginForm({ focusHeading = false }: { focusHeading?: boo
   // Where to go after logging in. ONLY these three pages of this site are allowed: anything else in ?next= is
   // ignored, so a link cannot send a patient to another site after they type their password (an open redirect).
   const requested = useSearchParams().get("next");
+  // A short notice from the page that just logged the patient out. Only this one known value is accepted.
+  const notice = useSearchParams().get("notice") === "deletion";
   const next = requested === "/book" || requested === "/account" || requested === "/admin" ? requested : null;
 
   useEffect(() => {
@@ -99,6 +101,9 @@ export default function LoginForm({ focusHeading = false }: { focusHeading?: boo
     <>
       <h1 className="book-title type-headline-medium" ref={headingRef} tabIndex={-1}>Log in</h1>
       <p className="book-intro type-body-large">Welcome back to CarePoint.</p>
+      {notice && (
+        <p className="message message-info type-body-large" role="status">Your account is scheduled for deletion and you have been logged out. Log in within 14 days if you want to cancel it.</p>
+      )}
 
       <form className="booking-card booking-form" onSubmit={handleSubmit} noValidate>
         <Field id="email" label="Email address" type="email" inputMode="email" autoComplete="email" value={values.email}

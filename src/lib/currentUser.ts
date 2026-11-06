@@ -20,6 +20,10 @@ export type CurrentUser = {
   email: string;
   role: "patient" | "admin";
   emailVerified: boolean;
+  // "pending_deletion" is a patient who asked to delete their account and can still cancel. They may log in, and
+  // that is all: no booking.
+  status: "active" | "pending_deletion";
+  deletionRequestedAt: Date | null;
 };
 
 export async function userForToken(token: string | undefined): Promise<CurrentUser | null> {
@@ -28,14 +32,16 @@ export async function userForToken(token: string | undefined): Promise<CurrentUs
   const session = await prisma.session.findUnique({ where: { tokenHash: hashToken(token) }, include: { user: true } });
   // Unknown, logged out (row deleted), revoked, or past its end time: all the same answer, "not logged in".
   if (!session || session.revokedAt !== null || session.expiresAt.getTime() <= Date.now()) return null;
+  const { user } = session;
+  // An anonymised ("deleted") account can never act, even if a session row somehow survived.
+  if (user.status === "deleted") return null;
 
   if (Date.now() - session.lastSeenAt.getTime() > TOUCH_AFTER_MS) {
     // A failed bookkeeping write must not log anyone out.
     await prisma.session.update({ where: { id: session.id }, data: { lastSeenAt: new Date() } }).catch(() => undefined);
   }
 
-  const { user } = session;
-  return { sessionId: session.id, id: user.id, name: user.name, email: user.email, role: user.role, emailVerified: user.emailVerifiedAt !== null };
+  return { sessionId: session.id, id: user.id, name: user.name, email: user.email, role: user.role, emailVerified: user.emailVerifiedAt !== null, status: user.status, deletionRequestedAt: user.deletionRequestedAt };
 }
 
 // For pages and server components.

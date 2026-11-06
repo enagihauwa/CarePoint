@@ -30,6 +30,15 @@ enum ServiceKind {
   lab_test
 }
 
+// Where an account is in its life. A patient who asks to delete their account is "pending_deletion" for the grace
+// period (14 days) and can cancel by logging in. The nightly purge then makes it "deleted": the identity is replaced
+// by placeholders, and the booking and payment records are kept without it.
+enum AccountStatus {
+  active
+  pending_deletion
+  deleted
+}
+
 // What an emailed code is for. A code made for one purpose must never work for the other.
 enum CodePurpose {
   verify
@@ -38,19 +47,23 @@ enum CodePurpose {
 
 // One person who can log in: a patient, or a front-desk member of staff (created by a seed script).
 model User {
-  id              Int       @id @default(autoincrement())
-  email           String    @unique
-  passwordHash    String
-  name            String
-  role            Role      @default(patient)
-  emailVerifiedAt DateTime?
-  createdAt       DateTime  @default(now())
+  id                  Int           @id @default(autoincrement())
+  email               String        @unique
+  passwordHash        String
+  name                String
+  role                Role          @default(patient)
+  emailVerifiedAt     DateTime?
+  createdAt           DateTime      @default(now())
+  status              AccountStatus @default(active)
+  deletionRequestedAt DateTime?
 
   patient               Patient?
   sessions              Session[]
   emailVerifications    EmailVerification[]
   paymentsRecorded      Payment[]
   paymentEventsRecorded PaymentEvent[]
+
+  @@index([status, deletionRequestedAt])
 }
 
 // The profile of a patient user. Staff have none.

@@ -1,0 +1,15 @@
+# Run by Claude Code on the user's machine at the user's request, 2026-11-05. Real headless Chrome against a PRODUCTION BUILD, THROWAWAY database (dropped afterwards). Not the user's own evidence (12, 13 and 14 are mine).
+PASS  an active patient sees 'Delete my account' with what will happen
+PASS  the password box is NOT shown until they choose to continue
+PASS  submitting with no password shows a message and changes nothing
+PASS  a wrong password shows 'That password is not right' and changes nothing
+PASS  the right password: the patient is sent to the login page with a notice that says they were logged out
+PASS  the database agrees: pending_deletion, and every session is gone
+PASS  the account page now sends the logged-out browser to login
+  pending account page: My account Name UI Deleter Email uidel@example.com Email status Verified Log out Your account is scheduled for deletion On or after 19 November 2026, your name, email and phone number will be removed. Until then you can change your mind. You cannot book while the deletion is scheduled. Cancel the deletion
+PASS  a pending patient can log in and sees the date and a 'Cancel the deletion' button
+PASS  and the 'Delete my account' form is not offered again
+PASS  trying to book while the deletion is scheduled is refused with a clear message
+PASS  cancelling: the page goes back to 'Delete my account' and the database agrees (active, no request time)
+
+result: 11 passed, 0 failed

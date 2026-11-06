@@ -37,6 +37,9 @@ export async function POST(request: Request) {
     const patient = user.role === "patient" ? await prisma.patient.findUnique({ where: { userId: user.id } }) : null;
     if (!patient) return refuse(request, started, 403, "not_a_patient", "Only patient accounts can book appointments.");
 
+    // A patient who has asked to delete their account may log in (to cancel the deletion) but may not book.
+    if (user.status !== "active") return refuse(request, started, 403, "deletion_pending", "Your account is scheduled for deletion. Cancel the deletion on your account page to book.");
+
     // Decision 4: logging in is allowed before the email is verified, but booking is not.
     if (!user.emailVerified) return refuse(request, started, 403, "verify_required", "Verify your email before booking.");
 

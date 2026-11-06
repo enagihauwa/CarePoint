@@ -39,3 +39,7 @@ export async function enqueueVerification(job: VerificationJob) {
   const boss = await getBoss();
   return boss.send(VERIFICATION_QUEUE, job);
 }
+
+// The nightly purge of accounts whose deletion grace period has ended (src/jobs/purgeDeletedAccounts.ts).
+// The schedule itself is set up by the worker (scripts/worker.ts), which is the only thing that runs it.
+export const PURGE_QUEUE = "purge-deleted-accounts";

@@ -1,6 +1,6 @@
 # Task 5: sessions, compliance and defence
 
-Task 5 makes the accounts real: a patient can log in, stay logged in, log out, reset a password and book, and the server decides who is allowed to do what. It also covers what the clinic must do with patients' data (deletion, retention, privacy) and defending my choices. **Task 5 is not finished**, and the Status section says exactly what is.
+Task 5 makes the accounts real: a patient can log in, stay logged in, log out, reset a password, book and delete their account, front-desk staff can record payments, and the server decides who is allowed to do what. It also covers what the clinic must do with patients' data (deletion, retention, privacy) and defending my choices. **Task 5 is not finished**, and the Status section says exactly what is.
 
 Drafted by Claude at my request from the files in this folder and the code, so the wording is not all mine. **The documents about my own reasoning, my reflections and my interview answers are mine to write, and they are not written yet.**
 
@@ -18,17 +18,21 @@ This folder holds the notes and the evidence. **The code is in the app itself**:
 | Password reset | `src/app/api/reset/route.ts`, `src/app/api/reset/confirm/route.ts`, `src/components/auth/ResetForm.tsx`, `src/jobs/sendVerificationEmail.ts`, `src/lib/email/verificationEmail.ts` |
 | Booking for a logged-in, verified patient | `src/app/api/bookings/route.ts`, `src/app/book/` |
 | Hard gating (not merged) | the git branch `hard-gating`, one commit on top of `main` |
-| Migrations | `prisma/migrations/20261104130000_add_session_last_seen`, `20261105120000_add_code_purpose` |
+| The admin account (the only door to one) | `scripts/create-admin.ts`, run as `npm run create-admin` |
+| The front-desk page, the 403 page, recording a payment | `src/app/admin/`, `src/app/forbidden.tsx`, `src/app/api/admin/payments/route.ts`, `src/lib/money.ts` |
+| Asking to delete an account, and cancelling | `src/app/api/account/delete/route.ts`, `src/app/api/account/delete/cancel/route.ts`, `src/app/account/AccountDeletion.tsx` |
+| The nightly purge, and its schedule | `src/jobs/purgeDeletedAccounts.ts`, `scripts/worker.ts`, `src/lib/deletionConfig.ts`; run by hand with `npm run purge-now` (`scripts/purge-now.ts`) |
+| Migrations | `prisma/migrations/20261104130000_add_session_last_seen`, `20261105120000_add_code_purpose`, `20261105180000_add_account_status` |
 
 ## Documents (`docs/`)
 
 | File | What it covers |
 |---|---|
-| `decisions.md` | Eight decisions with the reason from my business: cookie `SameSite`, session lengths, gating, login before verification, the deletion grace period, the admin action, who checks the session, and how soft gating works |
+| `decisions.md` | Ten decisions with the reason from my business: cookie `SameSite`, session lengths, gating, login before verification, the deletion grace period, the admin action, who checks the session, how soft gating works, the admin account and payments, and how deletion works |
 | `plan.md` | The seven pieces, in order, and the risks I saw before building |
 | `password-reset.md` | How a reset works, the numbers, and what it deliberately leaves out |
 | `not-implemented.md` | What I chose not to build, and why |
-| `mistakes-log.md` | Sixteen entries, with who made each mistake and the proof. **Drafted by Claude: I must read it and add mine** |
+| `mistakes-log.md` | Eighteen entries, with who made each mistake and the proof. **Drafted by Claude: I must read it and add mine** |
 | `numbers-cheatsheet.md` | Every number, where it lives and why, for the viva |
 
 ## Evidence (`evidence/`)
@@ -50,22 +54,27 @@ Files marked "Claude" were produced by Claude Code at my request, on a **throwaw
 | `03a-booking-gating-checks.txt`, `-script.ts` | 29 checks of the booking rules over HTTP, after breaking three on purpose | Claude |
 | `03b-booking-ui-checks.txt`, `-script.ts` | 19 checks in a real headless Chrome: the kept choices, `?next=`, verifying on the account page | Claude |
 | `04a-hard-gating-branch-checks.txt` | The `hard-gating` branch redirects a visitor with no login or a made-up cookie | Claude |
+| `16a-admin-payments-checks.txt`, `-script.ts` | 52 checks of the admin account, the real 403, and payments. Its header records that my first test for two clicks at once proved nothing | Claude |
+| `16b-admin-ui-checks.txt`, `-script.ts` | 7 checks of the front-desk page in a real headless Chrome | Claude |
+| `12a-account-deletion-checks.txt`, `-script.ts` | 64 checks: asking, cancelling, the purge with controlled dates (including "all or nothing"), the real `purge-now` script and the real worker, after breaking seven things on purpose | Claude |
+| `12b-deletion-ui-checks.txt`, `-script.ts` | 11 checks of the deletion flow in a real headless Chrome | Claude |
 
-My own captures for booking (**`03`**, soft gating in my browser) and for hard gating (**`04`**) are **not taken yet**.
+My own captures are **not taken yet** for: booking (**`03`**), hard gating (**`04`**), the front desk and the 403 (**`16`**), and deletion and the purge (**`12`, `13`, `14`**).
 
 ## How to run it
 
-See the root `README.md` for set-up. The worker (`npm run worker`) must be running for the reset and verification emails, and **it must be restarted after code changes**: a worker started before the reset was added ignores reset jobs. The evidence scripts need a production build (`npm run build`, then `npm start`) on a throwaway database. `03b` needs `playwright-core`, which is not in `package.json`. To see hard gating: `git checkout hard-gating`, run the app, then `git checkout main`.
+See the root `README.md` for set-up. **Apply the migrations before running the new code** (`npx prisma migrate deploy`, then `npx prisma generate`): `getCurrentUser()` reads the whole user row, so a database without the newest column fails every logged-in request. The worker (`npm run worker`) must be running for the emails and for the nightly purge, and **it must be restarted after code changes**: a worker started before a change runs the old code. To make the front-desk account, put `ADMIN_EMAIL` and `ADMIN_PASSWORD` in `.env`, run `npm run create-admin`, then remove the password from `.env`. To run the purge now instead of waiting for 02:00: `npm run purge-now` (it only touches accounts whose 14 days have ended). The evidence scripts need a production build (`npm run build`, then `npm start`) on a throwaway database. `03b`, `16b` and `12b` need `playwright-core`, which is not in `package.json`. To see hard gating: `git checkout hard-gating`, run the app, then `git checkout main`.
 
 ## Status
 
 | Done | Not done |
 |---|---|
-| Sessions: a random token, only its hash stored, cookie flags, 7 days for patients and 8 hours for staff | **Admin page and "record a payment as paid"** (piece 5). There is no admin account yet |
-| Login with one message for every failure, and matching time | **Account deletion and the scheduled purge** (piece 6), with its migration |
-| The proxy and the database check, and logout that deletes the row | **State management** (piece 7) |
-| Password reset that ends every session | My own captures `03` and `04` |
-| Booking for a verified patient, soft gating shipped, hard gating on a branch | The real owner interview, `retention-matrix.md`, `privacy.md`, `sessions.md`, `gating.md`, `state-management.md`, the handbook, the article, `what-i-do-not-know.md`, `defects.md`, and the 22 interview answers |
-| Verifying an email from the account page | A person (not Claude) following the README from a fresh clone |
+| Sessions: a random token, only its hash stored, cookie flags, 7 days for patients and 8 hours for staff | **State management** (piece 7) |
+| Login with one message for every failure, and matching time | My own captures `03`, `04`, `16`, `12`, `13`, `14` |
+| The proxy and the database check, and logout that deletes the row | The real owner interview, `retention-matrix.md`, `privacy.md`, `sessions.md`, `gating.md`, `state-management.md`, the handbook, the article, `what-i-do-not-know.md`, `defects.md`, and the 22 interview answers |
+| Password reset that ends every session | A person (not Claude) following the README from a fresh clone |
+| Booking for a verified patient, soft gating shipped, hard gating on a branch | |
+| An admin account that only a script can make, a real 403 for patients, and "record a payment as paid" under a row lock | |
+| Account deletion with a 14-day grace period, and a nightly purge that anonymises in one transaction | |
 
-**What is proven, and by whom.** Sessions, logout and the reset were each seen working in my own browser (`01` to `11`). Booking and the gating were tested by Claude Code over HTTP and in a headless Chrome. **I have not yet booked an appointment myself in my own browser.** **A known weakness:** if I add a new page and forget to call `getCurrentUser()` in it, that page is unprotected, because the proxy only checks that a cookie exists (`docs/decisions.md`, decision 7). **Nothing yet deletes a patient's data**: account deletion is piece 6 (`docs/not-implemented.md` lists what else is missing).
+**What is proven, and by whom.** Sessions, logout and the reset were each seen working in my own browser (`01` to `11`). **Booking, the admin page and deletion were tested by Claude Code, over HTTP and in a headless Chrome, and I have not yet done any of them myself.** The migration for deletion (`add_account_status`) is **prepared but not applied to my database**: I run it by hand. Two limits I know of: if I add a new page and forget to call `getCurrentUser()` in it, that page is unprotected, because the proxy only checks that a cookie exists (`docs/decisions.md`, decision 7); and booking and payment records are kept after an account is purged, because I have not decided the retention period and the legal one must be checked by me (`docs/not-implemented.md`).

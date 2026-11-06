@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import SiteHeader from "@/components/SiteHeader";
 import { getCurrentUser } from "@/lib/currentUser";
+import { GRACE_DAYS, purgeDate } from "@/lib/deletionConfig";
 import "../../styles/book.css";
 import "../../styles/auth.css";
+import AccountDeletion from "./AccountDeletion";
 import AccountVerify from "./AccountVerify";
 import LogoutButton from "./LogoutButton";
 
@@ -34,7 +36,14 @@ export default async function AccountPage() {
           </dl>
           <LogoutButton />
         </section>
-        {!user.emailVerified && user.role === "patient" && <AccountVerify name={user.name} email={user.email} />}
+        {!user.emailVerified && user.role === "patient" && user.status === "active" && <AccountVerify name={user.name} email={user.email} />}
+        {user.role === "patient" && (
+          <AccountDeletion
+            status={user.status}
+            graceDays={GRACE_DAYS}
+            purgeOn={user.deletionRequestedAt ? purgeDate(user.deletionRequestedAt).toLocaleDateString("en-GB", { dateStyle: "long", timeZone: "Africa/Lagos" }) : null}
+          />
+        )}
       </main>
     </>
   );
